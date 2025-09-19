@@ -1,32 +1,87 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import Login from "./pages/auth/Login";
-import Signup from "./pages/auth/Signup";
+import { lazy, Suspense } from "react";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
 import DashboardLayout from "./components/layout/DashboardLayout";
-import Transactions from "./pages/Transactions";
-import Dashboard from "./pages/Dashboard";
-import Settings from "./pages/Settings";
-import NotFound from "./pages/NotFound";
+import PageLoader from "./components/PageLoader";
+
+// Lazy load pages
+const Login = lazy(() => import("./pages/auth/Login"));
+const Signup = lazy(() => import("./pages/auth/Signup"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Transactions = lazy(() => import("./pages/Transactions"));
+const Settings = lazy(() => import("./pages/Settings"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+
+
 
 export const routes = createBrowserRouter([
-    { path: "/", element: <Navigate to="/dashboard" replace /> },
-    { path: "/login", element: <Login/> },
-    { path: "/signup", element: <Signup/> },
+    { path: "/", element: <Navigate to="/user/dashboard" replace /> },
     { 
-        path: "/dashboard", 
+        path: "/login", 
+        element: (
+            <Suspense fallback={<PageLoader/>}>
+                <Login/>
+            </Suspense>
+        )
+    },
+    { 
+        path: "/signup", 
+        element: (
+            <Suspense fallback={<PageLoader/>}>
+                <Signup/>
+            </Suspense>
+        )
+    },
+    { 
+        path: "/user", 
         element: <ProtectedRoute/>,
         children: [
             {
                 element: <DashboardLayout/>,
                 children: [
-                    { index: true, element: <Dashboard/>},
-                    { path: "transactions", element: <Transactions/> },
-                    { path: "settings", element: <Settings/> },
+                    { 
+                        path: "dashboard", 
+                        element: (
+                            <Suspense fallback={<PageLoader/>}>
+                                <Dashboard/>
+                            </Suspense>
+                        )
+                    },
+                    { 
+                        path: "transactions", 
+                        element: (
+                            <Suspense fallback={<PageLoader/>}>
+                                <Transactions/>
+                            </Suspense>
+                        )
+                    },
+                    { 
+                        path: "savings-loan", 
+                        element: (
+                            <Suspense fallback={<PageLoader/>}>
+                                <Transactions/>
+                            </Suspense>
+                        )
+                    },
+                    { 
+                        path: "settings", 
+                        element: (
+                            <Suspense fallback={<PageLoader/>}>
+                                <Settings/>
+                            </Suspense>
+                        )
+                    },
                 ]
             }
         ]
     },
-    { path: "*", element: <NotFound/>}
-    
+    { 
+        path: "*", 
+        element: (
+            <Suspense fallback={<PageLoader/>}>
+                <NotFound/>
+            </Suspense>
+        )
+    }
+]);
 
-])

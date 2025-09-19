@@ -13,11 +13,11 @@ type AuthStore = AuthState & {
 const initialState: AuthState = {
     user: null,
     token: null,
-    isAuthenticated: false,
+    isAuthenticated: true, 
     isLoading: false,
 }
 
-export const useAuthStore = create<AuthStore>((set, get) => ({
+export const useAuthStore = create<AuthStore>((set) => ({
     ...initialState,
 
     //check authentication status
