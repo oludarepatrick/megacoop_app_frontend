@@ -3,6 +3,36 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@theme {
+  --color-whitebg: #FFFFFF;
+  --color-megagreen: #14AB55;
+  --color-dark: #25282C;
+  --color-icon: #6D7D93;
+
+
+  --color-megagrey: #E0E0E0;
+  --color-megaorange: #FFA41B;
+  --color-megagold: #E2C174;
+  --color-fadeorange: #FFF9F1;
+  --color-textgrey: #001733;
+  --color-greybg: #F8F8FA;
+  --color-fadegrey: #F3F3FC;
+  --color-footertext: #595959;
+
+
+
+  --font-jakarta: "Plus Jakarta Sans", sans-serif;
+  --font-poppins: "Poppins", sans-serif;
+  --font-manrope: "Manrope", sans-serif;
+
+  /* Theme-aware color classes */
+  --color-megaPrimary: var(--custom-background);
+  --color-main-bg: var(--custom-main-bg);
+  --color-theme-text: var(--custom-text);
+  --color-text-muted: var(--custom-text-muted);
+
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -74,6 +104,13 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /*(light mode) */
+  --custom-background: var(--color-megagreen);
+  --custom-main-bg: var(--color-whitebg);
+  --custom-text: var(--color-dark);
+  --custom-text-muted: var(--color-footertext);
+
 }
 
 .dark {
@@ -108,6 +145,13 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  /* Custom theme-aware colors (dark mode) */
+  --custom-background: #0F8B3F; /* Darker green for dark mode */
+  --custom-main-bg: var(--color-dark);
+  --custom-text: var(--color-whitebg);
+  --custom-text-muted: var(--color-footertext);
+
 }
 
 @layer base {
@@ -117,39 +161,4 @@
   body {
     @apply bg-background text-foreground;
   }
-}
-
-@layer utilities {
-  
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-
-  .scrollbar-hide {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;     /* Firefox */
-  }
-
-  .green-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: #14AB55 #f1f5f9;
-}
-
-.green-scrollbar::-webkit-scrollbar {
-  height: 6px;
-}
-
-.green-scrollbar::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 3px;
-}
-
-.green-scrollbar::-webkit-scrollbar-thumb {
-  background: #14AB55;
-  border-radius: 3px;
-}
-
-.green-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #0F8B3F;
-}
 }
