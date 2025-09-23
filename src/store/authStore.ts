@@ -13,7 +13,7 @@ type AuthStore = AuthState & {
 const initialState: AuthState = {
     user: null,
     token: null,
-    isAuthenticated: true, 
+    isAuthenticated: false, 
     isLoading: false,
 }
 
