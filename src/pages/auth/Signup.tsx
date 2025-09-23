@@ -106,7 +106,7 @@ const SignUpLoginPage = () => {
     const location = useLocation();
     console.log(location.pathname);
     const [activeTab, setActiveTab] = useState<string>(location.pathname === '/login' ? 'login' : 'signup');
-    const [signUpStep, setSignUpStep] = useState(3);
+    const [signUpStep, setSignUpStep] = useState(1);
     const [loginStep, setLoginStep] = useState(1);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [showErrorModal, setShowErrorModal] = useState(false);
