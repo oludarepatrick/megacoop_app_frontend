@@ -26,7 +26,7 @@ import ConfirmSignIn from './ConfirmLogin';
 
 // API base URL
 // const API_BASE_URL = process.env.VITE_API_URL || 'https://megacoopapi-850900907647.us-central1.run.app/api';
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://34.56.64.14/api/v1/';
 console.log("API_BASE_URL", API_BASE_URL);
 
 // Zod schemas for form validation
