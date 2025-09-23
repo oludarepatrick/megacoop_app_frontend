@@ -7,7 +7,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loader } from '@/components/ui/loader';
+import PageLoader from '@/components/PageLoader';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -38,15 +38,6 @@ const accessCodeSchema = z.object({
 });
 
 const personalInfoSchema = z.object({
-    // firstName: z.string().min(1, "First name is required"),
-    // // middleName: z.string().optional(),
-    // middleName: z.string().min(1, "Middle name is required"),
-    // lastName: z.string().min(1, "Last name is required"),
-    // email: z.string().email("Invalid email address"),
-    // phone: z.string().min(10, "Phone number must be at least 10 digits"),
-    // gender: z.string().min(1, "Gender is required"),
-    // dob: z.string().min(1, "Date of birth is required"),
-    // ageRange: z.string().min(1, "Age range is required"),
     first_name: z.string().min(1, "First name is required"),
     middle_name: z.string().min(1, "Middle name is required"),
     last_name: z.string().min(1, "Last name is required"),
@@ -203,14 +194,6 @@ const SignUpLoginPage = () => {
     const personalInfoForm = useForm<PersonalInfoFormData>({
         resolver: zodResolver(personalInfoSchema),
         defaultValues: {
-            // firstName: userProfileDetails?.firstName || "Emeka",
-            // middleName: "",
-            // lastName: userProfileDetails?.lastName || "Victor",
-            // email: userProfileDetails?.email || "neogreat@example.com",
-            // phone: userProfileDetails?.phone || "09025697028",
-            // gender: "",
-            // dob: "",
-            // ageRange: "",
             first_name: userProfileDetails?.first_name || "Emeka",
             middle_name: userProfileDetails?.middle_name || "",
             last_name: userProfileDetails?.last_name || "Victor",
@@ -489,7 +472,6 @@ const SignUpLoginPage = () => {
                                     <span
                                         key={index}
                                         className={`w-3 h-3 rounded-full transition-all ${
-                                            //   index === current ? "bg-green-400" : "bg-green-800"
                                             index === activeIndex ? "bg-green-400" : "bg-white/50 hover:bg-white"
                                             }`}
                                     ></span>
@@ -528,7 +510,7 @@ const SignUpLoginPage = () => {
                                                     <div
                                                         className={`flex-1 h-[2px] mx-0 my-0 min-w-[35px] md:min-w-[90px] 
                                                        ${signUpStep > step ? "bg-[#14AB55]" : "bg-gray-300"}`}
-                                                    //   style={{ minWidth: "40px" }} 
+                                                     
                                                     />
                                                 )}
                                             </div>
@@ -575,12 +557,12 @@ const SignUpLoginPage = () => {
                                                 <Button
                                                     type="submit"
                                                     disabled={verifyAccessCode.isPending}
-                                                    className="w-full bg-[#14AB55] text-white hover:bg-[#0f8b3d] flex items-center justify-center gap-2"
+                                                    className="w-full bg-[#14AB55] text-white hover:bg-[#0f8b3d] disabled:bg-green-300 disabled:text-gray-800 flex items-center justify-center gap-2"
                                                 >
                                                     {verifyAccessCode.isPending ? (
                                                         <>
                                                             Verifying...
-                                                            <Loader className="h-8 w-8 text-green bg-green" />
+                                                            <PageLoader />
                                                         </>
                                                     ) : (
                                                         "Verify Now"
@@ -609,7 +591,6 @@ const SignUpLoginPage = () => {
                                                             <div
                                                                 className={`flex-1 h-[2px] mx-0 my-0 min-w-[35px] md:min-w-[90px] 
                                                        ${signUpStep > step ? "bg-[#14AB55]" : "bg-gray-300"}`}
-                                                            //   style={{ minWidth: "40px" }} 
                                                             />
                                                         )}
                                                     </div>
@@ -869,13 +850,13 @@ const SignUpLoginPage = () => {
                                                     <Button
                                                         type="submit"
                                                         disabled={submitSignUpData.isPending}
-                                                        className="h-11 lg:w-auto w-full bg-[#14AB55] text-white hover:bg-[#0f8b3d]"
+                                                        className="h-11 lg:w-auto w-full bg-[#14AB55] text-white hover:bg-[#0f8b3d] disabled:bg-green-300 disabled:text-gray-800"
                                                     >
                                                         
                                                         {submitSignUpData.isPending ? (
                                                             <>
                                                                 Processing...
-                                                                <Loader className="h-6 w-6 text-green bg-green" />
+                                                                <PageLoader />
                                                             </>
                                                         ) : (
                                                             "Continue"
@@ -935,12 +916,12 @@ const SignUpLoginPage = () => {
                                                 <Button
                                                     type="submit"
                                                     disabled={verifyEmailCode.isPending}
-                                                    className='w-full h-11 bg-[#14AB55] text-white hover:bg-[#0f8b3d]'
+                                                    className='w-full h-11 bg-[#14AB55] text-white hover:bg-[#0f8b3d] disabled:bg-green-300 disabled:text-gray-800'
                                                 >
                                                     {verifyEmailCode.isPending ? (
                                                         <>
                                                             Verifying...
-                                                            <Loader className="h-8 w-8 text-green bg-green" />
+                                                            <PageLoader />
                                                         </>
                                                     ) : (
                                                         "Verify Email"
@@ -1013,13 +994,14 @@ const SignUpLoginPage = () => {
                                             <div>
                                                 <Button
                                                     type="submit"
-                                                    className='w-full h-11 bg-[#14AB55] text-white hover:bg-[#0f8b3d]'
+                                                    className='w-full h-11 bg-[#14AB55] text-white hover:bg-[#0f8b3d] disabled:bg-green-300 disabled:text-gray-800'
                                                     disabled={verifyPhoneCode.isPending}
                                                 >
                                                     {verifyPhoneCode.isPending ? (
                                                         <>
                                                             Verifying...
-                                                            <Loader className="h-8 w-8 text-green bg-green" />
+                                                        
+                                                            <PageLoader />
                                                         </>
                                                     ) : (
                                                         "Verify Phone"
@@ -1139,7 +1121,6 @@ const SignUpLoginPage = () => {
                                                     <Input
 
                                                         type="checkbox" className="sr-only peer"
-                                                    // className="h-4 w-1 rounded border border-gray-300 cursor-pointer appearance-none checked:bg-green-600 checked:border-green-600"
                                                     />
                                                     {/* custom box that reacts to the checkbox state */}
                                                     <span
@@ -1172,11 +1153,11 @@ const SignUpLoginPage = () => {
                                                 </NavLink>
                                             </div>
 
-                                            <Button type="submit" className="w-full bg-[#14AB55] text-white hover:bg-[#0f8b3d] h-11" disabled={loginUser.isPending}>
+                                            <Button type="submit" className="w-full bg-[#14AB55] text-white hover:bg-[#0f8b3d] h-11 disabled:bg-green-300 disabled:text-gray-800" disabled={loginUser.isPending}>
                                                 {loginUser.isPending ? (
                                                     <>
                                                         Signing In...
-                                                        <Loader className="h-6 w-6 text-green bg-green" />
+                                                        <PageLoader />
                                                     </>
                                                 ) : (
                                                     "Sign In"
