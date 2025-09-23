@@ -229,7 +229,6 @@ function CarouselNext({
   )
 }
 
-
 function CarouselDots({ className, ...props }: React.ComponentProps<"div">) {
   const { api } = useCarousel()
   const [current, setCurrent] = React.useState(0)
@@ -247,8 +246,8 @@ function CarouselDots({ className, ...props }: React.ComponentProps<"div">) {
   }, [api])
 
   return (
-    <div 
-      className={cn("flex justify-center gap-2 mt-4", className)} 
+    <div
+      className={cn("flex justify-center gap-2 mt-4", className)}
       {...props}
     >
       {Array.from({ length: count }).map((_, index) => (
@@ -256,9 +255,9 @@ function CarouselDots({ className, ...props }: React.ComponentProps<"div">) {
           key={index}
           className={cn(
             "h-2 rounded-full transition-all duration-300",
-            current === index 
-              ? "w-8 bg-megagreen" // Active dot - longer and green
-              : "w-2 bg-gray-300 hover:bg-gray-400" // Inactive dot - smaller and gray
+            current === index
+              ? "w-8 bg-megagreen" // Active dot
+              : "w-2 bg-gray-300 hover:bg-gray-400" // Inactive dot
           )}
           onClick={() => api?.scrollTo(index)}
           aria-label={`Go to slide ${index + 1}`}

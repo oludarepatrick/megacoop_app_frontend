@@ -163,8 +163,18 @@
   }
 }
 
+@layer utilities {
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 
-.green-scrollbar {
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;     /* Firefox */
+  }
+
+  .green-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: #14AB55 #f1f5f9;
 }
@@ -185,4 +195,5 @@
 
 .green-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #0F8B3F;
+}
 }
