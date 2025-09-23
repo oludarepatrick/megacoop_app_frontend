@@ -162,3 +162,38 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;     /* Firefox */
+  }
+
+  .green-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #14AB55 #f1f5f9;
+}
+
+.green-scrollbar::-webkit-scrollbar {
+  height: 6px;
+}
+
+.green-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.green-scrollbar::-webkit-scrollbar-thumb {
+  background: #14AB55;
+  border-radius: 3px;
+}
+
+.green-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #0F8B3F;
+}
+}
