@@ -15,8 +15,8 @@ const TransactionTabs = ({activeTab, setActiveTab, transactions} :TabProps) => {
     return (
         <>
             <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as TabType)}>
-                <TabsList className="flex gap-8 bg-transparent border-b rounded-none pb-0" >
-                    <TabsTrigger value="all" className="pb-2 border-0 border-b  data-[state=active]:rounded-none data-[state=active]:border-b-2 data-[state=active]:border-megagreen data-[state=active]:text-megagreen ">All Transactions</TabsTrigger>
+                <TabsList className="flex sm:gap-8 bg-transparent border-b rounded-none pb-0" >
+                    <TabsTrigger value="all" className="pb-2d border-0 border-b  data-[state=active]:rounded-none data-[state=active]:border-b-2 data-[state=active]:border-megagreen data-[state=active]:text-megagreen ">All Transactions</TabsTrigger>
                     <TabsTrigger value="income" className="pb-2 border-0 border-b  data-[state=active]:rounded-none data-[state=active]:border-b-2 data-[state=active]:border-megagreen data-[state=active]:text-megagreen ">Income</TabsTrigger>
                     <TabsTrigger value="expense" className="pb-2 border-0 border-b  data-[state=active]:rounded-none data-[state=active]:border-b-2 data-[state=active]:border-megagreen data-[state=active]:text-megagreen ">Expense</TabsTrigger>
                 </TabsList>

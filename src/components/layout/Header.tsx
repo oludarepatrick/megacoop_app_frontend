@@ -97,7 +97,7 @@ const Header = ({onMenuToggle}: menuProps) => {
                     )}
                     {/* Right side - User actions */}
                     <div className="flex items-center gap-3">
-                        <Button variant="ghost" size="icon" className="hover:bg-white/10 hidden sm:block">
+                        <Button variant="ghost" size="icon" className="hover:bg-white/10 hidden sm:flex">
                             <Bell className="w-5 h-5" />
                         </Button>
                         
