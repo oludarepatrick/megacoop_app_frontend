@@ -115,12 +115,10 @@ const allTransactions: Transaction[] = [
   }
 ];
 
-
-
 const ITEMS_PER_PAGE = 5;
 
 const Transactions = () => {
-    const [activeTab, setActiveTab] = useState<TabType>("all")
+  const [activeTab, setActiveTab] = useState<TabType>("all")
     const [currentPage, setCurrentPage] = useState(1);
 
     // Handle tab change with page reset
@@ -143,14 +141,13 @@ const Transactions = () => {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
     const paginatedTransactions = filteredTransactions.slice(startIndex, endIndex )
-
-
     return (
-        <div className="font-poppins space-y-6">
+        <div className="font-poppins">
             <DashboardOverview/>
-
-            <section className="space-y-6">
-                <TransactionsHeader/>
+            <section className="grid grid-cols-1 gap-6 pt-8">
+            {/* <div className="flex flex-col md:flex-row gap-12 pt-2 bg-green-400"> */}
+                
+                     <TransactionsHeader/>
                 <TransactionTabs
                     activeTab={activeTab}
                     setActiveTab={handleTabChange}
@@ -161,6 +158,7 @@ const Transactions = () => {
                     totalPages={totalPages}
                     setCurrentPage={setCurrentPage}
                 />
+               
             </section>
         </div>
     )
