@@ -20,7 +20,6 @@ import { Avatar, AvatarFallback } from "../ui/avatar";
 import { AvatarImage } from "@radix-ui/react-avatar";
 
 
-
 const transactions = [
   {
     invoice: "Adobe After Effect",
@@ -100,18 +99,18 @@ const DashboardTransation= () => {
                     </TableHeader>
                 <TableBody>
                     {transactions.slice(0,3).map((invoice) => (
-                    <TableRow key={crypto.randomUUID()} className="hover:bg-transparent [&_td]:text-xs">
-                        <TableCell className="flex items-center gap-2">
-                            <Avatar className="rounded-full">
-                                <AvatarImage src="" alt="" />
-                                <AvatarFallback className="bg-[#EAE5FA] text-dark">TN</AvatarFallback>
-                            </Avatar>
-                            {invoice.invoice}
-                        </TableCell>
-                        <TableCell>{invoice.date}</TableCell>
-                        <TableCell className="">{invoice.totalAmount}</TableCell>
-                        <TableCell className=" w-[120px] "><span className="bg-[#CFF0E0] text-megagreen py-1 px-3 rounded-2xl">{invoice.paymentStatus}</span></TableCell>
-                    </TableRow>
+                        <TableRow key={crypto.randomUUID()} className="hover:bg-transparent [&_td]:text-xs">
+                            <TableCell className="flex items-center gap-2">
+                                <Avatar className="rounded-full">
+                                    <AvatarImage src="" alt="" />
+                                    <AvatarFallback className="bg-[#EAE5FA] text-dark">TN</AvatarFallback>
+                                </Avatar>
+                                {invoice.invoice}
+                            </TableCell>
+                            <TableCell>{invoice.date}</TableCell>
+                            <TableCell className="">{invoice.totalAmount}</TableCell>
+                            <TableCell className=" w-[120px] "><span className="bg-[#CFF0E0] text-megagreen py-1 px-3 rounded-2xl">{invoice.paymentStatus}</span></TableCell>
+                        </TableRow>
                     ))}
                 </TableBody>
                 </Table>
