@@ -11,12 +11,12 @@ import { Input } from '@/components/ui/input';
 import PageLoader from '@/components/PageLoader';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import megacoop_logo from '../../assets/megacoop-logo-1.png';
+import megacoop_logo from '../assets/megacoop-logo-1.png';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Eye, EyeOff } from 'lucide-react';
 import { Label } from '@radix-ui/react-label';
-import ConfirmSignIn from './ConfirmLogin';
+import ConfirmSignIn from '../pages/auth/ConfirmLogin';
 import { formConfig, jsonConfig } from '@/common/utils';
 
 // Zod schemas

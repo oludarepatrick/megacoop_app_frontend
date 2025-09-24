@@ -1,7 +1,7 @@
 // components/AuthCarousel.tsx
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import CarouselImage from '../../assets/signup_carousel_image.jpg';
+import CarouselImage from '../assets/signup_carousel_image.jpg';
 
 const carouselItems = [
   {
