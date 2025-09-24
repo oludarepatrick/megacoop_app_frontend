@@ -1,11 +1,8 @@
-// pages/SignUpLoginPage.tsx
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import AuthCarousel from '@/components/AuthCarousel';
 import AuthForm from '@/components/AuthForm';
-// import AuthCarousel from '../../components/AuthCarousel';
-// import AuthForm from '../../components/AuthForm';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import SuccessIcon from '../../assets/signup_successfull_icon.png';

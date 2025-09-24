@@ -1,4 +1,3 @@
-// components/AuthForm.tsx
 import { useState } from 'react';
 import { Navigate, NavLink } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -67,8 +66,6 @@ interface AuthFormProps {
     onSignUpStepChange: (step: number) => void;
     loginStep: number;
     onLoginStepChange: (step: number) => void;
-    //   userProfileDetails: CombinedAccessCodeData | null;
-    //   setUserProfileDetails: (details: CombinedAccessCodeData | null) => void;
     userEmail: string;
     userPhone: string;
     loginEmail: string;
