@@ -16,7 +16,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import megacoop_logo from '../../assets/megacoop-logo-1.png';
 import { Eye, EyeOff } from 'lucide-react';
 import SuccessIcon from '../../assets/signup_successfull_icon.png';
-import ErrorIcon from '../../assets/error_icon.png';
+import ErrorIcon from '../../assets/Error_icon.png';
 import SuccessfulSignUpBg from '../../assets/signup_success_background_img.png';
 import CarouselImage from '../../assets/signup_carousel_image.jpg'
 import { AnimatePresence, motion } from 'framer-motion';
