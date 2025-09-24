@@ -9,7 +9,7 @@ import AuthForm from './AuthForm';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import SuccessIcon from '../../assets/signup_successfull_icon.png';
-import ErrorIcon from '../../assets/error_icon.png';
+import ErrorIcon from '../../assets/Error_icon.png';
 import SuccessfulSignUpBg from '../../assets/signup_success_background_img.png';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://34.56.64.14/api/v1/';
