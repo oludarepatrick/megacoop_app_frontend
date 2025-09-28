@@ -2,6 +2,7 @@ import axios from "axios"
 
 const baseUrl = import.meta.env.VITE_API_URL ?? 'http://34.56.64.14/api/v1/';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const apiClient = axios.create({
   baseURL: baseUrl,
   timeout: 10000,

@@ -32,7 +32,9 @@ const ForgotPassword = () => {
     const navigate = useNavigate();
     const [imgHeight, setImgHeight] = useState<number | undefined>(undefined);
     const [userEmail, setUserEmail] = useState("");
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [userPhone, setUserPhone] = useState("");
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [forgotPasswordStep, setForgotPasswordStep] = useState(1);
     const [showErrorModal, setShowErrorModal] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
