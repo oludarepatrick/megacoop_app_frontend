@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import AuthCarousel from '@/components/AuthCarousel';
 import AuthForm from '@/components/AuthForm';
@@ -9,11 +9,12 @@ import SuccessIcon from '../../assets/signup_successfull_icon.png';
 import ErrorIcon from '../../assets/Error_icon.png';
 import SuccessfulSignUpBg from '../../assets/signup_success_background_img.png';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://34.56.64.14/api/v1/';
+const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://34.170.169.65/api/v1/';
 
 
 const Login = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState<string>(location.pathname === '/login' ? 'login' : 'signup');
     const [signUpStep, setSignUpStep] = useState(1);
     const [loginStep, setLoginStep] = useState(1);
@@ -29,6 +30,14 @@ const Login = () => {
     useEffect(() => {
         setActiveTab(location.pathname === "/login" ? "login" : "signup");
     }, [location.pathname]);
+
+    useEffect(() => {
+        if (activeTab === "signup") {
+            navigate("/signup");
+        } else {
+            navigate("/login");
+        }
+    }, [activeTab, navigate]);
 
     const handleError = (message: string) => {
         setErrorMessage(message);
@@ -64,6 +73,7 @@ const Login = () => {
                 signUpStep={signUpStep}
                 onSignUpStepChange={setSignUpStep}
                 loginStep={loginStep}
+                setShowSuccessModal={setShowSuccessModal}
                 onLoginStepChange={setLoginStep}
                 userEmail={userEmail}
                 userPhone={userPhone}

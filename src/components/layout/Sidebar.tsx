@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { Settings, X, ShieldCheck, ChevronDown } from "lucide-react";
+import { Settings, X, ShieldCheck, ChevronDown, CircleDollarSign } from "lucide-react";
 import { Button } from "../ui/button";
 import { NavLink } from "react-router-dom";
 import { LayoutGrid } from "lucide-react";
@@ -48,6 +48,10 @@ const Sidebar = ({onClick}:menuProps) => {
                 <NavLink to="market-place" className={activeClass}>
                     <img src={walletIcon} alt="" aria-hidden="true" />
                     Market place
+                </NavLink>
+
+                <NavLink to="investment" className={activeClass}>
+                    <CircleDollarSign /> Invest
                 </NavLink>
 
                 <NavLink to="message" className={activeClass}>

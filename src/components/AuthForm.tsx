@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Navigate, NavLink } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { useForm, type UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useMutation } from '@tanstack/react-query';
-import axios, { AxiosError } from 'axios';
+import { useMutation, type UseMutationResult } from '@tanstack/react-query';
+import axios, { AxiosError, type AxiosResponse } from 'axios';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import PageLoader from '@/components/PageLoader';
@@ -17,6 +17,18 @@ import { Eye, EyeOff } from 'lucide-react';
 import { Label } from '@radix-ui/react-label';
 import ConfirmSignIn from '../pages/auth/ConfirmLogin';
 import { formConfig, jsonConfig } from '@/common/utils';
+
+
+type VerificationStepProps = {
+  step: number;
+  userEmail: string;
+  userPhone: string;
+  verificationForm: UseFormReturn<{ verificationCode: string }>;
+  onEmailVerificationSubmit: (data: { verificationCode: string }) => void;
+  onPhoneVerificationSubmit: (data: { verificationCode: string }) => void;
+  verifyEmailCode: UseMutationResult<AxiosResponse, AxiosError, string>;
+  verifyPhoneCode: UseMutationResult<AxiosResponse, AxiosError, string>;
+};
 
 // Zod schemas
 const accessCodeSchema = z.object({
@@ -41,6 +53,10 @@ const accountInfoSchema = z.object({
     password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
+// const combinedSchema = personalInfoSchema.merge(accountInfoSchema);
+const combinedSchema = personalInfoSchema.and(accountInfoSchema);
+
+
 const verificationSchema = z.object({
     verificationCode: z.string().min(1, "Verification code is required"),
 });
@@ -55,9 +71,14 @@ type AccessCodeFormData = z.infer<typeof accessCodeSchema>;
 type PersonalInfoFormData = z.infer<typeof personalInfoSchema>;
 type AccountInfoFormData = z.infer<typeof accountInfoSchema>;
 type VerificationFormData = z.infer<typeof verificationSchema>;
-type CombinedFormData = PersonalInfoFormData & AccountInfoFormData;
+// type CombinedFormData = PersonalInfoFormData & AccountInfoFormData;
+type CombinedFormData = z.infer<typeof combinedSchema>;
 type CombinedAccessCodeData = AccessCodeFormData & PersonalInfoFormData & AccountInfoFormData;
 type LoginFormData = z.infer<typeof loginSchema>;
+type FinalSubmitData = Omit<
+  z.infer<typeof combinedSchema>,
+  "first_name" | "middle_name" | "last_name" | "email" | "phone"
+>;
 
 interface AuthFormProps {
     activeTab: string;
@@ -69,6 +90,7 @@ interface AuthFormProps {
     userEmail: string;
     userPhone: string;
     loginEmail: string;
+    setShowSuccessModal: (show: boolean) => void;
     onError: (message: string) => void;
     onUserEmailChange: (email: string) => void;
     onUserPhoneChange: (phone: string) => void;
@@ -87,6 +109,7 @@ const AuthForm = ({
     userEmail,
     userPhone,
     loginEmail,
+    setShowSuccessModal,
     onError,
     onUserEmailChange,
     onUserPhoneChange,
@@ -95,8 +118,12 @@ const AuthForm = ({
     imgHeight
 }: AuthFormProps) => {
     const [showPassword, setShowPassword] = useState(false);
-    const [personalInfoData, setPersonalInfoData] = useState<PersonalInfoFormData | null>(null);
+    // const [personalInfoData, setPersonalInfoData] = useState<PersonalInfoFormData | null>(null);
     const [userProfileDetails, setUserProfileDetails] = useState<CombinedAccessCodeData | null>(null);
+    console.log("userProfileDetails", userProfileDetails);
+
+
+    
 
     // API mutations
     const verifyAccessCode = useMutation({
@@ -104,22 +131,34 @@ const AuthForm = ({
             return axios.post(`${API_BASE_URL}user/validate-code`, { code: accessCode });
         },
         onSuccess: (response) => {
-            onSignUpStepChange(2);
+            console.log("response", response)
             setUserProfileDetails(response.data);
+            setShowSuccessModal(true);
+            // onSignUpStepChange(2);
+            
         },
         onError: (error: AxiosError<{ message: string }>) => {
             onError(error.response?.data?.message || "Invalid access code");
+            console.log("error", error)
         },
     });
 
     const submitSignUpData = useMutation({
-        mutationFn: (data: CombinedFormData) => {
+        mutationFn: (data: FinalSubmitData) => {
+            const finalData = {
+                ...data,
+                code: userProfileDetails?.code,
+                email: userProfileDetails?.email,
+            };
+            console.log("submitSignUpData finalData", finalData);
             return axios.post(`${API_BASE_URL}user/complete-signup`,
-                { ...data, code: userProfileDetails?.code },
+                // { ...data, code: userProfileDetails?.code },
+                finalData,
                 jsonConfig
             );
         },
-        onSuccess: () => {
+        onSuccess: (response) => {
+            console.log("submitSignUpData response", response);
             onSignUpStepChange(4);
         },
         onError: (error: AxiosError<{ message: string }>) => {
@@ -137,10 +176,11 @@ const AuthForm = ({
         },
         onSuccess: () => {
             onLoginStepChange(2);
-            return <Navigate to="/dashboard" replace />;
+            return <Navigate to="/user/dashboard" replace />;
         },
         onError: (error: AxiosError<{ message: string }>) => {
             onError(error.response?.data?.message || "Error logging in");
+            console.log("error", error)
         },
     });
 
@@ -187,29 +227,26 @@ const AuthForm = ({
         defaultValues: { email: "", password: "" },
     });
 
-    const personalInfoForm = useForm<PersonalInfoFormData>({
-        resolver: zodResolver(personalInfoSchema),
-        defaultValues: {
-            first_name: userProfileDetails?.first_name || "Emeka",
-            middle_name: userProfileDetails?.middle_name || "",
-            last_name: userProfileDetails?.last_name || "Victor",
-            email: userProfileDetails?.email || "neogreat@example.com",
-            phone: userProfileDetails?.phone || "09025697028",
-            gender: "",
-            dob: "",
-            age_range: "",
-            code: userProfileDetails?.code || "zswewd12",
-        },
-    });
 
-    const accountInfoForm = useForm<AccountInfoFormData>({
-        resolver: zodResolver(accountInfoSchema),
-        defaultValues: {
-            address: "",
-            whatshapp_no: "",
-            password: "",
-        },
-    });
+    const signUpForm = useForm<CombinedFormData>({
+  resolver: zodResolver(combinedSchema),
+  defaultValues: {
+    first_name: userProfileDetails?.first_name || "",
+    middle_name: "",
+    last_name: userProfileDetails?.last_name || "",
+    email: userProfileDetails?.email || "",
+    phone: userProfileDetails?.phone || "",
+    gender: "",
+    dob: "",
+    age_range: "",
+    address: "",
+    whatshapp_no: "",
+    password: "",
+  },
+//   shouldUnregister: false,
+});
+
+    
 
     const verificationForm = useForm<VerificationFormData>({
         resolver: zodResolver(verificationSchema),
@@ -221,19 +258,6 @@ const AuthForm = ({
         verifyAccessCode.mutate(data.code);
     };
 
-    const onPersonalInfoSubmit = (data: PersonalInfoFormData) => {
-        onUserEmailChange(data.email);
-        onUserPhoneChange(data.phone);
-        setPersonalInfoData(data);
-        onSignUpStepChange(3);
-    };
-
-    const onAccountInfoSubmit = (data: AccountInfoFormData) => {
-        if (personalInfoData) {
-            const combinedData = { ...personalInfoData, ...data };
-            submitSignUpData.mutate(combinedData);
-        }
-    };
 
     const onEmailVerificationSubmit = (data: VerificationFormData) => {
         verifyEmailCode.mutate(data.verificationCode);
@@ -249,19 +273,53 @@ const AuthForm = ({
 
     const handleBackToPersonalInfo = () => {
         onSignUpStepChange(2);
+        if (userProfileDetails) {
+            signUpForm.reset({
+                ...signUpForm.getValues(), // keep other values
+                first_name: userProfileDetails.first_name || "",
+                last_name: userProfileDetails.last_name || "",
+                email: userProfileDetails.email || "",
+                phone: userProfileDetails.phone || "",
+            });
+        }
     };
+
+    const onFinalSubmit = (data: CombinedFormData ) => {
+    console.log("Final submit data", data);
+    // destructure so we can keep email/phone but not send them
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { email, phone, first_name, middle_name, last_name, ...stripped } = data;
+  
+
+  // still updating UI state with email and phone
+  onUserEmailChange(email);
+  onUserPhoneChange(phone);
+
+  // sending stripped fields to API
+  submitSignUpData.mutate(stripped as FinalSubmitData);
+
+    };
+    
+    useEffect(() => {
+  if (userProfileDetails) {
+    signUpForm.reset({
+      ...signUpForm.getValues(), // keep other values
+      first_name: userProfileDetails.first_name || "",
+      last_name: userProfileDetails.last_name || "",
+      email: userProfileDetails.email || "",
+      phone: userProfileDetails.phone || "",
+    });
+  }
+}, [userProfileDetails, signUpForm]);
+
+
+    
 
     const renderSignUpStep = () => {
         switch (signUpStep) {
             case 1:
                 return (
                     <div>
-                        {/* <div className="text-center mb-6">
-              <ProgressSteps currentStep={signUpStep} totalSteps={4} />
-              <p className="text-sm text-[#14AB55] mb-6">
-                Please input the access code that was sent to you via your Email to continue
-              </p>
-            </div> */}
                         <Form {...accessCodeForm}>
                             <form onSubmit={accessCodeForm.handleSubmit(onAccessCodeSubmit)} className="space-y-4">
                                 <FormField
@@ -297,24 +355,35 @@ const AuthForm = ({
                                 Please input your DOB, Gender and Age to proceed
                             </p>
                         </div>
-                        <Form {...personalInfoForm}>
-                            <form onSubmit={personalInfoForm.handleSubmit(onPersonalInfoSubmit)} className="space-y-7">
+                        <Form {...signUpForm}>
+                            <div className="space-y-7 w-full rounded-lg">
+                            {/* <form className="space-y-7"> */}
                                 {/* Personal info form fields */}
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1  md:grid-cols-2 gap-7 ">
                                     <FormField
-                                        control={personalInfoForm.control}
+                                        // control={personalInfoForm.control}
+                                        control={signUpForm.control}
+                                        defaultValue={userProfileDetails?.first_name || ""}
+                                        
                                         name="first_name"
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormControl>
-                                                    <Input className='h-11 bg-green-50' placeholder="First name" {...field} readOnly />
+                                                    <Input
+                                                        className='h-11 bg-green-50'
+                                                        placeholder="First name"
+                                                        {...field}
+                                                        readOnly
+                                                    />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
                                     />
                                     <FormField
-                                        control={personalInfoForm.control}
+                                        // control={personalInfoForm.control}
+                                        control={signUpForm.control}
+                                        defaultValue={userProfileDetails?.middle_name || ""}
                                         name="middle_name"
                                         render={({ field }) => (
                                             <FormItem>
@@ -328,7 +397,9 @@ const AuthForm = ({
                                 </div>
                                 {/* ... other personal info fields */}
                                 <FormField
-                                    control={personalInfoForm.control}
+                                    // control={personalInfoForm.control}
+                                    control={signUpForm.control}
+                                    defaultValue={userProfileDetails?.last_name || ""}
                                     name="last_name"
                                     render={({ field }) => (
                                         <FormItem>
@@ -336,7 +407,6 @@ const AuthForm = ({
                                                 <Input
                                                     className='h-11 bg-green-50'
                                                     placeholder="Last name" {...field}
-                                                    // readOnly={!!userProfileDetails?.lastName}
                                                     readOnly
                                                 />
                                             </FormControl>
@@ -345,7 +415,9 @@ const AuthForm = ({
                                     )}
                                 />
                                 <FormField
-                                    control={personalInfoForm.control}
+                                    // control={personalInfoForm.control}
+                                    control={signUpForm.control}
+                                    defaultValue={userProfileDetails?.email || ""}
                                     name="email"
                                     render={({ field }) => (
                                         <FormItem>
@@ -354,7 +426,6 @@ const AuthForm = ({
                                                     className='h-11 bg-green-50'
                                                     placeholder="Email"
                                                     type="email" {...field}
-                                                    // readOnly={!!userProfileDetails?.email}
                                                     readOnly
                                                 />
                                             </FormControl>
@@ -363,7 +434,9 @@ const AuthForm = ({
                                     )}
                                 />
                                 <FormField
-                                    control={personalInfoForm.control}
+                                    // control={personalInfoForm.control}
+                                    control={signUpForm.control}
+                                    defaultValue={userProfileDetails?.phone || ""}
                                     name="phone"
                                     render={({ field }) => (
                                         <FormItem>
@@ -380,9 +453,10 @@ const AuthForm = ({
                                         </FormItem>
                                     )}
                                 />
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
                                     <FormField
-                                        control={personalInfoForm.control}
+                                        // control={personalInfoForm.control}
+                                        control={signUpForm.control}
                                         name="gender"
                                         render={({ field }) => (
                                             <FormItem className="w-full ">
@@ -403,14 +477,24 @@ const AuthForm = ({
                                         )}
                                     />
                                     <FormField
-                                        control={personalInfoForm.control}
+                                        // control={personalInfoForm.control}
+                                        control={signUpForm.control}
                                         name="dob"
                                         render={({ field }) => (
                                             <FormItem className="w-full">
                                                 <FormControl >
                                                     <Input
                                                         placeholder="DOB"
-                                                        className="w-full h-11 appearance-none [&::-webkit-datetime-edit]:w-full [&::-webkit-datetime-edit-fields-wrapper]:flex [&::-webkit-datetime-edit-fields-wrapper]:w-full"
+                                                        // className="w-full h-11 appearance-none [&::-webkit-datetime-edit]:w-full [&::-webkit-datetime-edit-fields-wrapper]:flex [&::-webkit-datetime-edit-fields-wrapper]:w-full"
+                                                        className={`
+                                                          w-full h-11 pr-3
+                                                          appearance-none 
+                                                          [&::-webkit-datetime-edit]:text-left 
+                                                          [&::-webkit-datetime-edit]:pl-0 
+                                                          [&::-webkit-calendar-picker-indicator]:absolute 
+                                                          [&::-webkit-calendar-picker-indicator]:!right-[30px] 
+                                                          [&::-webkit-calendar-picker-indicator]:cursor-pointer
+                                                          [&::-webkit-datetime-edit-fields-wrapper]:flex`}
                                                         type="date"
                                                         {...field}
                                                     />
@@ -421,7 +505,8 @@ const AuthForm = ({
                                     />
                                 </div>
                                 <FormField
-                                    control={personalInfoForm.control}
+                                    // control={personalInfoForm.control}
+                                    control={signUpForm.control}
                                     name="age_range"
                                     render={({ field }) => (
                                         <FormItem className="w-full">
@@ -442,10 +527,33 @@ const AuthForm = ({
                                         </FormItem>
                                     )}
                                 />
-                                <Button type="submit" className="w-full bg-[#14AB55] text-white hover:bg-[#0f8b3d] h-11">
+                                {/* <Button type="submit" className="w-full bg-[#14AB55] text-white hover:bg-[#0f8b3d] h-11">
+                                    Continue
+                                </Button> */}
+                                <Button
+                                    type="button"
+                                    className="w-full bg-[#14AB55] text-white hover:bg-[#0f8b3d] h-11"
+                                    onClick={async () => {
+                                        console.log("signUpForm values", signUpForm.getValues());
+                                        const isValid = await signUpForm.trigger([
+                                            "first_name",
+                                            "middle_name",
+                                            "last_name",
+                                            "email",
+                                            "phone",
+                                            "gender",
+                                            "dob",
+                                            "age_range",
+                                        ]);
+                                        if (isValid) {
+                                            onSignUpStepChange(3); // go next, no submit
+                                        }
+                                    }}
+                                >
                                     Continue
                                 </Button>
-                            </form>
+                                </div>
+                            {/* </form> */}
                         </Form>
                     </div>
                 );
@@ -459,16 +567,23 @@ const AuthForm = ({
                                 Hey! You are now one step away from completing your Sign Up
                             </p>
                         </div>
-                        <Form {...accountInfoForm}>
-                            <form onSubmit={accountInfoForm.handleSubmit(onAccountInfoSubmit)} className="space-y-6">
+                        {/* <Form {...accountInfoForm}>
+                            <form onSubmit={accountInfoForm.handleSubmit(onAccountInfoSubmit)} className="space-y-6"> */}
+                        <Form {...signUpForm}>
+                            <form onSubmit={signUpForm.handleSubmit(onFinalSubmit)} className="space-y-6">
                                 {/* Account info form fields */}
                                 <FormField
-                                    control={accountInfoForm.control}
+                                    // control={accountInfoForm.control}
+                                    control={signUpForm.control}
                                     name="address"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormControl>
-                                                <Input placeholder="Home Address" {...field} className='h-11' />
+                                                <Input placeholder="Home Address"
+                                                    {...field}
+                                                    className='h-11'
+                                                    // value={field.value || ""}
+                                                />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -476,22 +591,32 @@ const AuthForm = ({
                                 />
                                 {/* ... other account info fields */}
                                 <FormField
-                                    control={accountInfoForm.control}
+                                    // control={accountInfoForm.control}
+                                    control={signUpForm.control}
                                     name="whatshapp_no"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormControl>
-                                                <Input placeholder="WhatsApp (Optional)" {...field} className='h-11' />
+                                                <Input
+                                                    type="number"
+                                                    inputMode="numeric" // mobile keyboard shows numbers
+                                                    placeholder="WhatsApp (Optional)"
+                                                    {...field}
+                                                    className='h-11'
+                                                    // value={field.value || ""}
+                                                />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
                                 <FormField
-                                    control={accountInfoForm.control}
+                                    // control={accountInfoForm.control}
+                                    control={signUpForm.control}
                                     name="password"
                                     render={({ field }) => (
-                                        <FormItem>
+                                        <>
+                                         {/* <FormItem> */}
                                             <div className="relative">
                                                 <FormControl>
                                                     <Input
@@ -499,6 +624,7 @@ const AuthForm = ({
                                                         type={showPassword ? "text" : "password"}
                                                         {...field}
                                                         className="pr-10 h-11"
+                                                        // value={field.value || ""}
                                                     />
                                                 </FormControl>
                                                 <button
@@ -510,7 +636,8 @@ const AuthForm = ({
                                                 </button>
                                             </div>
                                             <FormMessage />
-                                        </FormItem>
+                                             {/* </FormItem> */}
+                                            </>
                                     )}
                                 />
                                 <div className="flex flex-col lg:flex-row lg:justify-between gap-4">
@@ -520,6 +647,8 @@ const AuthForm = ({
                                     <Button
                                         type="submit"
                                         disabled={submitSignUpData.isPending}
+                                        // onClick={() => onFinalSubmit(signUpForm.getValues())}
+                                        onClick={signUpForm.handleSubmit(onFinalSubmit)}
                                         className="h-11 lg:w-auto w-full bg-[#14AB55] text-white hover:bg-[#0f8b3d] disabled:bg-green-300 disabled:text-gray-800"
                                     >
                                         {submitSignUpData.isPending ? <>Processing... <PageLoader /></> : "Continue"}
@@ -699,8 +828,7 @@ const VerificationStep = ({
     onPhoneVerificationSubmit,
     verifyEmailCode,
     verifyPhoneCode
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-}: any) => (
+}: VerificationStepProps) => (
     <div>
         <div className="text-center mb-6">
             <ProgressSteps currentStep={step} totalSteps={4} />
