@@ -84,7 +84,7 @@ const DashboardTransation= () => {
                         </Select>
                         <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-icon w-4 h-4" />
                     </div>
-                    <Link to="/user/transactions" className="text-footertext text-sm ">See All</Link>
+                    <Link to="/user/transactions" className="text-footertext text-sm hover:text-megagreen ">See All</Link>
                 </div>
             </CardHeader>
             <div className="overflow-x-auto green-scrollbar">
