@@ -2,7 +2,7 @@ import axios from "axios"
 
 const baseUrl = import.meta.env.VITE_API_URL ?? 'http://34.56.64.14/api/v1/';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 const apiClient = axios.create({
   baseURL: baseUrl,
   timeout: 10000,
@@ -141,18 +141,18 @@ export async function getTrendingStocks(): Promise<TrendingStock[]> {
   }
 }
 
-// export async function createInvestment(investmentData: Partial<Investment>): Promise<Investment> {
-//   try {
-//     // TODO: Replace with actual API call when ready
-//     // const response = await apiClient.post('/investments', investmentData)
-//     // return response.data
+export async function createInvestment(investmentData: Partial<Investment>): Promise<Investment> {
+  try {
+    // TODO: Replace with actual API call when ready
+    const response = await apiClient.post('/investments', investmentData)
+    return response.data
 
-//     throw new Error("API not implemented yet")
-//   } catch (error) {
-//     console.error("Error creating investment:", error)
-//     throw error
-//   }
-// }
+    throw new Error("API not implemented yet")
+  } catch (error) {
+    console.error("Error creating investment:", error)
+    throw error
+  }
+}
 
 // export async function updateInvestment(id: string, investmentData: Partial<Investment>): Promise<Investment> {
 //   try {

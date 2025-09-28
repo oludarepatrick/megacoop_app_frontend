@@ -32,9 +32,7 @@ const ForgotPassword = () => {
     const navigate = useNavigate();
     const [imgHeight, setImgHeight] = useState<number | undefined>(undefined);
     const [userEmail, setUserEmail] = useState("");
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [userPhone, setUserPhone] = useState("");
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // const [userPhone, setUserPhone] = useState("");
     const [forgotPasswordStep, setForgotPasswordStep] = useState(1);
     const [showErrorModal, setShowErrorModal] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -58,7 +56,7 @@ const ForgotPassword = () => {
         onSuccess: (data) => {
             console.log("Reset email sent successfully:", data);
             setSuccessMessage("Link for reset password has been sent to this email");
-            // setForgotPasswordStep(2);
+            setForgotPasswordStep(2);
             
         },
         onError: (error) => {
