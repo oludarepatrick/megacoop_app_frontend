@@ -89,8 +89,7 @@ const ForgotPassword = () => {
                 return (
                     <div className="w-full">
                         <p className="text-sm text-center text-[#14AB55] mb-6 min-w-[35px]">
-                            Forgot password! Enter your registered email
-                            or Phone number to reset password
+                            Forgot password! Enter your registered email to reset password
                         </p>
                         <Form {...SendEmailForm}>
                             <form onSubmit={SendEmailForm.handleSubmit(onSendEmailSubmit)} className="space-y-7">

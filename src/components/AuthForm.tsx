@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Navigate, NavLink } from 'react-router-dom';
-import { useForm, type UseFormReturn } from 'react-hook-form';
+import { useNavigate, NavLink } from 'react-router-dom';
+import { useForm} from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useMutation, type UseMutationResult } from '@tanstack/react-query';
-import axios, { AxiosError, type AxiosResponse } from 'axios';
+import { useMutation } from '@tanstack/react-query';
+import axios, { AxiosError } from 'axios';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import PageLoader from '@/components/PageLoader';
@@ -17,18 +17,8 @@ import { Eye, EyeOff } from 'lucide-react';
 import { Label } from '@radix-ui/react-label';
 import ConfirmSignIn from '../pages/auth/ConfirmLogin';
 import { formConfig, jsonConfig } from '@/common/utils';
-
-
-type VerificationStepProps = {
-  step: number;
-  userEmail: string;
-  userPhone: string;
-  verificationForm: UseFormReturn<{ verificationCode: string }>;
-  onEmailVerificationSubmit: (data: { verificationCode: string }) => void;
-  onPhoneVerificationSubmit: (data: { verificationCode: string }) => void;
-  verifyEmailCode: UseMutationResult<AxiosResponse, AxiosError, string>;
-  verifyPhoneCode: UseMutationResult<AxiosResponse, AxiosError, string>;
-};
+import ProgressSteps from './AuthProgressSteps';
+import VerificationStep from './AuthVerificationStep';
 
 // Zod schemas
 const accessCodeSchema = z.object({
@@ -71,14 +61,10 @@ type AccessCodeFormData = z.infer<typeof accessCodeSchema>;
 type PersonalInfoFormData = z.infer<typeof personalInfoSchema>;
 type AccountInfoFormData = z.infer<typeof accountInfoSchema>;
 type VerificationFormData = z.infer<typeof verificationSchema>;
-// type CombinedFormData = PersonalInfoFormData & AccountInfoFormData;
 type CombinedFormData = z.infer<typeof combinedSchema>;
 type CombinedAccessCodeData = AccessCodeFormData & PersonalInfoFormData & AccountInfoFormData;
 type LoginFormData = z.infer<typeof loginSchema>;
-type FinalSubmitData = Omit<
-  z.infer<typeof combinedSchema>,
-  "first_name" | "middle_name" | "last_name" | "email" | "phone"
->;
+type FinalSubmitData = Omit<z.infer<typeof combinedSchema>,"first_name" | "middle_name" | "last_name" | "email" | "phone">;
 
 interface AuthFormProps {
     activeTab: string;
@@ -97,6 +83,7 @@ interface AuthFormProps {
     onLoginEmailChange: (email: string) => void;
     API_BASE_URL: string;
     imgHeight?: number;
+    setShowCongratulationsModal: (show: boolean) => void;
 }
 
 const AuthForm = ({
@@ -111,19 +98,44 @@ const AuthForm = ({
     loginEmail,
     setShowSuccessModal,
     onError,
-    onUserEmailChange,
-    onUserPhoneChange,
     onLoginEmailChange,
     API_BASE_URL,
-    imgHeight
+    imgHeight,
+    setShowCongratulationsModal,
 }: AuthFormProps) => {
     const [showPassword, setShowPassword] = useState(false);
-    // const [personalInfoData, setPersonalInfoData] = useState<PersonalInfoFormData | null>(null);
     const [userProfileDetails, setUserProfileDetails] = useState<CombinedAccessCodeData | null>(null);
+    const [emailTimer, setEmailTimer] = useState(30);
+    const [phoneTimer, setPhoneTimer] = useState(30);
+    const [emailTimerActive, setEmailTimerActive] = useState(true);
+    const [phoneTimerActive, setPhoneTimerActive] = useState(true);
     console.log("userProfileDetails", userProfileDetails);
-
-
+    const navigate = useNavigate();
     
+
+     useEffect(() => {
+        let emailInterval: NodeJS.Timeout;
+        if (emailTimerActive && emailTimer > 0) {
+            emailInterval = setInterval(() => {
+                setEmailTimer((prev) => prev - 1);
+            }, 1000);
+        } else if (emailTimer === 0) {
+            setEmailTimerActive(false);
+        }
+        return () => clearInterval(emailInterval);
+    }, [emailTimerActive, emailTimer]);
+
+    useEffect(() => {
+        let phoneInterval: NodeJS.Timeout;
+        if (phoneTimerActive && phoneTimer > 0) {
+            phoneInterval = setInterval(() => {
+                setPhoneTimer((prev) => prev - 1);
+            }, 1000);
+        } else if (phoneTimer === 0) {
+            setPhoneTimerActive(false);
+        }
+        return () => clearInterval(phoneInterval);
+    }, [phoneTimerActive, phoneTimer]);
 
     // API mutations
     const verifyAccessCode = useMutation({
@@ -143,6 +155,77 @@ const AuthForm = ({
         },
     });
 
+    const sendEmailVerification = useMutation({
+    mutationFn: () => {
+        const formData = new FormData();
+        formData.append('email', userProfileDetails?.email || '');
+        return axios.post(`${API_BASE_URL}user/send-email-verification-token`, formData, formConfig);
+    },
+    onSuccess: () => {
+        console.log("Email verification code sent successfully");
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
+        onError(error.response?.data?.message || "Error sending email verification code");
+    },
+    });
+    
+    const sendLoginEmailVerification = useMutation({
+        mutationFn: () => {
+            const { email } = loginForm.getValues();
+            onLoginEmailChange(email);
+            const formData = new FormData();
+            formData.append('email', email);
+            return axios.post(`${API_BASE_URL}user/send-login-verification-otp`, formData, formConfig);
+        },
+        onSuccess: (response) => {
+            console.log("Login email verification code sent successfully", response);
+        },
+        onError: (error: AxiosError<{ message: string }>) => {
+            onError(error.response?.data?.message || "Error sending login email verification code");
+        },
+    });
+
+const sendPhoneVerification = useMutation({
+    mutationFn: () => {
+        const formData = new FormData();
+        formData.append('phone', userProfileDetails?.phone || '');
+        return axios.post(`${API_BASE_URL}user/send-phone-verification-otp`, formData, formConfig);
+    },
+    onSuccess: () => {
+        console.log("Phone verification code sent successfully");
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
+        onError(error.response?.data?.message || "Error sending phone verification code");
+    },
+});
+
+    // Resend code mutation
+    const resendCode = useMutation({
+        mutationFn: (type: 'email' | 'phone') => {
+            const endpoint = type === 'email' ? 'user/send-email-verification-token' : 'user/send-phone-verification-otp';
+            const formData = new FormData();
+            if (type === 'email') {
+                formData.append('email', userProfileDetails?.email || userEmail);
+            } else {
+                formData.append('phone', userProfileDetails?.phone || userPhone);
+            }
+            return axios.post(`${API_BASE_URL}${endpoint}`, formData, formConfig);
+        },
+        onSuccess: () => {
+            if (resendCode.variables === 'email') {
+                setEmailTimer(30);
+                setEmailTimerActive(true);
+            } else {
+                setPhoneTimer(30);
+                setPhoneTimerActive(true);
+            }
+        },
+        onError: (error: AxiosError<{ message: string }>) => {
+            onError(error.response?.data?.message || "Error resending code");
+        },
+    });
+
+
     const submitSignUpData = useMutation({
         mutationFn: (data: FinalSubmitData) => {
             const finalData = {
@@ -159,7 +242,10 @@ const AuthForm = ({
         },
         onSuccess: (response) => {
             console.log("submitSignUpData response", response);
-            onSignUpStepChange(4);
+            // onSignUpStepChange(6);
+            setShowCongratulationsModal(true);
+            onTabChange("login");
+            onLoginStepChange(1);
         },
         onError: (error: AxiosError<{ message: string }>) => {
             onError(error.response?.data?.message || "Error submitting information");
@@ -174,9 +260,11 @@ const AuthForm = ({
             formData.append('password', data.password);
             return axios.post(`${API_BASE_URL}user/login`, formData, formConfig);
         },
-        onSuccess: () => {
-            onLoginStepChange(2);
-            return <Navigate to="/user/dashboard" replace />;
+        onSuccess: (response) => {
+            // onLoginStepChange(2);
+            console.log("loginUser response", response);
+            // navigate to dashboard or home page after login 
+            navigate("/user/dashboard");
         },
         onError: (error: AxiosError<{ message: string }>) => {
             onError(error.response?.data?.message || "Error logging in");
@@ -188,7 +276,7 @@ const AuthForm = ({
         mutationFn: (code: string) => {
             const formData = new FormData();
             formData.append('token', code);
-            formData.append('email', userEmail);
+            formData.append('email', userProfileDetails?.email || userEmail);
             return axios.post(`${API_BASE_URL}user/verify-email`, formData, formConfig);
         },
         onSuccess: () => {
@@ -203,13 +291,19 @@ const AuthForm = ({
         mutationFn: (code: string) => {
             const formData = new FormData();
             formData.append('token', code);
-            formData.append('phone', userPhone);
+            formData.append('phone', userProfileDetails?.phone || userPhone);
             return axios.post(`${API_BASE_URL}user/verify-phone`, formData, formConfig);
         },
         onSuccess: () => {
-            onSignUpStepChange(6);
-            onTabChange("login");
-            onLoginStepChange(1);
+            console.log("Phone verified successfully");
+            console.log("signUpForm", signUpForm.getValues());
+            console.log("is signUpForm valid", signUpForm.formState.isValid);
+            // if (signUpForm.formState.isValid) {
+            const data = signUpForm.getValues();
+            onFinalSubmit(data);
+            // }
+            
+            
         },
         onError: (error: AxiosError<{ message: string }>) => {
             onError(error.response?.data?.message || "Invalid verification code");
@@ -243,10 +337,7 @@ const AuthForm = ({
     whatshapp_no: "",
     password: "",
   },
-//   shouldUnregister: false,
 });
-
-    
 
     const verificationForm = useForm<VerificationFormData>({
         resolver: zodResolver(verificationSchema),
@@ -258,13 +349,19 @@ const AuthForm = ({
         verifyAccessCode.mutate(data.code);
     };
 
-
     const onEmailVerificationSubmit = (data: VerificationFormData) => {
         verifyEmailCode.mutate(data.verificationCode);
     };
 
     const onPhoneVerificationSubmit = (data: VerificationFormData) => {
         verifyPhoneCode.mutate(data.verificationCode);
+    };
+
+    // Resend code handler
+    const handleResendCode = (type: 'email' | 'phone') => {
+        if (!resendCode.isPending) {
+            resendCode.mutate(type);
+        }
     };
 
     const onLoginSubmit = (data: LoginFormData) => {
@@ -291,14 +388,52 @@ const AuthForm = ({
   const { email, phone, first_name, middle_name, last_name, ...stripped } = data;
   
 
-  // still updating UI state with email and phone
-  onUserEmailChange(email);
-  onUserPhoneChange(phone);
-
   // sending stripped fields to API
   submitSignUpData.mutate(stripped as FinalSubmitData);
 
     };
+
+    const handleLoginProceed = async () => {
+        const isLoginValid = await loginForm.trigger([
+            "email",
+            "password"
+        ]);
+
+        if (isLoginValid) {
+            // Send email verification code
+            try {
+                const result = await sendLoginEmailVerification.mutateAsync();
+                console.log("Login email verification code sent:", result);
+                onLoginStepChange(2);
+            } catch (error) {
+                // Error handling is done in the mutation
+                console.error("Failed to send login email verification code:", error);
+            }
+        }
+    };
+
+    const handleStep3Continue = async () => {
+    const isValid = await signUpForm.trigger([
+        "address",
+        "password"
+    ]);
+    
+    if (isValid) {
+        // Send both email and phone verification codes
+        try {
+            const results = await Promise.all([
+                sendEmailVerification.mutateAsync(),
+                sendPhoneVerification.mutateAsync()
+            ]);
+            // If both calls successful, move to step 4
+            console.log("Verification codes sent:", results);
+            onSignUpStepChange(4);
+        } catch (error) {
+            // Error handling is done in the mutations
+            console.error("Failed to send verification codes:", error);
+        }
+    }
+};
     
     useEffect(() => {
   if (userProfileDetails) {
@@ -567,13 +702,11 @@ const AuthForm = ({
                                 Hey! You are now one step away from completing your Sign Up
                             </p>
                         </div>
-                        {/* <Form {...accountInfoForm}>
-                            <form onSubmit={accountInfoForm.handleSubmit(onAccountInfoSubmit)} className="space-y-6"> */}
+                        
                         <Form {...signUpForm}>
-                            <form onSubmit={signUpForm.handleSubmit(onFinalSubmit)} className="space-y-6">
+                            {/* <form onSubmit={signUpForm.handleSubmit(onFinalSubmit)} className="space-y-6"> */}
                                 {/* Account info form fields */}
                                 <FormField
-                                    // control={accountInfoForm.control}
                                     control={signUpForm.control}
                                     name="address"
                                     render={({ field }) => (
@@ -581,7 +714,7 @@ const AuthForm = ({
                                             <FormControl>
                                                 <Input placeholder="Home Address"
                                                     {...field}
-                                                    className='h-11'
+                                                    className='h-11 mb-5'
                                                     // value={field.value || ""}
                                                 />
                                             </FormControl>
@@ -591,7 +724,6 @@ const AuthForm = ({
                                 />
                                 {/* ... other account info fields */}
                                 <FormField
-                                    // control={accountInfoForm.control}
                                     control={signUpForm.control}
                                     name="whatshapp_no"
                                     render={({ field }) => (
@@ -599,11 +731,10 @@ const AuthForm = ({
                                             <FormControl>
                                                 <Input
                                                     type="number"
-                                                    inputMode="numeric" // mobile keyboard shows numbers
+                                                    inputMode="numeric" 
                                                     placeholder="WhatsApp (Optional)"
                                                     {...field}
-                                                    className='h-11'
-                                                    // value={field.value || ""}
+                                                    className='h-11 mb-5'
                                                 />
                                             </FormControl>
                                             <FormMessage />
@@ -611,7 +742,6 @@ const AuthForm = ({
                                     )}
                                 />
                                 <FormField
-                                    // control={accountInfoForm.control}
                                     control={signUpForm.control}
                                     name="password"
                                     render={({ field }) => (
@@ -623,8 +753,7 @@ const AuthForm = ({
                                                         placeholder="Password"
                                                         type={showPassword ? "text" : "password"}
                                                         {...field}
-                                                        className="pr-10 h-11"
-                                                        // value={field.value || ""}
+                                                        className="pr-10 h-11 mb-5"
                                                     />
                                                 </FormControl>
                                                 <button
@@ -645,16 +774,14 @@ const AuthForm = ({
                                         ← Previous
                                     </Button>
                                     <Button
-                                        type="submit"
-                                        disabled={submitSignUpData.isPending}
-                                        // onClick={() => onFinalSubmit(signUpForm.getValues())}
-                                        onClick={signUpForm.handleSubmit(onFinalSubmit)}
+                                        type="button"
+                                        disabled={sendEmailVerification.isPending || sendPhoneVerification.isPending}
+                                            onClick={handleStep3Continue}
                                         className="h-11 lg:w-auto w-full bg-[#14AB55] text-white hover:bg-[#0f8b3d] disabled:bg-green-300 disabled:text-gray-800"
                                     >
-                                        {submitSignUpData.isPending ? <>Processing... <PageLoader /></> : "Continue"}
+                                        {(sendEmailVerification.isPending || sendPhoneVerification.isPending) ? <>Processing... <PageLoader /></> : "Continue"}
                                     </Button>
                                 </div>
-                            </form>
                         </Form>
                     </div>
                 );
@@ -664,13 +791,19 @@ const AuthForm = ({
                 return (
                     <VerificationStep
                         step={signUpStep}
-                        userEmail={userEmail}
-                        userPhone={userPhone}
+                        userEmail={userProfileDetails?.email || userEmail}
+                        userPhone={userProfileDetails?.phone || userPhone}
                         verificationForm={verificationForm}
                         onEmailVerificationSubmit={onEmailVerificationSubmit}
                         onPhoneVerificationSubmit={onPhoneVerificationSubmit}
                         verifyEmailCode={verifyEmailCode}
                         verifyPhoneCode={verifyPhoneCode}
+                        emailTimer={emailTimer}
+                        phoneTimer={phoneTimer}
+                        emailTimerActive={emailTimerActive}
+                        phoneTimerActive={phoneTimerActive}
+                        handleResendCode={handleResendCode}
+                        resendCode={resendCode}
                     />
                 );
 
@@ -684,7 +817,7 @@ const AuthForm = ({
             return (
                 <div className="space-y-6 w-full rounded-lg">
                     <Form {...loginForm}>
-                        <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-6 w-full rounded-lg">
+                        {/* <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-6 w-full rounded-lg"> */}
                             <FormField
                                 control={loginForm.control}
                                 name="email"
@@ -739,15 +872,30 @@ const AuthForm = ({
                                     Forgot password?
                                 </NavLink>
                             </div>
-                            <Button type="submit" className="w-full bg-[#14AB55] text-white hover:bg-[#0f8b3d] h-11 disabled:bg-green-300 disabled:text-gray-800" disabled={loginUser.isPending}>
-                                {loginUser.isPending ? <>Signing In... <PageLoader /></> : "Sign In"}
+                        <Button
+                            type="button"
+                            className="w-full bg-[#14AB55] text-white hover:bg-[#0f8b3d] h-11 disabled:bg-green-300 disabled:text-gray-800"
+                            disabled={sendLoginEmailVerification.isPending}
+                            onClick={handleLoginProceed}
+                        >
+                                {sendLoginEmailVerification.isPending ? <>Signing In... <PageLoader /></> : "Sign In"}
                             </Button>
-                        </form>
+                        {/* </form> */}
                     </Form>
                 </div>
             );
         } else if (loginStep === 2) {
-            return <ConfirmSignIn loginEmail={loginEmail} />;
+            // return <ConfirmSignIn loginEmail={loginEmail} onLoginSubmit={onLoginSubmit} />;
+            return (
+                <ConfirmSignIn
+                    loginEmail={loginEmail}
+                    onLoginSubmit={() => {
+                        // call mutate with stored form values
+                        const values = loginForm.getValues();
+                        onLoginSubmit(values);
+                    }}
+                />
+            )
         }
     };
 
@@ -771,7 +919,7 @@ const AuthForm = ({
                             </div>
                         )}
 
-                        {signUpStep === 1 && (
+                        {signUpStep === 1 && loginStep === 1 && (
                             <TabsList className="grid grid-cols-2 mb-6 items-center justify-center w-full mx-auto">
                                 <TabsTrigger value="signup" className="data-[state=active]:bg-[#14AB55] data-[state=active]:text-white">Sign Up</TabsTrigger>
                                 <TabsTrigger value="login" className="data-[state=active]:bg-[#14AB55] data-[state=active]:text-white">Sign In</TabsTrigger>
@@ -801,71 +949,6 @@ const AuthForm = ({
     );
 };
 
-// Helper components
-const ProgressSteps = ({ currentStep, totalSteps }: { currentStep: number; totalSteps: number }) => (
-    <div className="flex justify-center items-center my-2">
-        {Array.from({ length: totalSteps }, (_, idx) => (
-            <div key={idx + 1} className="flex items-center lg:w-full">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${currentStep >= idx + 1 ? "bg-green-500 text-white" : "bg-gray-200 text-gray-500"
-                    }`}>
-                    {idx + 1}
-                </div>
-                {idx < totalSteps - 1 && (
-                    <div className={`flex-1 h-[2px] mx-0 my-0 min-w-[35px] md:min-w-[90px] ${currentStep > idx + 1 ? "bg-[#14AB55]" : "bg-gray-300"
-                        }`} />
-                )}
-            </div>
-        ))}
-    </div>
-);
 
-const VerificationStep = ({
-    step,
-    userEmail,
-    userPhone,
-    verificationForm,
-    onEmailVerificationSubmit,
-    onPhoneVerificationSubmit,
-    verifyEmailCode,
-    verifyPhoneCode
-}: VerificationStepProps) => (
-    <div>
-        <div className="text-center mb-6">
-            <ProgressSteps currentStep={step} totalSteps={4} />
-            <p className="text-sm text-[#14AB55] mb-6">
-                {step === 4
-                    ? `We have sent a verification code to your email ${userEmail ? userEmail.replace(/(.{2})(.*)(?=@)/, '$1****') : ''}`
-                    : `We have sent a verification code to your phone ${userPhone ? userPhone.slice(0, 3) + '****' + userPhone.slice(-4) : ''}`
-                }
-            </p>
-        </div>
-        <Form {...verificationForm}>
-            <form onSubmit={step === 4 ? verificationForm.handleSubmit(onEmailVerificationSubmit) : verificationForm.handleSubmit(onPhoneVerificationSubmit)} className="space-y-6">
-                <FormField
-                    control={verificationForm.control}
-                    name="verificationCode"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormControl>
-                                <Input placeholder="Verification Code" {...field} className='h-11' />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <Button
-                    type="submit"
-                    disabled={step === 4 ? verifyEmailCode.isPending : verifyPhoneCode.isPending}
-                    className='w-full h-11 bg-[#14AB55] text-white hover:bg-[#0f8b3d] disabled:bg-green-300 disabled:text-gray-800'
-                >
-                    {step === 4
-                        ? (verifyEmailCode.isPending ? <>Verifying... <PageLoader /></> : "Verify Email")
-                        : (verifyPhoneCode.isPending ? <>Verifying... <PageLoader /></> : "Verify Phone")
-                    }
-                </Button>
-            </form>
-        </Form>
-    </div>
-);
 
 export default AuthForm;

@@ -55,7 +55,7 @@ const Login = () => {
     };
 
     return (
-        <div className="flex flex-row justify-between items-center bg-transparent px-4 overflow-hidden relative">
+        <div className="flex flex-row justify-between h-165 lg:h-auto lg:items-center bg-transparent px-4 overflow-hidden relative">
             <motion.div
                 animate={{ scale: [1, 1.1, 1] }}
                 transition={{ repeat: Infinity, duration: 8, ease: "linear" }}
@@ -84,6 +84,7 @@ const Login = () => {
                 onLoginEmailChange={setLoginEmail}
                 API_BASE_URL={API_BASE_URL}
                 imgHeight={imgHeight}
+                setShowCongratulationsModal={setShowCongratulationsModal}
             />
 
             {/* Success Modal */}
@@ -121,7 +122,7 @@ const Login = () => {
             </Dialog>
 
             {/* Congratulations Modal */}
-            <Dialog open={showCongratulationsModal} onOpenChange={setShowCongratulationsModal}>
+                <Dialog open={showCongratulationsModal} onOpenChange={setShowCongratulationsModal}>
                 <DialogContent
                     className="w-[310px] max-w-[310px] h-[310px] rounded-lg shadow-lg bg-cover bg-center"
                     style={{ backgroundImage: `url('${SuccessfulSignUpBg}')` }}
@@ -134,6 +135,7 @@ const Login = () => {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+            
         </div>
     );
 };
