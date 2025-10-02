@@ -14,6 +14,7 @@ const Transactions = lazy(() => import("./pages/Transactions"));
 const Settings = lazy(() => import("./pages/Settings"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Investment = lazy(() => import("./pages/Investment"));
+const NewPassword = lazy(() => import("./pages/auth/NewPassword"));
 
 
 
@@ -40,6 +41,14 @@ export const routes = createBrowserRouter([
         element: (
             <Suspense fallback={<PageLoader/>}>
                 <ForgotPassword/>
+            </Suspense>
+        )
+    },
+    {
+        path: "/reset-password",
+        element: (
+            <Suspense fallback={<PageLoader/>}>
+                <NewPassword/>
             </Suspense>
         )
     },
