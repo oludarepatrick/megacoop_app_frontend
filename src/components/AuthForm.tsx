@@ -109,7 +109,6 @@ const AuthForm = ({
     const [phoneTimer, setPhoneTimer] = useState(30);
     const [emailTimerActive, setEmailTimerActive] = useState(true);
     const [phoneTimerActive, setPhoneTimerActive] = useState(true);
-    console.log("userProfileDetails", userProfileDetails);
     const navigate = useNavigate();
     
 
@@ -146,8 +145,6 @@ const AuthForm = ({
             console.log("response", response)
             setUserProfileDetails(response.data);
             setShowSuccessModal(true);
-            // onSignUpStepChange(2);
-            
         },
         onError: (error: AxiosError<{ message: string }>) => {
             onError(error.response?.data?.message || "Invalid access code");

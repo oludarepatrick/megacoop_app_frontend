@@ -163,15 +163,8 @@ const ForgotPassword = () => {
                             <CardHeader className="text-center mb-[-20px] pt-0">
                                 <img src={megacoop_logo} alt="MegaCoop Logo" className="mx-auto w-32 h-auto object-contain" />
                             </CardHeader>
-                            <CardContent className="w-full relative">
-                                {forgotPasswordStep === 1 && (
-                                    <>
-                                       
-                                        {renderforgotPasswordStep()}
-                                    </>
-                                    )}
-                                    
-                                
+                            <CardContent className="w-full relative"> 
+                                {renderforgotPasswordStep()}
                             </CardContent>
             
                             <CardFooter className="mt-auto text-xs text-center text-gray-500 pt-0 pb-4 px-4 lg:px-8">

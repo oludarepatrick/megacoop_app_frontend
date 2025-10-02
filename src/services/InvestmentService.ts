@@ -147,7 +147,7 @@ export async function createInvestment(investmentData: Partial<Investment>): Pro
     const response = await apiClient.post('/investments', investmentData)
     return response.data
 
-    throw new Error("API not implemented yet")
+    // throw new Error("API not implemented yet")
   } catch (error) {
     console.error("Error creating investment:", error)
     throw error
