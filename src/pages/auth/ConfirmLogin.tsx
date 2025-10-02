@@ -6,14 +6,16 @@ import { Loader2 } from "lucide-react";
 import { formConfig } from '@/common/utils';
 import axios from "axios";
 
+
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 interface ConfirmSignInProps {
   loginEmail: string;
+  onLoginSubmit?: () => void;
 }
 
-export default function ConfirmSignIn({ loginEmail }: ConfirmSignInProps) {
-  const [otp, setOtp] = useState<string[]>(Array(5).fill(""));
+export default function ConfirmSignIn({ loginEmail, onLoginSubmit }: ConfirmSignInProps) {
+  const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
   const [timer, setTimer] = useState(30);
   const [timerActive, setTimerActive] = useState(true);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -22,13 +24,16 @@ export default function ConfirmSignIn({ loginEmail }: ConfirmSignInProps) {
   // --- VERIFY OTP ---
   const verifyOtp = useMutation({
     mutationFn: async (code: string) => {
-      const { data } = await axios.post(`${API_BASE_URL}user/verify-login-verification-otp`, {
+      const { data } = await axios.post(`${API_BASE_URL}user/verify-login-otp`, {
         email: loginEmail,
         token: code,
       }, formConfig);
       return data;
     },
-    onSuccess: () => setStatusMessage("✅ Code verified successfully. Redirecting..."),
+    onSuccess: () => {
+      setStatusMessage("✅ Code verified successfully. Redirecting...");
+      onLoginSubmit?.();
+    },
     onError: () => setStatusMessage("❌ Invalid or expired code. Try again."),
   });
 
@@ -63,12 +68,12 @@ export default function ConfirmSignIn({ loginEmail }: ConfirmSignInProps) {
     newOtp[index] = value;
     setOtp(newOtp);
 
-    if (value && index < 5) {
+    if (value && index < 6) {
       inputRefs.current[index + 1]?.focus();
     }
 
     // if last digit filled → fire request
-    if (index === 4 && value) {
+    if (index === 5 && value) {
       const fullCode = newOtp.join("");
       verifyOtp.mutate(fullCode);
     }
@@ -84,7 +89,7 @@ export default function ConfirmSignIn({ loginEmail }: ConfirmSignInProps) {
     <div className="w-full max-w-md mx-auto text-center">
       <h4 className="text-lg font-medium text-gray-700 mb-2">Confirm Sign In</h4>
       <p className="text-sm text-[#14AB55] mb-6">
-        We have sent a 5-digit code to your email{" "}
+        We have sent a 6-digit code to your email{" "}
         {loginEmail ? loginEmail.replace(/(.{2})(.*)(?=@)/, "$1****") : ""}
       </p>
 

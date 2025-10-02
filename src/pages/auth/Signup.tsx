@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import AuthCarousel from '@/components/AuthCarousel';
 import AuthForm from '@/components/AuthForm';
@@ -9,11 +9,12 @@ import SuccessIcon from '../../assets/signup_successfull_icon.png';
 import ErrorIcon from '../../assets/Error_icon.png';
 import SuccessfulSignUpBg from '../../assets/signup_success_background_img.png';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://34.56.64.14/api/v1/';
+const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://34.170.169.65/api/v1/';
 
 
 const SignUpLoginPage = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState<string>(location.pathname === '/login' ? 'login' : 'signup');
     const [signUpStep, setSignUpStep] = useState(1);
     const [loginStep, setLoginStep] = useState(1);
@@ -23,12 +24,20 @@ const SignUpLoginPage = () => {
     const [showCongratulationsModal, setShowCongratulationsModal] = useState(false);
     const [imgHeight, setImgHeight] = useState<number | undefined>(undefined);
     const [userEmail, setUserEmail] = useState("");
-    const [userPhone, setUserPhone] = useState("09025697028");
+    const [userPhone, setUserPhone] = useState("");
     const [loginEmail, setLoginEmail] = useState("");
 
     useEffect(() => {
         setActiveTab(location.pathname === "/login" ? "login" : "signup");
     }, [location.pathname]);
+
+    useEffect(() => {
+        if (activeTab === "signup") {
+            navigate("/signup");
+        } else {
+            navigate("/login");
+        }
+    }, [activeTab, navigate]);
 
     const handleError = (message: string) => {
         setErrorMessage(message);
@@ -46,7 +55,9 @@ const SignUpLoginPage = () => {
     };
 
     return (
-        <div className="flex flex-row justify-between items-center bg-transparent px-4 overflow-hidden relative">
+        <div
+            className="flex flex-row justify-between h-165 lg:h-auto lg:items-center bg-transparent px-4 overflow-hidden relative"
+        >
             <motion.div
                 animate={{ scale: [1, 1.1, 1] }}
                 transition={{ repeat: Infinity, duration: 8, ease: "linear" }}
@@ -68,12 +79,14 @@ const SignUpLoginPage = () => {
                 userEmail={userEmail}
                 userPhone={userPhone}
                 loginEmail={loginEmail}
+                setShowSuccessModal={setShowSuccessModal}
                 onError={handleError}
                 onUserEmailChange={setUserEmail}
                 onUserPhoneChange={setUserPhone}
                 onLoginEmailChange={setLoginEmail}
                 API_BASE_URL={API_BASE_URL}
                 imgHeight={imgHeight}
+                setShowCongratulationsModal={setShowCongratulationsModal}
             />
 
             {/* Success Modal */}
@@ -111,7 +124,18 @@ const SignUpLoginPage = () => {
             </Dialog>
 
             {/* Congratulations Modal */}
-            <Dialog open={showCongratulationsModal} onOpenChange={setShowCongratulationsModal}>
+            <Dialog
+                open={showCongratulationsModal}
+                // onOpenChange={setShowCongratulationsModal}
+                onOpenChange={(isOpen) => {
+                    setShowCongratulationsModal(isOpen);
+                    if (!isOpen) {
+                        // Force user into login tab after closing modal
+                        setActiveTab("login");
+                        setSignUpStep(1); // Reset sign-up step for future sign-ups
+                    }
+                }}
+            >
                 <DialogContent
                     className="w-[310px] max-w-[310px] h-[310px] rounded-lg shadow-lg bg-cover bg-center"
                     style={{ backgroundImage: `url('${SuccessfulSignUpBg}')` }}
@@ -123,7 +147,8 @@ const SignUpLoginPage = () => {
                         </Button>
                     </DialogFooter>
                 </DialogContent>
-            </Dialog>
+                </Dialog>
+            
         </div>
     );
 };

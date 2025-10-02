@@ -4,13 +4,16 @@ import ProtectedRoute from "./components/layout/ProtectedRoute";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import PageLoader from "./components/PageLoader";
 
+
 // Lazy load pages
 const Login = lazy(() => import("./pages/auth/Login"));
 const Signup = lazy(() => import("./pages/auth/Signup"));
+const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Transactions = lazy(() => import("./pages/Transactions"));
 const Settings = lazy(() => import("./pages/Settings"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const Investment = lazy(() => import("./pages/Investment"));
 
 
 
@@ -29,6 +32,14 @@ export const routes = createBrowserRouter([
         element: (
             <Suspense fallback={<PageLoader/>}>
                 <Signup/>
+            </Suspense>
+        )
+    },
+    {
+        path: "/forgot-password",
+        element: (
+            <Suspense fallback={<PageLoader/>}>
+                <ForgotPassword/>
             </Suspense>
         )
     },
@@ -68,6 +79,14 @@ export const routes = createBrowserRouter([
                         element: (
                             <Suspense fallback={<PageLoader/>}>
                                 <Settings/>
+                            </Suspense>
+                        )
+                    },
+                    {
+                        path: "investment",
+                        element: (
+                            <Suspense fallback={<PageLoader/>}>
+                                <Investment/>
                             </Suspense>
                         )
                     },
