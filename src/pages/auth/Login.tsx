@@ -9,8 +9,6 @@ import SuccessIcon from '../../assets/signup_successfull_icon.png';
 import ErrorIcon from '../../assets/Error_icon.png';
 import SuccessfulSignUpBg from '../../assets/signup_success_background_img.png';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://34.170.169.65/api/v1/';
-
 
 const Login = () => {
     const location = useLocation();
@@ -82,7 +80,6 @@ const Login = () => {
                 onUserEmailChange={setUserEmail}
                 onUserPhoneChange={setUserPhone}
                 onLoginEmailChange={setLoginEmail}
-                API_BASE_URL={API_BASE_URL}
                 imgHeight={imgHeight}
                 setShowCongratulationsModal={setShowCongratulationsModal}
             />

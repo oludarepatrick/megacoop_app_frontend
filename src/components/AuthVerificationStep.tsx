@@ -1,7 +1,7 @@
 // components/auth/VerificationStep.tsx
 import { type UseFormReturn } from 'react-hook-form';
 import { type UseMutationResult } from '@tanstack/react-query';
-import { AxiosError, type AxiosResponse } from 'axios';
+import { AxiosError } from 'axios';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -15,14 +15,14 @@ export interface VerificationStepProps {
   verificationForm: UseFormReturn<{ verificationCode: string }>;
   onEmailVerificationSubmit: (data: { verificationCode: string }) => void;
   onPhoneVerificationSubmit: (data: { verificationCode: string }) => void;
-  verifyEmailCode: UseMutationResult<AxiosResponse, AxiosError, string>;
-  verifyPhoneCode: UseMutationResult<AxiosResponse, AxiosError, string>;
+  verifyEmailCode: UseMutationResult<any, AxiosError<{ message: string }>, { code: string; email: string }>;
+  verifyPhoneCode: UseMutationResult<any, AxiosError<{ message: string }>, { code: string; phone: string }>;
   emailTimer: number;
   phoneTimer: number;
   emailTimerActive: boolean;
   phoneTimerActive: boolean;
   handleResendCode: (type: 'email' | 'phone') => void;
-  resendCode: UseMutationResult<AxiosResponse, AxiosError, 'email' | 'phone'>;
+  resendCode: UseMutationResult<any, AxiosError<{ message: string }>, { type: 'email' | 'phone'; email?: string; phone?: string }>;
 }
 
 const VerificationStep = ({

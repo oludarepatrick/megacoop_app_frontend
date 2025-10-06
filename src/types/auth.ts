@@ -1,23 +1,14 @@
 export type User = {
   id: string;
   email: string;
-  name: string;
+  last_name: string;
+  first_name: string;
+  middle_name: string;
   avatar?: string;
   role?: string;
+  kyc_status?: string | null;
   createdAt: string;
   updatedAt: string;
-};
-
-export type LoginCredentials = {
-  email: string;
-  password: string;
-};
-
-export type SignupCredentials = {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
 };
 
 export type AuthResponse = {
@@ -31,3 +22,22 @@ export type AuthState = {
   isAuthenticated: boolean;
   isLoading: boolean;
 };
+
+export interface AuthFormProps {
+    activeTab: string;
+    onTabChange: (tab: string) => void;
+    signUpStep: number;
+    onSignUpStepChange: (step: number) => void;
+    loginStep: number;
+    onLoginStepChange: (step: number) => void;
+    userEmail: string;
+    userPhone: string;
+    loginEmail: string;
+    setShowSuccessModal: (show: boolean) => void;
+    onError: (message: string) => void;
+    onUserEmailChange: (email: string) => void;
+    onUserPhoneChange: (phone: string) => void;
+    onLoginEmailChange: (email: string) => void;
+    imgHeight?: number;
+    setShowCongratulationsModal: (show: boolean) => void;
+}

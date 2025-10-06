@@ -3,6 +3,7 @@ import { lazy, Suspense } from "react";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import PageLoader from "./components/PageLoader";
+import AuthProtectedRoute from "./components/layout/AuthProtectedRoute";
 
 
 // Lazy load pages
@@ -16,6 +17,7 @@ const Settings = lazy(() => import("./pages/Settings"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Investment = lazy(() => import("./pages/Investment"));
 const NewPassword = lazy(() => import("./pages/auth/NewPassword"));
+const KYCVerification = lazy(() => import("./pages/KYCPage"));
 
 
 
@@ -52,6 +54,20 @@ export const routes = createBrowserRouter([
                 <NewPassword/>
             </Suspense>
         )
+    },
+     {
+        path: "/user",
+        element: <AuthProtectedRoute/>,
+        children: [
+            {
+                path: "kyc",
+                element: (
+                    <Suspense fallback={<PageLoader/>}>
+                        <KYCVerification/>
+                    </Suspense>
+                )
+            }
+        ]
     },
     { 
         path: "/user", 

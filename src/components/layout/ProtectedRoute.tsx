@@ -1,12 +1,13 @@
 import { useAuthStore } from "@/store/authStore"
 import {Navigate, Outlet} from "react-router-dom"
+import PageLoader from "../PageLoader"
 
 
 const ProtectedRoute = () =>{
     const { isAuthenticated, isLoading } = useAuthStore()
 
     if(isLoading){
-        return <div>Loading..</div>
+        return <PageLoader/>
     }
 
     if(!isAuthenticated) {
