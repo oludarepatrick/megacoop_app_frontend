@@ -15,14 +15,14 @@ export interface VerificationStepProps {
   verificationForm: UseFormReturn<{ verificationCode: string }>;
   onEmailVerificationSubmit: (data: { verificationCode: string }) => void;
   onPhoneVerificationSubmit: (data: { verificationCode: string }) => void;
-  verifyEmailCode: UseMutationResult<any, AxiosError<{ message: string }>, { code: string; email: string }>;
-  verifyPhoneCode: UseMutationResult<any, AxiosError<{ message: string }>, { code: string; phone: string }>;
+  verifyEmailCode: UseMutationResult<{ success: boolean; message: string }, AxiosError<{ message: string }>, { code: string; email: string }>;
+  verifyPhoneCode: UseMutationResult<{ success: boolean; message: string }, AxiosError<{ message: string }>, { code: string; phone: string }>;
   emailTimer: number;
   phoneTimer: number;
   emailTimerActive: boolean;
   phoneTimerActive: boolean;
   handleResendCode: (type: 'email' | 'phone') => void;
-  resendCode: UseMutationResult<any, AxiosError<{ message: string }>, { type: 'email' | 'phone'; email?: string; phone?: string }>;
+  resendCode: UseMutationResult<{ success: boolean; message: string }, AxiosError<{ message: string }>, { type: 'email' | 'phone'; email?: string; phone?: string }>;
 }
 
 const VerificationStep = ({
