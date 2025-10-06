@@ -3,6 +3,7 @@ import { lazy, Suspense } from "react";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import PageLoader from "./components/PageLoader";
+import AuthProtectedRoute from "./components/layout/AuthProtectedRoute";
 
 
 // Lazy load pages
@@ -11,10 +12,12 @@ const Signup = lazy(() => import("./pages/auth/Signup"));
 const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Transactions = lazy(() => import("./pages/Transactions"));
+const SavingsLoan = lazy(() => import("./pages/SavingsLoan"));
 const Settings = lazy(() => import("./pages/Settings"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Investment = lazy(() => import("./pages/Investment"));
 const NewPassword = lazy(() => import("./pages/auth/NewPassword"));
+const KYCVerification = lazy(() => import("./pages/KYCPage"));
 
 
 
@@ -52,6 +55,20 @@ export const routes = createBrowserRouter([
             </Suspense>
         )
     },
+     {
+        path: "/user",
+        element: <AuthProtectedRoute/>,
+        children: [
+            {
+                path: "kyc",
+                element: (
+                    <Suspense fallback={<PageLoader/>}>
+                        <KYCVerification/>
+                    </Suspense>
+                )
+            }
+        ]
+    },
     { 
         path: "/user", 
         element: <ProtectedRoute/>,
@@ -79,7 +96,7 @@ export const routes = createBrowserRouter([
                         path: "savings-loan", 
                         element: (
                             <Suspense fallback={<PageLoader/>}>
-                                <Transactions/>
+                                <SavingsLoan/>
                             </Suspense>
                         )
                     },

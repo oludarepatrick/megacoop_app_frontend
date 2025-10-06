@@ -20,7 +20,7 @@ const SavingGoal= () => {
         <Card className="px-4 py-4 ">
             <CardHeader className="flex justify-between items px-2">
                 <CardTitle className="text-xl font-semibold">Saving Goals</CardTitle>
-                <Link to="/user/transactions" className="text-footertext text-sm ">See All</Link>
+                <Link to="" className="text-footertext text-sm ">See All</Link>
             </CardHeader>
             <CardContent className="p-0 flex flex-col gap-4">
                 {goals.map((goal, index) => {

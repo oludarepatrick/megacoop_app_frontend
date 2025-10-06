@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { Settings, X, ShieldCheck, ChevronDown, CircleDollarSign } from "lucide-react";
+import { Settings, X, ShieldCheck, ChevronDown, CircleDollarSign, LogOut } from "lucide-react";
 import { Button } from "../ui/button";
 import { NavLink } from "react-router-dom";
 import { LayoutGrid } from "lucide-react";
@@ -11,6 +11,11 @@ import moonIcon from "../../assets/moon-icon.svg"
 import { Switch } from "../ui/switch";
 import { useThemeStore } from "@/store/themeStore";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+// import { useAuthState } from "@/hooks/useAuth";
+import { useAuthStore } from "@/store/authStore";
+import { useLogout } from "@/hooks/useAuth";
+import PageLoader from "../PageLoader";
+
 
 type menuProps={
     onClick: () => void
@@ -18,6 +23,9 @@ type menuProps={
 
 const Sidebar = ({onClick}:menuProps) => {
     const {theme, toggleTheme} = useThemeStore()
+    const user = useAuthStore(state => state.user);
+    const logout = useLogout();
+    console.log(user);
 
 
     const activeClass= ({isActive}:{isActive: boolean}) =>
@@ -25,6 +33,10 @@ const Sidebar = ({onClick}:menuProps) => {
         "text-megagreen bg-main-bg p-3 rounded-lg": isActive,
         "text-white": !isActive,
     });
+
+    const handleLogout= () => {
+        logout.mutate();
+    }
 
     return (
         <aside className="w-[306px] h-full bg-megaPrimary text-white rounded-r-lg pt-20 px-12 overflow-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative">
@@ -86,21 +98,48 @@ const Sidebar = ({onClick}:menuProps) => {
                 </div>
 
                 {/* user profile */}
-                <div className="flex items-center justify-between gap-3 pt-30 pb-10">
-                    <div className="flex items-center gap-3">
-                        <Avatar className="w-[50px] h-[50px]">
-                            <AvatarImage src="" alt="" />
-                            <AvatarFallback>EU</AvatarFallback>
-                        </Avatar>
-                        <div>
-                            <h4 className="font-bold text-lg">MegaCoop</h4>
-                            <p className="text-sm font-light">User</p>
+                
+                <div className="flex items-center justify-between gap-3 pt-30 pb-10 ">
+                    <div className="border-white/20 pt-4 pb-6">
+                        <div className="flex items-center space-x-3 mb-4 font-jakarta">
+                            <Avatar className="w-10 h-10">
+                                <AvatarImage src={user?.avatar || ""} alt="" />
+                                <AvatarFallback className="font-medium">
+                                    {/* {getInitials()} */}dd
+                                </AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-lg font-bold truncate">
+                                    {user?.first_name} 
+                                    {/* { user?.last_name} */}
+                                </p>
+                                <p className="text-xs text-white/70 truncate">
+                                    { user?.email }
+                                </p>
+                            </div>
+                            <ChevronDown/>
                         </div>
+                                
+                        <Button
+                            onClick={handleLogout}
+                            variant="ghost"
+                            disabled={logout.isPending}
+                            className="w-full justify-start text-white hover:text-red-500 font-jakarta cursor-pointer disabled:opacity-50"
+                        >
+                            {logout.isPending ? (
+                                <>
+                                    <PageLoader />
+                                    Logging out...
+                                </>
+                            ) : (
+                                <>
+                                    <LogOut className="!w-6 !h-6 mr-3" />
+                                    Logout
+                                </>
+                            )}
+                        </Button>
                     </div>
-                    <ChevronDown/>
                 </div>
-
-
             </nav>           
         </aside>
     )

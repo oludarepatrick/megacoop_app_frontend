@@ -197,3 +197,7 @@
     background: #0F8B3F;
   }
 }
+
+.kycDialog button[data-slot="dialog-close"]{
+  display: none !important
+}

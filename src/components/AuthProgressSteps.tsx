@@ -1,4 +1,4 @@
-interface ProgressStepsProps {
+type ProgressStepsProps = {
   currentStep: number;
   totalSteps: number;
 }

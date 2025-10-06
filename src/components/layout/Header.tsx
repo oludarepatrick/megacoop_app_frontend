@@ -52,7 +52,7 @@ const Header = ({onMenuToggle}: menuProps) => {
         },
         "/user/transactions": { 
             title: "Transactions", 
-            bg: "bg-megagreen text-white",
+            bg: "bg-megaPrimary text-white",
             input: "text-icon",
             hasSearch: true,
             searchPlaceholder: "Search for something..."

@@ -1,63 +1,71 @@
 import { useEffect, useRef, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
-import { formConfig } from '@/common/utils';
-import axios from "axios";
-
-
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+import { useVerifyLoginOtp, useResendLoginOtp } from "@/hooks/useAuth";
 
 interface ConfirmSignInProps {
   loginEmail: string;
-  onLoginSubmit?: () => void;
+  loginPassword?: string;
 }
 
-export default function ConfirmSignIn({ loginEmail, onLoginSubmit }: ConfirmSignInProps) {
+export default function ConfirmSignIn({ loginEmail, loginPassword }: ConfirmSignInProps) {
   const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
   const [timer, setTimer] = useState(30);
   const [timerActive, setTimerActive] = useState(true);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const navigate = useNavigate();
 
-  // --- VERIFY OTP ---
-  const verifyOtp = useMutation({
-    mutationFn: async (code: string) => {
-      const { data } = await axios.post(`${API_BASE_URL}user/verify-login-otp`, {
-        email: loginEmail,
-        token: code,
-      }, formConfig);
-      return data;
-    },
-    onSuccess: () => {
+  // Use our clean authentication hook
+  const verifyOtp = useVerifyLoginOtp(
+    () => {
       setStatusMessage("✅ Code verified successfully. Redirecting...");
-      onLoginSubmit?.();
+      setTimeout(() => {
+        navigate("/user/dashboard");
+      }, 1000);
     },
-    onError: () => setStatusMessage("❌ Invalid or expired code. Try again."),
-  });
+    (error) => {
+      setStatusMessage(`❌ ${error}`);
+    }
+  );
 
-  // --- RESEND OTP ---
-  const resendOtp = useMutation({
-    mutationFn: async () => {
-      const { data } = await axios.post(`${API_BASE_URL}user/send-login-verification-otp`, {
-        email: loginEmail,
-      }, formConfig);
-      return data;
-    },
-    onSuccess: () => {
+  // Resend OTP hook
+  const resendOtp = useResendLoginOtp(
+    () => {
+      setStatusMessage("✅ OTP resent successfully!");
       setTimer(30);
       setTimerActive(true);
+      setTimeout(() => setStatusMessage(null), 3000);
     },
-  });
+    (error) => {
+      setStatusMessage(`❌ ${error}`);
+      setTimeout(() => setStatusMessage(null), 5000);
+    }
+  );
 
   // Countdown effect
   useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+    
     if (timerActive && timer > 0) {
-      const interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
-      return () => clearInterval(interval);
+      interval = setInterval(() => {
+        setTimer((prev) => {
+          if (prev <= 1) {
+            setTimerActive(false);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
     }
-    if (timer === 0) setTimerActive(false);
+    
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
   }, [timerActive, timer]);
 
   // Handle OTP change
@@ -75,7 +83,7 @@ export default function ConfirmSignIn({ loginEmail, onLoginSubmit }: ConfirmSign
     // if last digit filled → fire request
     if (index === 5 && value) {
       const fullCode = newOtp.join("");
-      verifyOtp.mutate(fullCode);
+      verifyOtp.mutate({ email: loginEmail, otp: fullCode });
     }
   };
 
@@ -121,7 +129,13 @@ export default function ConfirmSignIn({ loginEmail, onLoginSubmit }: ConfirmSign
         ) : (
           <button
             type="button"
-            onClick={() => resendOtp.mutate()}
+            onClick={() => {
+              if (loginPassword) {
+                resendOtp.mutate({ email: loginEmail, password: loginPassword });
+              } else {
+                setStatusMessage("❌ Unable to resend - missing credentials");
+              }
+            }}
             className="text-[#14AB55] hover:underline disabled:text-gray-400"
             disabled={resendOtp.isPending}
           >
