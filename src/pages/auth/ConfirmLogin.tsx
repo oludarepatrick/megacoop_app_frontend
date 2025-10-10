@@ -11,10 +11,11 @@ const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 interface ConfirmSignInProps {
   loginEmail: string;
+  loginPassword?: string;
   onLoginSubmit?: () => void;
 }
 
-export default function ConfirmSignIn({ loginEmail, onLoginSubmit }: ConfirmSignInProps) {
+export default function ConfirmSignIn({ loginEmail, loginPassword, onLoginSubmit }: ConfirmSignInProps) {
   const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
   const [timer, setTimer] = useState(30);
   const [timerActive, setTimerActive] = useState(true);
@@ -42,6 +43,7 @@ export default function ConfirmSignIn({ loginEmail, onLoginSubmit }: ConfirmSign
     mutationFn: async () => {
       const { data } = await axios.post(`${API_BASE_URL}user/send-login-verification-otp`, {
         email: loginEmail,
+        password: loginPassword,
       }, formConfig);
       return data;
     },

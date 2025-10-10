@@ -9,7 +9,7 @@ import SuccessIcon from '../../assets/signup_successfull_icon.png';
 import ErrorIcon from '../../assets/Error_icon.png';
 import SuccessfulSignUpBg from '../../assets/signup_success_background_img.png';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://34.170.169.65/api/v1/';
+const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'https://api.schooldrive.com.ng/api/v1/';
 
 
 const SignUpLoginPage = () => {

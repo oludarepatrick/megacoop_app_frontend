@@ -76,11 +76,13 @@ interface AuthFormProps {
     userEmail: string;
     userPhone: string;
     loginEmail: string;
+    loginPassword: string;
     setShowSuccessModal: (show: boolean) => void;
     onError: (message: string) => void;
     onUserEmailChange: (email: string) => void;
     onUserPhoneChange: (phone: string) => void;
     onLoginEmailChange: (email: string) => void;
+    onLoginPasswordChange: (password: string) => void;
     API_BASE_URL: string;
     imgHeight?: number;
     setShowCongratulationsModal: (show: boolean) => void;
@@ -96,9 +98,11 @@ const AuthForm = ({
     userEmail,
     userPhone,
     loginEmail,
+    loginPassword,
     setShowSuccessModal,
     onError,
     onLoginEmailChange,
+    onLoginPasswordChange,
     API_BASE_URL,
     imgHeight,
     setShowCongratulationsModal,
@@ -168,10 +172,12 @@ const AuthForm = ({
     
     const sendLoginEmailVerification = useMutation({
         mutationFn: () => {
-            const { email } = loginForm.getValues();
+            const { email, password } = loginForm.getValues();
             onLoginEmailChange(email);
+            onLoginPasswordChange(password);
             const formData = new FormData();
             formData.append('email', email);
+            formData.append('password', password);
             return axios.post(`${API_BASE_URL}user/send-login-verification-otp`, formData, formConfig);
         },
         onSuccess: (response) => {
@@ -252,6 +258,7 @@ const sendPhoneVerification = useMutation({
     const loginUser = useMutation({
         mutationFn: (data: LoginFormData) => {
             onLoginEmailChange(data.email);
+            onLoginPasswordChange(data.password);
             const formData = new FormData();
             formData.append('email', data.email);
             formData.append('password', data.password);
@@ -886,6 +893,7 @@ const sendPhoneVerification = useMutation({
             return (
                 <ConfirmSignIn
                     loginEmail={loginEmail}
+                    loginPassword={loginPassword}
                     onLoginSubmit={() => {
                         // call mutate with stored form values
                         const values = loginForm.getValues();

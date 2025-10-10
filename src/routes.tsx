@@ -15,6 +15,7 @@ const Settings = lazy(() => import("./pages/Settings"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Investment = lazy(() => import("./pages/Investment"));
 const NewPassword = lazy(() => import("./pages/auth/NewPassword"));
+const LoanDashboard = lazy(() => import("./pages/loans/LoansDashboard"));
 
 
 
@@ -79,7 +80,8 @@ export const routes = createBrowserRouter([
                         path: "savings-loan", 
                         element: (
                             <Suspense fallback={<PageLoader/>}>
-                                <Transactions/>
+                                {/* <Transactions/> */}
+                                <LoanDashboard/>
                             </Suspense>
                         )
                     },
