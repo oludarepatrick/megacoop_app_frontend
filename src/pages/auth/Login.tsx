@@ -9,8 +9,6 @@ import SuccessIcon from '../../assets/signup_successfull_icon.png';
 import ErrorIcon from '../../assets/Error_icon.png';
 import SuccessfulSignUpBg from '../../assets/signup_success_background_img.png';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'https://api.schooldrive.com.ng/api/v1/';
-
 
 const Login = () => {
     const location = useLocation();
@@ -24,9 +22,9 @@ const Login = () => {
     const [showCongratulationsModal, setShowCongratulationsModal] = useState(false);
     const [imgHeight, setImgHeight] = useState<number | undefined>(undefined);
     const [userEmail, setUserEmail] = useState("");
-    const [userPhone, setUserPhone] = useState("09025697028");
+    const [userPhone, setUserPhone] = useState("");
     const [loginEmail, setLoginEmail] = useState("");
-    const [loginPassword, setLoginPassword] = useState("");
+    
 
     useEffect(() => {
         setActiveTab(location.pathname === "/login" ? "login" : "signup");
@@ -79,13 +77,10 @@ const Login = () => {
                 userEmail={userEmail}
                 userPhone={userPhone}
                 loginEmail={loginEmail}
-                loginPassword={loginPassword}
                 onError={handleError}
                 onUserEmailChange={setUserEmail}
                 onUserPhoneChange={setUserPhone}
                 onLoginEmailChange={setLoginEmail}
-                onLoginPasswordChange={setLoginPassword}
-                API_BASE_URL={API_BASE_URL}
                 imgHeight={imgHeight}
                 setShowCongratulationsModal={setShowCongratulationsModal}
             />

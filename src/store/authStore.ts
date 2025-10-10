@@ -1,72 +1,49 @@
 import { create } from 'zustand'
-import type { AuthState, User, LoginCredentials, SignupCredentials } from '@/types/auth'
+import { persist } from 'zustand/middleware'
+import type { User } from '@/types/auth'
 
-type AuthStore = AuthState & {
-    login: (credentials: LoginCredentials) => Promise<void>
-    signup: (credentials: SignupCredentials) => Promise<void>
-    logout: () => void
-    setUser: (user: User) => void
-    clearAuth: () => void
-    checkAuthStatus: () => Promise<void>
-};
-
-const initialState: AuthState = {
-    user: null,
-    token: null,
-    isAuthenticated: true, 
-    isLoading: false,
+interface AuthState {
+  user: User | null
+  token: string | null
+  isAuthenticated: boolean
+  isLoading: boolean
 }
 
-export const useAuthStore = create<AuthStore>((set) => ({
-    ...initialState,
+interface AuthStore extends AuthState {
+  login: (user: User, token: string) => void
+  logout: () => Promise<void>
+  setIsLoading: (loading: boolean) => void
+}
 
-    //check authentication status
+const initialState: AuthState = {
+  user: null,
+  token: null,
+  isAuthenticated: false,
+  isLoading: false,
+}
 
-    checkAuthStatus: async () => {
-        set({isLoading: true})
-        try{
-
-            //actual code...
-            console.log("checking auth status")
-            set({isLoading: false})
-        } catch(error) {
-            console.log(error)
-            set({ ...initialState, isLoading: false})
-        }
-    },
-
-    signup: async (credentials: SignupCredentials) => {
-        set({isLoading: true})
-        try{
-            
-            console.log("signup attempt", credentials)
-            set({isLoading: false});
-
-        } catch(error) {
-            set({isLoading: false});
-            throw error;
-        }
-    },
-
-    login: async (credentials: LoginCredentials) => {
-        set({isLoading: true})
-        try{
-            
-            console.log("login", credentials)
-            set({isLoading: false})
-
-        } catch(error) {
-            set({isLoading: false})
-            throw error
-        }
-    },
-
-    logout: () => {
+export const useAuthStore = create<AuthStore>()(
+  persist(
+    (set) => ({
+      ...initialState,
+      login: (user, token) => {
+        set({ user, token, isAuthenticated: true, isLoading: false });
+      },
+      logout: async () => {
+        await new Promise(resolve => setTimeout(resolve, 800));
         set(initialState);
-    },
+        // window.location.href = '/login';
+      },
+      setIsLoading: (loading) => set({ isLoading: loading }),
+    }),
+    {
+      name: 'megacoop-auth',
+      partialize: (state) => ({
+        user: state.user,
+        token: state.token,
+        isAuthenticated: state.isAuthenticated,
+      }),
+    }
+  )
+)
 
-    setUser: (user: User) => set({user, isAuthenticated: true}),
-
-    clearAuth: () => set(initialState)
-
-}))

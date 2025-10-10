@@ -1,11 +1,34 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import { useState } from "react";
 import clsx from "clsx";
+import CompleteKYCModal from "../KYC/KYCRequiredModal";
+import { useAuthStore } from "@/store/authStore";
+import { useLogout } from "@/hooks/useAuth";
 
 const DashboardLayout = () => {
+    const user = useAuthStore((state) => state.user)
+    const logout = useLogout();
+
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const kycStatus = user?.kyc_status; 
+    const [isKYCModalOpen, setIsKYCModalOpen] = useState(!kycStatus);
+
+
+    const navigate = useNavigate();
+
+    const handleKYCClose = () => {
+        setIsKYCModalOpen(false);
+        // logout.mutate();
+        navigate("/user/dashboard");
+    }
+
+    const handleKYCProceed = () => {
+        console.log("Proceed to KYC");
+        setIsKYCModalOpen(false);
+        navigate("/user/kyc");
+    }
 
     const toggleSidebar = () =>{
         setIsSidebarOpen(!isSidebarOpen);
@@ -42,6 +65,13 @@ const DashboardLayout = () => {
                     </div>
                 </main>
             </div>
+            {/* KYC Modal */}
+            <CompleteKYCModal 
+                isOpen={isKYCModalOpen}
+                onClose={handleKYCClose}
+                onProceed={handleKYCProceed}
+            />
+
         </div>
     )
 }

@@ -1,11 +1,32 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useForm} from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useMutation } from '@tanstack/react-query';
-import axios, { AxiosError } from 'axios';
 import { Button } from '@/components/ui/button';
+// Import extracted schemas, types, and hooks
+import {
+    accessCodeSchema,
+    combinedSchema,
+    verificationSchema,
+    loginSchema,
+    type AccessCodeFormData,
+    type VerificationFormData,
+    type CombinedFormData,
+    type CombinedAccessCodeData,
+    type LoginFormData,
+    type FinalSubmitData
+} from '@/schemas/authSchemas';
+import {
+    useVerifyAccessCode,
+    useSendEmailVerification,
+    useSendLoginEmailVerification,
+    useSendPhoneVerification,
+    useResendCode,
+    useSubmitSignUpData,
+    useVerifyEmailCode,
+    useVerifyPhoneCode
+} from '@/hooks/useAuth';
+import type { AuthFormProps } from '@/types/auth';
 import { Input } from '@/components/ui/input';
 import PageLoader from '@/components/PageLoader';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
@@ -16,77 +37,8 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { Eye, EyeOff } from 'lucide-react';
 import { Label } from '@radix-ui/react-label';
 import ConfirmSignIn from '../pages/auth/ConfirmLogin';
-import { formConfig, jsonConfig } from '@/common/utils';
 import ProgressSteps from './AuthProgressSteps';
 import VerificationStep from './AuthVerificationStep';
-
-// Zod schemas
-const accessCodeSchema = z.object({
-    code: z.string().nonempty("Access code is required").length(8, "Put in your 8 digit access code"),
-});
-
-const personalInfoSchema = z.object({
-    first_name: z.string().min(1, "First name is required"),
-    middle_name: z.string().min(1, "Middle name is required"),
-    last_name: z.string().min(1, "Last name is required"),
-    email: z.string().email("Invalid email address"),
-    phone: z.string().min(10, "Phone number must be at least 10 digits"),
-    gender: z.string().min(1, "Gender is required"),
-    dob: z.string().min(1, "Date of birth is required"),
-    age_range: z.string().min(1, "Age range is required"),
-    code: z.string().optional(),
-});
-
-const accountInfoSchema = z.object({
-    address: z.string().min(1, "Home address is required"),
-    whatshapp_no: z.string().optional(),
-    password: z.string().min(8, "Password must be at least 8 characters"),
-});
-
-// const combinedSchema = personalInfoSchema.merge(accountInfoSchema);
-const combinedSchema = personalInfoSchema.and(accountInfoSchema);
-
-
-const verificationSchema = z.object({
-    verificationCode: z.string().min(1, "Verification code is required"),
-});
-
-const loginSchema = z.object({
-    email: z.string().email("Invalid email address"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
-});
-
-// Types
-type AccessCodeFormData = z.infer<typeof accessCodeSchema>;
-type PersonalInfoFormData = z.infer<typeof personalInfoSchema>;
-type AccountInfoFormData = z.infer<typeof accountInfoSchema>;
-type VerificationFormData = z.infer<typeof verificationSchema>;
-type CombinedFormData = z.infer<typeof combinedSchema>;
-type CombinedAccessCodeData = AccessCodeFormData & PersonalInfoFormData & AccountInfoFormData;
-type LoginFormData = z.infer<typeof loginSchema>;
-type FinalSubmitData = Omit<z.infer<typeof combinedSchema>,"first_name" | "middle_name" | "last_name" | "email" | "phone">;
-
-interface AuthFormProps {
-    activeTab: string;
-    onTabChange: (tab: string) => void;
-    signUpStep: number;
-    onSignUpStepChange: (step: number) => void;
-    loginStep: number;
-    onLoginStepChange: (step: number) => void;
-    userEmail: string;
-    userPhone: string;
-    loginEmail: string;
-    loginPassword: string;
-    setShowSuccessModal: (show: boolean) => void;
-    onError: (message: string) => void;
-    onUserEmailChange: (email: string) => void;
-    onUserPhoneChange: (phone: string) => void;
-    onLoginEmailChange: (email: string) => void;
-    onLoginPasswordChange: (password: string) => void;
-    API_BASE_URL: string;
-    imgHeight?: number;
-    setShowCongratulationsModal: (show: boolean) => void;
-}
 
 const AuthForm = ({
     activeTab,
@@ -98,12 +50,9 @@ const AuthForm = ({
     userEmail,
     userPhone,
     loginEmail,
-    loginPassword,
     setShowSuccessModal,
     onError,
     onLoginEmailChange,
-    onLoginPasswordChange,
-    API_BASE_URL,
     imgHeight,
     setShowCongratulationsModal,
 }: AuthFormProps) => {
@@ -113,7 +62,6 @@ const AuthForm = ({
     const [phoneTimer, setPhoneTimer] = useState(30);
     const [emailTimerActive, setEmailTimerActive] = useState(true);
     const [phoneTimerActive, setPhoneTimerActive] = useState(true);
-    const navigate = useNavigate();
     
 
      useEffect(() => {
@@ -140,82 +88,25 @@ const AuthForm = ({
         return () => clearInterval(phoneInterval);
     }, [phoneTimerActive, phoneTimer]);
 
-    // API mutations
-    const verifyAccessCode = useMutation({
-        mutationFn: (accessCode: string) => {
-            return axios.post(`${API_BASE_URL}user/validate-code`, { code: accessCode });
-        },
-        onSuccess: (response) => {
-            console.log("response", response)
-            setUserProfileDetails(response.data);
+    // API mutations using custom hooks
+    const verifyAccessCode = useVerifyAccessCode(
+        (response) => {
+            setUserProfileDetails(response);
             setShowSuccessModal(true);
         },
-        onError: (error: AxiosError<{ message: string }>) => {
-            onError(error.response?.data?.message || "Invalid access code");
-            console.log("error", error)
-        },
-    });
+        onError
+    );
 
-    const sendEmailVerification = useMutation({
-    mutationFn: () => {
-        const formData = new FormData();
-        formData.append('email', userProfileDetails?.email || '');
-        return axios.post(`${API_BASE_URL}user/send-email-verification-token`, formData, formConfig);
-    },
-    onSuccess: () => {
-        console.log("Email verification code sent successfully");
-    },
-    onError: (error: AxiosError<{ message: string }>) => {
-        onError(error.response?.data?.message || "Error sending email verification code");
-    },
-    });
+    const sendEmailVerification = useSendEmailVerification(onError);
     
-    const sendLoginEmailVerification = useMutation({
-        mutationFn: () => {
-            const { email, password } = loginForm.getValues();
-            onLoginEmailChange(email);
-            onLoginPasswordChange(password);
-            const formData = new FormData();
-            formData.append('email', email);
-            formData.append('password', password);
-            return axios.post(`${API_BASE_URL}user/send-login-verification-otp`, formData, formConfig);
-        },
-        onSuccess: (response) => {
-            console.log("Login email verification code sent successfully", response);
-        },
-        onError: (error: AxiosError<{ message: string }>) => {
-            onError(error.response?.data?.message || "Error sending login email verification code");
-        },
-    });
+    const sendLoginEmailVerification = useSendLoginEmailVerification(onError);
 
-const sendPhoneVerification = useMutation({
-    mutationFn: () => {
-        const formData = new FormData();
-        formData.append('phone', userProfileDetails?.phone || '');
-        return axios.post(`${API_BASE_URL}user/send-phone-verification-otp`, formData, formConfig);
-    },
-    onSuccess: () => {
-        console.log("Phone verification code sent successfully");
-    },
-    onError: (error: AxiosError<{ message: string }>) => {
-        onError(error.response?.data?.message || "Error sending phone verification code");
-    },
-});
+const sendPhoneVerification = useSendPhoneVerification(onError);
 
     // Resend code mutation
-    const resendCode = useMutation({
-        mutationFn: (type: 'email' | 'phone') => {
-            const endpoint = type === 'email' ? 'user/send-email-verification-token' : 'user/send-phone-verification-otp';
-            const formData = new FormData();
+    const resendCode = useResendCode(
+        (type) => {
             if (type === 'email') {
-                formData.append('email', userProfileDetails?.email || userEmail);
-            } else {
-                formData.append('phone', userProfileDetails?.phone || userPhone);
-            }
-            return axios.post(`${API_BASE_URL}${endpoint}`, formData, formConfig);
-        },
-        onSuccess: () => {
-            if (resendCode.variables === 'email') {
                 setEmailTimer(30);
                 setEmailTimerActive(true);
             } else {
@@ -223,82 +114,29 @@ const sendPhoneVerification = useMutation({
                 setPhoneTimerActive(true);
             }
         },
-        onError: (error: AxiosError<{ message: string }>) => {
-            onError(error.response?.data?.message || "Error resending code");
-        },
-    });
+        onError
+    );
 
 
-    const submitSignUpData = useMutation({
-        mutationFn: (data: FinalSubmitData) => {
-            const finalData = {
-                ...data,
-                code: userProfileDetails?.code,
-                email: userProfileDetails?.email,
-            };
-            console.log("submitSignUpData finalData", finalData);
-            return axios.post(`${API_BASE_URL}user/complete-signup`,
-                // { ...data, code: userProfileDetails?.code },
-                finalData,
-                jsonConfig
-            );
-        },
-        onSuccess: (response) => {
-            console.log("submitSignUpData response", response);
+    const submitSignUpData = useSubmitSignUpData(
+        () => {
             // onSignUpStepChange(6);
             setShowCongratulationsModal(true);
             onTabChange("login");
             onLoginStepChange(1);
         },
-        onError: (error: AxiosError<{ message: string }>) => {
-            onError(error.response?.data?.message || "Error submitting information");
-        },
-    });
+        onError
+    );
 
-    const loginUser = useMutation({
-        mutationFn: (data: LoginFormData) => {
-            onLoginEmailChange(data.email);
-            onLoginPasswordChange(data.password);
-            const formData = new FormData();
-            formData.append('email', data.email);
-            formData.append('password', data.password);
-            return axios.post(`${API_BASE_URL}user/login`, formData, formConfig);
-        },
-        onSuccess: (response) => {
-            // onLoginStepChange(2);
-            console.log("loginUser response", response);
-            // navigate to dashboard or home page after login 
-            navigate("/user/dashboard");
-        },
-        onError: (error: AxiosError<{ message: string }>) => {
-            onError(error.response?.data?.message || "Error logging in");
-            console.log("error", error)
-        },
-    });
-
-    const verifyEmailCode = useMutation({
-        mutationFn: (code: string) => {
-            const formData = new FormData();
-            formData.append('token', code);
-            formData.append('email', userProfileDetails?.email || userEmail);
-            return axios.post(`${API_BASE_URL}user/verify-email`, formData, formConfig);
-        },
-        onSuccess: () => {
+    const verifyEmailCode = useVerifyEmailCode(
+        () => {
             onSignUpStepChange(5);
         },
-        onError: (error: AxiosError<{ message: string }>) => {
-            onError(error.response?.data?.message || "Invalid verification code");
-        },
-    });
+        onError
+    );
 
-    const verifyPhoneCode = useMutation({
-        mutationFn: (code: string) => {
-            const formData = new FormData();
-            formData.append('token', code);
-            formData.append('phone', userProfileDetails?.phone || userPhone);
-            return axios.post(`${API_BASE_URL}user/verify-phone`, formData, formConfig);
-        },
-        onSuccess: () => {
+    const verifyPhoneCode = useVerifyPhoneCode(
+        () => {
             console.log("Phone verified successfully");
             console.log("signUpForm", signUpForm.getValues());
             console.log("is signUpForm valid", signUpForm.formState.isValid);
@@ -306,13 +144,9 @@ const sendPhoneVerification = useMutation({
             const data = signUpForm.getValues();
             onFinalSubmit(data);
             // }
-            
-            
         },
-        onError: (error: AxiosError<{ message: string }>) => {
-            onError(error.response?.data?.message || "Invalid verification code");
-        },
-    });
+        onError
+    );
 
     // Forms
     const accessCodeForm = useForm<AccessCodeFormData>({
@@ -350,26 +184,24 @@ const sendPhoneVerification = useMutation({
 
     // Form handlers
     const onAccessCodeSubmit = (data: AccessCodeFormData) => {
-        verifyAccessCode.mutate(data.code);
+        verifyAccessCode.mutate(data);
     };
 
     const onEmailVerificationSubmit = (data: VerificationFormData) => {
-        verifyEmailCode.mutate(data.verificationCode);
+        verifyEmailCode.mutate({ code: data.verificationCode, email: userProfileDetails?.email || userEmail });
     };
 
     const onPhoneVerificationSubmit = (data: VerificationFormData) => {
-        verifyPhoneCode.mutate(data.verificationCode);
+        verifyPhoneCode.mutate({ code: data.verificationCode, phone: userProfileDetails?.phone || userPhone });
     };
 
     // Resend code handler
     const handleResendCode = (type: 'email' | 'phone') => {
         if (!resendCode.isPending) {
-            resendCode.mutate(type);
+            const email = userProfileDetails?.email || userEmail;
+            const phone = userProfileDetails?.phone || userPhone;
+            resendCode.mutate({ type, email, phone });
         }
-    };
-
-    const onLoginSubmit = (data: LoginFormData) => {
-        loginUser.mutate(data);
     };
 
     const handleBackToPersonalInfo = () => {
@@ -393,26 +225,37 @@ const sendPhoneVerification = useMutation({
   
 
   // sending stripped fields to API
-  submitSignUpData.mutate(stripped as FinalSubmitData);
+  submitSignUpData.mutate({ data: stripped as FinalSubmitData, userProfileDetails });
 
     };
 
     const handleLoginProceed = async () => {
+        console.log('handleLoginProceed called');
+        console.log('Current form values:', loginForm.getValues());
+        
         const isLoginValid = await loginForm.trigger([
             "email",
             "password"
         ]);
+        
+        console.log('Form validation result:', isLoginValid);
 
         if (isLoginValid) {
             // Send email verification code
             try {
-                const result = await sendLoginEmailVerification.mutateAsync();
+                const { email, password } = loginForm.getValues();
+                console.log('Email to send verification to:', email);
+                console.log('Password length:', password ? password.length : 'NO PASSWORD');
+                onLoginEmailChange(email);
+                const result = await sendLoginEmailVerification.mutateAsync({ email, password });
                 console.log("Login email verification code sent:", result);
                 onLoginStepChange(2);
             } catch (error) {
                 // Error handling is done in the mutation
                 console.error("Failed to send login email verification code:", error);
             }
+        } else {
+            console.log('Form validation failed');
         }
     };
 
@@ -425,9 +268,11 @@ const sendPhoneVerification = useMutation({
     if (isValid) {
         // Send both email and phone verification codes
         try {
+            const email = userProfileDetails?.email || '';
+            const phone = userProfileDetails?.phone || '';
             const results = await Promise.all([
-                sendEmailVerification.mutateAsync(),
-                sendPhoneVerification.mutateAsync()
+                sendEmailVerification.mutateAsync(email),
+                sendPhoneVerification.mutateAsync(phone)
             ]);
             // If both calls successful, move to step 4
             console.log("Verification codes sent:", results);
@@ -893,12 +738,7 @@ const sendPhoneVerification = useMutation({
             return (
                 <ConfirmSignIn
                     loginEmail={loginEmail}
-                    loginPassword={loginPassword}
-                    onLoginSubmit={() => {
-                        // call mutate with stored form values
-                        const values = loginForm.getValues();
-                        onLoginSubmit(values);
-                    }}
+                    loginPassword={loginForm.getValues().password}
                 />
             )
         }
