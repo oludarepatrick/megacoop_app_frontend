@@ -8,26 +8,26 @@ import type {
 
 export const authService = {
     verifyAccessCode: async (accessCode: AccessCodeFormData) => {
-        const response = await axios.post('/validate-code', { code: accessCode });
+        const response = await axios.post('/user/validate-code', accessCode);
         return response.data;
     },
 
     sendEmailVerification: async (email: string) => {
         const formData = new FormData();
         formData.append('email', email);
-        const response = await axios.post('/send-email-verification-token', formData, formConfig);
+        const response = await axios.post('/user/send-email-verification-token', formData, formConfig);
         return response.data;
     },
 
     sendPhoneVerification: async (phone: string) => {
         const formData = new FormData();
         formData.append('phone', phone);
-        const response = await axios.post('/send-phone-verification-otp', formData, formConfig);
+        const response = await axios.post('/user/send-phone-verification-otp', formData, formConfig);
         return response.data;
     },
 
     resendCode: async (type: 'email' | 'phone', email?: string, phone?: string) => {
-        const endpoint = type === 'email' ? '/send-email-verification-token' : '/send-phone-verification-otp';
+        const endpoint = type === 'email' ? '/user/send-email-verification-token' : '/send-phone-verification-otp';
         const formData = new FormData();
         if (type === 'email' && email) {
             formData.append('email', email);
@@ -45,7 +45,7 @@ export const authService = {
             email: userProfileDetails?.email,
         };
         console.log("submitSignUpData finalData", finalData);
-        const response = await axios.post('/complete-signup', finalData, jsonConfig);
+        const response = await axios.post('/user/complete-signup', finalData, jsonConfig);
         return response.data;
     },
 
@@ -53,7 +53,7 @@ export const authService = {
         const formData = new FormData();
         formData.append('token', code);
         formData.append('email', email);
-        const response = await axios.post('/verify-email', formData, formConfig);
+        const response = await axios.post('/user/verify-email', formData, formConfig);
         return response.data;
     },
 
@@ -61,7 +61,7 @@ export const authService = {
         const formData = new FormData();
         formData.append('token', code);
         formData.append('phone', phone);
-        const response = await axios.post('/verify-phone', formData, formConfig);
+        const response = await axios.post('/user/verify-phone', formData, formConfig);
         return response.data;
     },
 
@@ -76,7 +76,7 @@ export const authService = {
             console.log(`${key}: ${value}`);
         }
         
-        const response = await axios.post('/send-login-verification-otp', formData, formConfig);
+        const response = await axios.post('/user/send-login-verification-otp', formData, formConfig);
         return response.data;
     },
 
@@ -84,12 +84,12 @@ export const authService = {
         const formData = new FormData();
         formData.append('token', otp);
         formData.append('email', email);
-        const response = await axios.post('/verify-login-otp', formData, formConfig);
+        const response = await axios.post('/user/verify-login-otp', formData, formConfig);
         return response.data;
     },
 
     logout: async (): Promise<void> => {
-        const response = await axios.get("/logout")
+        const response = await axios.get("/user/logout")
         return response.data
     }
 };

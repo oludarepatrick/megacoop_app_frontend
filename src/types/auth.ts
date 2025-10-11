@@ -9,6 +9,7 @@ export type User = {
   kyc_status?: string | null;
   createdAt: string;
   updatedAt: string;
+  amount: number; //temporal, may be removed
 };
 
 export type AuthResponse = {

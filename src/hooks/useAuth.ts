@@ -211,15 +211,3 @@ export const useLogout = () => {
         }
     });
 };
-
-// Simple hook to access auth state
-// export const useAuthState = () => {
-//     return useAuthStore((state) => ({
-//         user: state.user,
-//         token: state.token,
-//         isAuthenticated: state.isAuthenticated,
-//         isLoading: state.isLoading,
-//         logout: state.logout,
-//         login: state.login
-//     }));
-// };

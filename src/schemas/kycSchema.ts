@@ -11,8 +11,8 @@ export const bvnSchema = z.object({
 const MAX_FILE_SIZE = 3 * 1024 * 1024;
 
 export const IDUploadSchema = z.object({
-    card_type: z.enum(["international-passport", "drivers-license", "others"], { message: "Card type is required",}), 
-    file: z.any()
+    valid_id_card: z.enum(["national-id-card", "voters-card", "drivers-license"], { message: "Card type is required",}), 
+    valid_id_card_path: z.any()
     .refine((files) => files?.length === 1, {message: "Please upload a valid ID card"})
     .transform(files => files[0])
     .refine((file) => file.size <= MAX_FILE_SIZE, {message: "File must be 3MB or smaller"})
@@ -21,7 +21,7 @@ export const IDUploadSchema = z.object({
 
 export const addressSchema = z.object({
     address: z.string().nonempty("your address is required"), 
-    file: z.any()
+    proof_of_address: z.any()
     .refine((files) => files?.length === 1, {message: "Please upload a valid proof of address"})
     .transform(files => files[0])
     .refine((file) => file.size <= MAX_FILE_SIZE, {message: "File must be 3MB or smaller"})
