@@ -31,34 +31,34 @@ const LoanSuccessModal = ({
   values,
 }: LoanSuccessModalProps) => {
 
-    function handleReceiptDownload2(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
-        event.preventDefault();
-        // Simulate receipt content
-        const receiptContent = `
-Loan Receipt
+//     function handleReceiptDownload2(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
+//         event.preventDefault();
+//         // Simulate receipt content
+//         const receiptContent = `
+// Loan Receipt
 
-Loan Type: Simple Loan
-Amount: ₦${values.loanAmount?.toLocaleString() || "50,000"}
-Loan Duration: ${values.duration} Months
-Interest Rate: 10%
-Tax: ₦5,000
-Monthly Payment: ₦4,500
-Total Payback Amount: ₦58,000
+// Loan Type: Simple Loan
+// Amount: ₦${values.loanAmount?.toLocaleString() || "50,000"}
+// Loan Duration: ${values.duration} Months
+// Interest Rate: 10%
+// Tax: ₦5,000
+// Monthly Payment: ₦4,500
+// Total Payback Amount: ₦58,000
 
-Congratulations on your successful loan application!
-        `.trim();
+// Congratulations on your successful loan application!
+//         `.trim();
 
-        const blob = new Blob([receiptContent], { type: "text/plain" });
-        const url = URL.createObjectURL(blob);
+//         const blob = new Blob([receiptContent], { type: "text/plain" });
+//         const url = URL.createObjectURL(blob);
 
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "loan-receipt.txt";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-    }
+//         const link = document.createElement("a");
+//         link.href = url;
+//         link.download = "loan-receipt.txt";
+//         document.body.appendChild(link);
+//         link.click();
+//         document.body.removeChild(link);
+//         URL.revokeObjectURL(url);
+//     }
 
     const handleReceiptDownload = () => {
     // Create receipt content

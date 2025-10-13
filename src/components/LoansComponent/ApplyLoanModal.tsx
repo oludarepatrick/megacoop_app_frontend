@@ -26,7 +26,7 @@ import {
 import { 
   fetchCreditLimit, 
   verifyGuarantor,
-  fetchUserDetails,
+  // fetchUserDetails,
   submitLoanApplication,
   submitLoanDocuments
 } from '../../services/loanService';
@@ -36,7 +36,7 @@ import { Step1PersonalInfo } from './Step1PersonalInfo';
 import { Step2LoanDetails } from './Step2LoanDetails';
 import { Step3DocumentUpload } from './Step3DocumentUpload';
 import { useAuthStore } from "@/store/authStore";
-import type { AxiosError } from 'axios';
+
 
 
 

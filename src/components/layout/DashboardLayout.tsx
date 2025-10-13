@@ -20,7 +20,7 @@ const DashboardLayout = () => {
 
     const handleKYCClose = () => {
         setIsKYCModalOpen(false);
-        // logout.mutate();
+        logout.mutate();
         navigate("/user/dashboard");
     }
 

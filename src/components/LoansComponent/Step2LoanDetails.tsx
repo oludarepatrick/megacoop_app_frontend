@@ -6,7 +6,11 @@ import { Link } from 'react-router-dom';
 import LoanImage1 from "../../assets/loan-request-image1.png";
 import LoanImage2 from "../../assets/loan-request-image2.png";
 import type { StepProps } from '../../types/loanTypes';
-export const Step2LoanDetails = ({ methods, creditLimit, isLoading }: StepProps) => {
+export const Step2LoanDetails = ({
+    methods,
+    creditLimit,
+    // isLoading
+}: StepProps) => {
     return (
         <>
             <FormField
