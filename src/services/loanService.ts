@@ -59,13 +59,13 @@ export const submitLoanDocuments = async (loanApplicationId: string, documents: 
 
 export async function fetchCreditLimit() {
   // replace this with real endpoint
-  const { data } = await axiosInstance.get(`${API_BASE_URL}credit-limit`);
+  const { data } = await axiosInstance.get(`${API_BASE_URL}user/credit-limit`);
   return data?.limit; // adapt to your shape
 }
 
 export async function fetchLoans() {
   // replace this with real endpoint
-  const { data } = await axiosInstance.get(`${API_BASE_URL}loans`);
+  const { data } = await axiosInstance.get(`${API_BASE_URL}user/loans`);
   return data?.loans;
 }
 

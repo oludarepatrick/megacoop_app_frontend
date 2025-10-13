@@ -35,21 +35,26 @@ import { CreditLimitDisplay } from './CreditLimitDisplay';
 import { Step1PersonalInfo } from './Step1PersonalInfo';
 import { Step2LoanDetails } from './Step2LoanDetails';
 import { Step3DocumentUpload } from './Step3DocumentUpload';
-// import { Step4Review } from './Step4Review';
+import { useAuthStore } from "@/store/authStore";
+import type { AxiosError } from 'axios';
+
 
 
 const LoanModal = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
-  const [step, setStep] = useState(4);
+  const user = useAuthStore(state => state.user);
+  console.log('User from store:', user);
+  const [step, setStep] = useState(1);
   const [showPreview, setShowPreview] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(true);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [isVerifying, setIsVerifying] = useState(false);
   const [verificationError, setVerificationError] = useState('');
   const [guarantorVerifiedData, setGuarantorVerifiedData] = useState<{ name: string; phone: string } | null>(null);
   const [guarantorMessage, setGuarantorMessage] = useState<string>("");
-  const [showGuarantorModal, setShowGuarantorModal] = useState(true);
+  const [showGuarantorModal, setShowGuarantorModal] = useState(false);
   const [loanApplicationId, setLoanApplicationId] = useState<string | null>(null);
   const [alert, setAlert] = useState<{ title: string; description: string } | null>(null);
+  
 
   const methods = useForm<LoanFormValues>({
     resolver: zodResolver(formSchema),
@@ -84,28 +89,43 @@ const LoanModal = ({ open, onClose }: { open: boolean; onClose: () => void }) =>
   });
 
   // Fetch user details when the modal opens
-  const { data: userDetails } = useQuery({
-  queryKey: ['user-details'],
-  queryFn: fetchUserDetails,
-  enabled: open, // Only run when modal is open
-});
+//   const { data: userDetails } = useQuery({
+//   queryKey: ['user-details'],
+//   queryFn: fetchUserDetails,
+//   enabled: open, // Only run when modal is open
+// });
 
-useEffect(() => {
-  if (userDetails) {
-    methods.reset({
-      ...methods.getValues(),
-      firstName: userDetails.firstName || '',
-      middleName: userDetails.middleName || '',
-      lastName: userDetails.lastName || '',
-      email: userDetails.email || '',
-      phoneNumber: userDetails.phoneNumber || '',
-      address: userDetails.address || '',
-      state: userDetails.state || '',
-      city: userDetails.city || '',
-    });
-  }
-}, [userDetails, methods]);
+// useEffect(() => {
+//   if (userDetails) {
+//     methods.reset({
+//       ...methods.getValues(),
+//       firstName: userDetails.firstName || '',
+//       middleName: userDetails.middleName || '',
+//       lastName: userDetails.lastName || '',
+//       email: userDetails.email || '',
+//       phoneNumber: userDetails.phoneNumber || '',
+//       address: userDetails.address || '',
+//       state: userDetails.state || '',
+//       city: userDetails.city || '',
+//     });
+//   }
+// }, [userDetails, methods]);
 
+  useEffect(() => {
+     if (user) {
+      methods.reset({
+        ...methods.getValues(),
+        firstName: user.first_name || '',
+        middleName: user.middle_name || '',
+        lastName: user.last_name || '',
+        email: user.email || '',
+        phoneNumber: user.phone || '',
+        address: user.address || '',
+        state: user.state || '',
+        city: user.city || '',
+      });
+     }
+  }, [user, methods]);
 
   const handleVerifyGuarantor = async () => {
     const email = methods.getValues('guarantorEmail');
@@ -119,29 +139,35 @@ useEffect(() => {
     
     try {
       const guarantorData = await verifyGuarantor(email);
-      // methods.setValue('guarantorName', guarantorData.name);
-      // methods.setValue('guarantorPhone', guarantorData.phone);
+      
       if (guarantorData.data) {
         setGuarantorVerifiedData({
           name: guarantorData.data.name,
           phone: guarantorData.data.phone,
         });
-        // methods.setValue('guarantorName', guarantorData.data.name);
-        // methods.setValue('guarantorPhone', guarantorData.data.phone);
         setGuarantorMessage(guarantorData.message || 'Guarantor verified successfully');
-        setShowGuarantorModal(true); // 🔥 open confirmation modal
+        
       } else {
         setGuarantorVerifiedData(null);
         methods.setValue('guarantorName', '');
-        // methods.setValue('guarantorPhone', '');
         setVerificationError('Guarantor not found. Please check the email and try again.');
-        setGuarantorMessage("");
+        // setGuarantorMessage("");
+        setGuarantorMessage(guarantorData || 'Guarantor not found. Please check the email and try again.');
       }
-    } catch (error) {
-      setVerificationError('Failed to verify guarantor. Please check the email and try again.');
-      console.error(error);
-      // methods.setValue('guarantorName', '');
-      // methods.setValue('guarantorPhone', '');
+      setShowGuarantorModal(true); // show modal with message
+    } catch (error: any) {
+    console.error('Guarantor verification error:', error);
+
+    // ✅ Axios error pattern: extract message from API response
+    const apiMessage =
+      error?.response?.data?.message ||
+      error?.message ||
+      'Failed to verify guarantor. Please check the email and try again.';
+
+    setGuarantorMessage(apiMessage);
+    setGuarantorVerifiedData(null);
+    methods.setValue('guarantorName', '');
+    setShowGuarantorModal(true); // show modal with error message
     } finally {
       setIsVerifying(false);
     }
@@ -366,16 +392,17 @@ useEffect(() => {
           <Dialog open={showGuarantorModal} onOpenChange={setShowGuarantorModal}>
             <DialogContent className="max-w-sm">
               <DialogHeader>
-                <DialogTitle className="text-green-700">Guarantor Verification</DialogTitle>
+                <DialogTitle className={guarantorVerifiedData ? "text-green-700" : "text-red-700"}>Guarantor Verification</DialogTitle>
                 <DialogDescription>{guarantorMessage}</DialogDescription>
               </DialogHeader>
 
-              {guarantorVerifiedData && (
+              {guarantorVerifiedData ? (
+                <>
                 <div className="border rounded-md p-4 bg-emerald-50 mt-3 text-gray-800">
                   <p><strong>Name:</strong> {guarantorVerifiedData.name}</p>
                   <p><strong>Phone:</strong> {guarantorVerifiedData.phone}</p>
                 </div>
-              )}
+              
 
               <p className="mt-4 text-sm text-gray-600">
                 Is this your guarantor’s correct information?
@@ -405,6 +432,25 @@ useEffect(() => {
                   Yes
                 </Button>
               </DialogFooter>
+                </>
+              ) : (
+                  <>
+                  {/* <div className="flex justify-end mt-4">
+                    {guarantorMessage}
+                    </div> */}
+                  <DialogFooter className="flex justify-end gap-2 mt-4">
+                    <Button
+                      onClick={() => {
+                        setShowGuarantorModal(false);
+                        setGuarantorVerifiedData(null);
+                      }}
+                      className="bg-red-500 hover:bg-red-600 text-white"
+                    >
+                      OK
+                      </Button>
+                  </DialogFooter>
+                    </>   
+              )}
             </DialogContent>
           </Dialog>
         </FormProvider>

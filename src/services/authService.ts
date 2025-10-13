@@ -10,7 +10,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://api.schooldri
 
 export const authService = {
     verifyAccessCode: async (accessCode: AccessCodeFormData) => {
-        const response = await axios.post(`${API_BASE_URL}user/validate-code`, { code: accessCode });
+        const response = await axios.post(`${API_BASE_URL}user/validate-code`, accessCode );
         return response.data;
     },
 

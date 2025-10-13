@@ -22,7 +22,7 @@ export const Step1PersonalInfo = ({
                         <FormItem>
                             <label className="text-sm font-medium">First Name</label>
                             <FormControl>
-                                <Input placeholder="Enter first name" {...field} className='h-11 bg-green-50' />
+                                <Input placeholder="Enter first name" {...field} className='h-11 bg-green-50' readOnly />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -35,7 +35,7 @@ export const Step1PersonalInfo = ({
                         <FormItem>
                             <label className="text-sm font-medium">Middle Name</label>
                             <FormControl>
-                                <Input placeholder="Enter middle name" {...field} className='h-11 bg-green-50' />
+                                <Input placeholder="Enter middle name" {...field} className='h-11 bg-green-50' readOnly />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -48,7 +48,7 @@ export const Step1PersonalInfo = ({
                         <FormItem>
                             <label className="text-sm font-medium">Last Name</label>
                             <FormControl>
-                                <Input placeholder="Enter last name" {...field} className='h-11 bg-green-50' />
+                                <Input placeholder="Enter last name" {...field} className='h-11 bg-green-50' readOnly />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -65,7 +65,7 @@ export const Step1PersonalInfo = ({
                         <FormItem>
                             <label className="text-sm font-medium">Email</label>
                             <FormControl>
-                                <Input type="email" placeholder="Enter email" {...field} className='h-11 bg-green-50' />
+                                <Input type="email" placeholder="Enter email" {...field} className='h-11 bg-green-50' readOnly />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -87,6 +87,7 @@ export const Step1PersonalInfo = ({
                                         placeholder="e.g 8031234567"
                                         {...field}
                                         className='h-11 bg-green-50 rounded-l-none'
+                                        readOnly
                                     />
                                 </div>
                             </FormControl>
@@ -108,6 +109,7 @@ export const Step1PersonalInfo = ({
                                 {...field}
                                 rows={3}
                                 className='bg-green-50'
+                                readOnly
                             />
                         </FormControl>
                         <FormMessage />
@@ -123,7 +125,7 @@ export const Step1PersonalInfo = ({
                         <FormItem>
                             <label className="text-sm font-medium">State</label>
                             <FormControl>
-                                <Input placeholder="Enter state" {...field} className='h-11 bg-green-50' />
+                                <Input placeholder="Enter state" {...field} className='h-11 bg-green-50'  />
                             </FormControl>
                             <FormMessage />
                         </FormItem>

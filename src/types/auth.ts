@@ -9,6 +9,10 @@ export type User = {
   kyc_status?: string | null;
   createdAt: string;
   updatedAt: string;
+  phone?: string;
+  state?: string;
+  city?: string;
+  address?: string;
 };
 
 export type AuthResponse = {
