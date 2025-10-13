@@ -92,7 +92,7 @@ export const authService = {
     },
 
     logout: async (): Promise<void> => {
-        const response = await axios.get("/logout")
+        const response = await axios.get("/user/logout")
         return response.data
     }
 };
