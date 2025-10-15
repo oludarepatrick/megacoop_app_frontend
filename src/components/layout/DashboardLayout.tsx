@@ -28,6 +28,7 @@ const DashboardLayout = () => {
     const handleKYCClose = () => {
         handleCloseModal();
         logout.mutate();
+        navigate("/user/dashboard");
     }
 
     const handleKYCProceed = () => {

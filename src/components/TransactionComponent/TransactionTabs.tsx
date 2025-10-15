@@ -1,7 +1,10 @@
+import { Button } from "../ui/button";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "../ui/tabs";
 // import TransactionPagination from "./TransactionPagination";
 import TransactionTable from "./TransactionTable";
 import type { TabType, Transaction } from "@/pages/Transactions";
+import LoanModal from "../LoansComponent/ApplyLoanModal";
+import { useState } from "react";
 
 type TabProps = {
     activeTab: TabType
@@ -10,7 +13,8 @@ type TabProps = {
 
 }
 
-const TransactionTabs = ({activeTab, setActiveTab, transactions} :TabProps) => {
+const TransactionTabs = ({ activeTab, setActiveTab, transactions }: TabProps) => {
+    const [isLoanModalOpen, setIsLoanModalOpen] = useState(false);
     
     return (
         <>
@@ -31,6 +35,8 @@ const TransactionTabs = ({activeTab, setActiveTab, transactions} :TabProps) => {
                 </TabsContent>
 
             </Tabs>
+            <Button variant="ghost" className="text-megagreen underline mt-4" onClick={() => setIsLoanModalOpen(true)}>Apply Loan</Button>
+            <LoanModal open={isLoanModalOpen} onClose={() => setIsLoanModalOpen(false)} />
         </>
     )
 }

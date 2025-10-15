@@ -164,7 +164,7 @@ const sendPhoneVerification = useSendPhoneVerification(onError);
   resolver: zodResolver(combinedSchema),
   defaultValues: {
     first_name: userProfileDetails?.first_name || "",
-    middle_name: "",
+    middle_name: userProfileDetails?.middle_name || "",
     last_name: userProfileDetails?.last_name || "",
     email: userProfileDetails?.email || "",
     phone: userProfileDetails?.phone || "",
@@ -184,6 +184,7 @@ const sendPhoneVerification = useSendPhoneVerification(onError);
 
     // Form handlers
     const onAccessCodeSubmit = (data: AccessCodeFormData) => {
+        console.log("Access code submitted:", data);
         verifyAccessCode.mutate(data);
     };
 
@@ -210,6 +211,7 @@ const sendPhoneVerification = useSendPhoneVerification(onError);
             signUpForm.reset({
                 ...signUpForm.getValues(), // keep other values
                 first_name: userProfileDetails.first_name || "",
+                middle_name: userProfileDetails.middle_name || "",
                 last_name: userProfileDetails.last_name || "",
                 email: userProfileDetails.email || "",
                 phone: userProfileDetails.phone || "",
@@ -289,6 +291,7 @@ const sendPhoneVerification = useSendPhoneVerification(onError);
     signUpForm.reset({
       ...signUpForm.getValues(), // keep other values
       first_name: userProfileDetails.first_name || "",
+      middle_name: userProfileDetails.middle_name || "",
       last_name: userProfileDetails.last_name || "",
       email: userProfileDetails.email || "",
       phone: userProfileDetails.phone || "",
@@ -372,7 +375,12 @@ const sendPhoneVerification = useSendPhoneVerification(onError);
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormControl>
-                                                    <Input className='h-11' placeholder="Middle name" {...field} />
+                                                    <Input
+                                                        className='h-11 bg-green-50'
+                                                        placeholder="Middle name"
+                                                        {...field}
+                                                        readOnly
+                                                    />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>

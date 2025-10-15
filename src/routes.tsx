@@ -6,13 +6,15 @@ import PageLoader from "./components/PageLoader";
 import AuthProtectedRoute from "./components/layout/AuthProtectedRoute";
 
 
+
 // Lazy load pages
 const Login = lazy(() => import("./pages/auth/Login"));
 const Signup = lazy(() => import("./pages/auth/Signup"));
 const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Transactions = lazy(() => import("./pages/Transactions"));
-const SavingsLoan = lazy(() => import("./pages/SavingsLoan"));
+// const SavingsLoan = lazy(() => import("./pages/SavingsLoan"));
+const LoanDashboard = lazy(() => import("./pages/loans/LoansDashboard"));
 const Settings = lazy(() => import("./pages/Settings"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Investment = lazy(() => import("./pages/Investment"));
@@ -96,7 +98,9 @@ export const routes = createBrowserRouter([
                         path: "savings-loan", 
                         element: (
                             <Suspense fallback={<PageLoader/>}>
-                                <SavingsLoan/>
+                                {/* <Transactions/> */}
+                                <LoanDashboard/>
+                                {/* <SavingsLoan/> */}
                             </Suspense>
                         )
                     },
