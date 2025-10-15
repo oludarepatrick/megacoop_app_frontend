@@ -46,11 +46,10 @@ const SavingsTransaction= () => {
     return (
         // <section className="">
         <Card className="px-4 pb-2 ">
-            <CardHeader className="flex justify-between px-2">
+            <CardHeader className="flex items-center justify-between px-2">
                 <CardTitle className="text-2xl font-semibold">Recent Transactions</CardTitle>
-                <div className="flex gap-4 items-center">
-
-                    <Link to="/user/transactions" className="uppercase text-megagreen ">View All</Link>
+                <div>
+                  <Link to="/user/transactions" className="uppercase text-megagreen">View All</Link>
                 </div>
             </CardHeader>
             <div className="overflow-x-auto green-scrollbar">

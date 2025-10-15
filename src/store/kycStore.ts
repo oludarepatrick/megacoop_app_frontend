@@ -114,7 +114,10 @@ export const useKYCStore = create<KYCStore>()(
             return step.step;
           }
         }
-        return 6; 
+        
+        // All 5 steps are verified, no more steps needed
+        // We should not return 6 as there is no step 6
+        return 5; // Stay on step 5 if admin hasn't approved yet
       },
 
       isKYCComplete: () => {
@@ -123,7 +126,7 @@ export const useKYCStore = create<KYCStore>()(
 
         const requiredSteps = KYC_STEPS.slice(0, 5); 
         const allStepsVerified = requiredSteps.every(step => status[step.name] === 'verified');
-        const adminApproved = status.admin_approval_status === 'verified';
+        const adminApproved = status.admin_approval_status === 'approved';
         
         return allStepsVerified && adminApproved;
       },

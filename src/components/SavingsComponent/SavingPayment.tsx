@@ -1,0 +1,147 @@
+import { Button } from "../ui/button"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog"
+import walletBcg from "../../assets/wallet-background.png"
+import savingIcon from "../../assets/saving-wallet-icon.svg"
+import bankCardIcon from "../../assets/bank-card-icon.svg"
+import starCoin1 from "../../assets/star-coin-1.png"
+import starCoin2 from "../../assets/star-coin-2.png"
+import { Label } from "../ui/label"
+import { useState, useEffect } from "react"
+import checkIcon from "../../assets/checkmark-icon.svg"
+import { ChevronRight } from "lucide-react"
+import { Card, CardContent } from "../ui/card"
+import { useAuthStore } from "@/store/authStore"
+import type { FormData } from "@/schemas/savingsPlanSchema"
+
+interface SavingPaymentProps {
+    isOpen: boolean
+    onClose: () => void
+    onSuccess?: () => void
+    savingData: FormData
+}
+
+const SavingPayment = ({ isOpen, onClose, onSuccess, savingData }: SavingPaymentProps) => {
+    const { user } = useAuthStore()
+    const [paymentMethod, setPaymentMethod] = useState<string | null>(null)
+    
+    const savingAmount = parseFloat(savingData.amount.replace(/,/g, '')) || 0
+    const walletBalance = user?.amount || 0
+    const isEligible = walletBalance >= savingAmount
+    
+    useEffect(() => {
+        if (isEligible) {
+            setPaymentMethod("wallet")
+        } else {
+            setPaymentMethod("bank")
+        }
+    }, [isEligible])
+
+    const formatAmount = (amount: number) => {
+        return new Intl.NumberFormat('en-NG', {
+            style: 'currency',
+            currency: 'NGN',
+            minimumFractionDigits: 2
+        }).format(amount).replace('NGN', '₦')
+    }
+
+    return (
+        <Dialog open={isOpen} onOpenChange={onClose}>
+            <DialogContent className="p-0 font-poppins overflow-y-auto max-h-[90vh] scrollbar-hide"
+                style={{
+                        backgroundImage: `url(${starCoin1}), url(${starCoin2})`,
+                        backgroundPosition: "right center, bottom left",
+                        backgroundRepeat: "no-repeat, no-repeat",
+                        backgroundSize: "30px, 40px",
+                    }}
+            >
+                <DialogHeader className="rounded-lg bg-wallet p-8 sm:px-20 gap-0 items-center"
+                    style={{
+                        backgroundImage: `linear-gradient(to bottom right, #F7F7F7, #E4FBE1, #D1FFCC), url(${walletBcg})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "bottom left",
+                        backgroundSize: "contain",
+                        backgroundBlendMode: "darken",
+                    }}
+                >
+                    <DialogTitle className="text-[24px] font-semibold">Add a Payment Method</DialogTitle>
+                    <DialogDescription className="text-black text-center text-xs">
+                        Your Wallet Balance is <span className={`font-bold ${isEligible ? 'text-green-600' : 'text-red-600'}`}>
+                            {isEligible ? 'Eligible' : 'Not Eligible'}
+                        </span> for this Transaction!
+                    </DialogDescription>
+                </DialogHeader>
+                <form className="p-6 flex flex-col gap-4 sm:px-18">
+                    <div className="space-y-4 flex justify-center flex-col items-center text-center">
+                        <Label className="font-normal text-muted-foreground">Amount</Label>
+                        <Button type="button" variant="outline" className="bg-[#14AB550D] text-4xl p-8">
+                            {formatAmount(savingAmount)}
+                        </Button>
+                    </div>
+                    <div className="space-y-4">
+                        <Label className="font-normal">Select Payment to proceed</Label>
+                        <div className="flex flex-wrap gap-4">
+                            <Card className={`relative p-0 w-full rounded-lg cursor-pointer transition-all ${
+                                paymentMethod === "wallet" ? "ring-2 ring-megagreen bg-[#F5FFF9]" : ""
+                                } ${!isEligible ? "opacity-50 cursor-not-allowed" : ""}`}  
+                                onClick={() => isEligible && setPaymentMethod("wallet")}
+                            >
+                                <CardContent className="flex p-4 gap-4">
+                                    <div className={`w-10 h-10 flex items-center justify-center rounded-lg bg-[#E6FFE3]`}>
+                                        <img src={savingIcon} alt="" aria-hidden="true" className="" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-medium text-xs">Wallet balance</h3>
+                                        <p className={`font-semibold text-lg ${isEligible ? 'text-megagreen' : 'text-red-500'}`}>
+                                            {formatAmount(walletBalance)}
+                                        </p>
+                                    </div>
+                                </CardContent>
+                                {paymentMethod === "wallet" && <img src={checkIcon} alt="" aria-hidden="true" className="absolute -right-1 -top-2" />}
+                            </Card>
+                            <Card className={`relative p-0 w-full rounded-lg cursor-pointer transition-all ${
+                                paymentMethod === "bank" ? "ring-2 ring-megagreen bg-[#F5FFF9]" : ""
+                                }`}  onClick={() => setPaymentMethod("bank")}
+                            >
+                                <CardContent className="flex p-4 gap-4">
+                                    <div className={`w-10 h-10 flex items-center justify-center rounded-lg bg-[#FFF5D9]`}>
+                                        <img src={bankCardIcon} alt="" aria-hidden="true" className="" />
+                                    </div>
+                                    <div className="text-[11px] space-y-1">
+                                        <h3 className="font-medium ">Bank</h3>
+                                        <p className="text-megagreen">GTBank</p>
+                                    </div>
+                                    <div className="text-[11px] space-y-1">
+                                        <h3 className="font-medium">Account Number</h3>
+                                        <p className="text-megagreen">2034567804</p>
+                                    </div>
+                                    <div className="text-[11px] space-y-1">
+                                        <h3 className="font-medium">Account Name</h3>
+                                        <p className="text-megagreen">Williams</p>
+                                    </div>
+                                </CardContent>
+                                {paymentMethod === "bank" && <img src={checkIcon} alt="" aria-hidden="true" className="absolute -right-1 -top-2" />}
+                            </Card>
+                        </div>
+                    </div>
+                    <Button 
+                        onClick={(e) => {
+                            e.preventDefault()
+                            console.log('Processing payment with method:', paymentMethod)
+                            console.log('Payment data:', { savingData, paymentMethod })
+                            
+                            if (onSuccess) {
+                                onSuccess()
+                            }
+                        }}
+                        disabled={!paymentMethod}
+                        className="bg-gradient-to-t from-[#105D38] to-[#1BE572] disabled:opacity-50"
+                    >
+                        Next<ChevronRight/>
+                    </Button>
+                    
+                </form>
+            </DialogContent>
+        </Dialog>
+    )
+}
+export default SavingPayment
