@@ -22,8 +22,9 @@ const Login = () => {
     const [showCongratulationsModal, setShowCongratulationsModal] = useState(false);
     const [imgHeight, setImgHeight] = useState<number | undefined>(undefined);
     const [userEmail, setUserEmail] = useState("");
-    const [userPhone, setUserPhone] = useState("09025697028");
+    const [userPhone, setUserPhone] = useState("");
     const [loginEmail, setLoginEmail] = useState("");
+    
 
     useEffect(() => {
         setActiveTab(location.pathname === "/login" ? "login" : "signup");
@@ -124,7 +125,12 @@ const Login = () => {
                     className="w-[310px] max-w-[310px] h-[310px] rounded-lg shadow-lg bg-cover bg-center"
                     style={{ backgroundImage: `url('${SuccessfulSignUpBg}')` }}
                 >
-                    <DialogHeader></DialogHeader>
+                    <DialogHeader>
+                        <DialogTitle className="text-green-600 mx-auto mb-4"></DialogTitle>
+                        <DialogDescription className="text-green-600 mx-auto mb-4 text-center">
+                
+                        </DialogDescription>
+                    </DialogHeader>
                     <DialogFooter className="flex align-center justify-center sm:flex-col space-y-2">
                         <Button onClick={handleStartJourney} className="bg-green-600 hover:bg-green-700 mb-[-10px] md:mb-10">
                             Let's Start

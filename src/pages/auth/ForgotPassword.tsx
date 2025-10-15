@@ -18,7 +18,7 @@ import megacoop_logo from '../../assets/megacoop-logo-1.png';
 import PageLoader from '@/components/PageLoader';
 
 
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://34.170.169.65/api/v1/';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://34.170.169.65/api/v1/';
 
 // Zod schemas
 const sendEmailSchema = z.object({
