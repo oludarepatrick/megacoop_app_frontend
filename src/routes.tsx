@@ -20,6 +20,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const Investment = lazy(() => import("./pages/Investment"));
 const NewPassword = lazy(() => import("./pages/auth/NewPassword"));
 const KYCVerification = lazy(() => import("./pages/KYCPage"));
+const Marketplace = lazy(() => import("./pages/Marketplace/Marketplace"));
 
 
 
@@ -120,6 +121,14 @@ export const routes = createBrowserRouter([
                             </Suspense>
                         )
                     },
+                    {
+                        path: "market-place",
+                        element: (
+                            <Suspense fallback={<PageLoader/>}>
+                                <Marketplace/>
+                            </Suspense>
+                        )
+                    }
                 ]
             }
         ]

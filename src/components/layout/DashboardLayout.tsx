@@ -6,6 +6,7 @@ import clsx from "clsx";
 import CompleteKYCModal from "../KYC/KYCRequiredModal";
 import { useAuthStore } from "@/store/authStore";
 import { useLogout } from "@/hooks/useAuth";
+import { Toaster } from "../ui/sonner";
 
 const DashboardLayout = () => {
     const user = useAuthStore((state) => state.user)
@@ -71,7 +72,8 @@ const DashboardLayout = () => {
                 onClose={handleKYCClose}
                 onProceed={handleKYCProceed}
             />
-
+         {/* ✅ Global Toaster (for protected routes only) */}
+      <Toaster richColors position="top-right" />
         </div>
     )
 }
