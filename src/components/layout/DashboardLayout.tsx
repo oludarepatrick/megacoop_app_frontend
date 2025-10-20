@@ -4,30 +4,43 @@ import Sidebar from "./Sidebar";
 import { useState } from "react";
 import clsx from "clsx";
 import CompleteKYCModal from "../KYC/KYCRequiredModal";
-import { useAuthStore } from "@/store/authStore";
+import KYCContinueModal from "../KYC/KYCContinueModal";
+import KYCPendingModal from "../KYC/KYCPendingModal";
 import { useLogout } from "@/hooks/useAuth";
 import { Toaster } from "../ui/sonner";
+import { useKYCModal } from "@/hooks/useKYC";
 
 const DashboardLayout = () => {
-    const user = useAuthStore((state) => state.user)
     const logout = useLogout();
-
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const kycStatus = user?.kyc_status; 
-    const [isKYCModalOpen, setIsKYCModalOpen] = useState(!kycStatus);
-
-
     const navigate = useNavigate();
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    
+    // Use KYC modal hook for managing KYC state
+    const {
+        showModal,
+        modalType,
+        handleCloseModal,
+        handleProceedToKYC,
+        handleContinueKYC,
+        completedSteps,
+        nextStepInfo,
+    } = useKYCModal();
 
     const handleKYCClose = () => {
-        setIsKYCModalOpen(false);
+        handleCloseModal();
         logout.mutate();
         navigate("/user/dashboard");
     }
 
     const handleKYCProceed = () => {
         console.log("Proceed to KYC");
-        setIsKYCModalOpen(false);
+        handleProceedToKYC();
+        navigate("/user/kyc");
+    }
+    
+    const handleKYCContinue = () => {
+        console.log("Continue KYC from step:", nextStepInfo.stepNumber);
+        handleContinueKYC();
         navigate("/user/kyc");
     }
 
@@ -66,14 +79,30 @@ const DashboardLayout = () => {
                     </div>
                 </main>
             </div>
-            {/* KYC Modal */}
+            
+            {/* KYC Modals */}
             <CompleteKYCModal 
-                isOpen={isKYCModalOpen}
+                isOpen={showModal && modalType === 'required'}
                 onClose={handleKYCClose}
                 onProceed={handleKYCProceed}
             />
-         {/* ✅ Global Toaster (for protected routes only) */}
-      <Toaster richColors position="top-right" />
+            
+            <KYCContinueModal 
+                isOpen={showModal && modalType === 'continue'}
+                onClose={handleKYCClose}
+                onContinue={handleKYCContinue}
+                nextStepName={nextStepInfo.stepName}
+                completedSteps={completedSteps}
+            />
+            
+            <KYCPendingModal 
+                isOpen={showModal && modalType === 'pending'}
+                onClose={handleKYCClose}
+            />
+
+            {/* ✅ Global Toaster (for protected routes only) */}
+            <Toaster richColors position="top-right" />
+
         </div>
     )
 }

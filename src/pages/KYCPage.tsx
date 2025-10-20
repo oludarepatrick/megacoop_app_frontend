@@ -4,35 +4,50 @@ import { KYCBVN } from "@/components/KYC/BVNVerification";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Stepper } from "@/components/ui/stepper";
 import { useState } from "react";
-import { IDUPload } from "@/components/KYC/IDUploadVerification";
+import { IDUpload } from "@/components/KYC/IDUploadVerification";
 import { AddressUpload } from "@/components/KYC/AddressVerification";
 import { FaceVerification } from "@/components/KYC/FaceVerification";
 import KYCSuccessModal from "@/components/KYC/KYCSuccessModal";
 import { useNavigate } from "react-router-dom";
+import { useKYCNavigation } from "@/hooks/useKYC";
+import { getKYCStepsWithStatus } from "@/store/kycStore";
+import { useLogout } from "@/hooks/useAuth";
 
 
-const steps = [
-    { label: "NIN" },
-    { label: "BVN" },
-    { label: "Valid ID Card", isPending: true  },
-    { label: "Address", isPending: true  },
-    { label: "Face Recognition" },
-]
 const KYCVerification = () => {
-    const [currentStep, setCurrentStep] = useState(1);
-    const [isComplete, setIsComplete] = useState(false);
     const navigate = useNavigate();
+    const [isComplete, setIsComplete] = useState(false);
+    const logout = useLogout()
+    
+    // Use KYC navigation hook
+    const {
+        currentStep,
+        kycStatus,
+        setCurrentStep,
+    } = useKYCNavigation();
+    
+    const steps = getKYCStepsWithStatus(kycStatus).map(step => {
+        const isStepCompleted = step.step < currentStep;
+        const isAdminApprovalStep = step.step === 3 || step.step === 4; 
+        return {
+            label: step.label,
+            isPending: isStepCompleted && isAdminApprovalStep
+        };
+    });
 
     const handleNextStep = () => {
-        setCurrentStep((prev) => Math.min(prev + 1, steps.length))
+        const nextStep = Math.min(currentStep + 1, steps.length);
+        setCurrentStep(nextStep);
     }
-    const handleLastStep= () => {
+    
+    const handleLastStep = () => {
         setIsComplete(true);
     }
 
     const handleCloseSucessModal = () => {
         setIsComplete(false)
-        navigate("/user/dashboard");
+        logout.mutate()
+        navigate("/login");
     }
    
 
@@ -40,7 +55,7 @@ const KYCVerification = () => {
         switch(currentStep) {
             case 1: return <KYCNIN onSuccess={handleNextStep}/>
             case 2: return <KYCBVN onSuccess={handleNextStep}/>
-            case 3: return <IDUPload onSuccess={handleNextStep}/>
+            case 3: return <IDUpload onSuccess={handleNextStep}/>
             case 4: return <AddressUpload onSuccess={handleNextStep} />
             case 5: return <FaceVerification onSuccess={handleLastStep}/>
         }

@@ -25,8 +25,6 @@ const Sidebar = ({onClick}:menuProps) => {
     const {theme, toggleTheme} = useThemeStore()
     const user = useAuthStore(state => state.user);
     const logout = useLogout();
-    console.log(user);
-
 
     const activeClass= ({isActive}:{isActive: boolean}) =>
         clsx("flex gap-3 cursor-pointer", {
