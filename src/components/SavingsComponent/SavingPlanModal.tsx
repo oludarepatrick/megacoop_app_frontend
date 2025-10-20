@@ -14,7 +14,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { savingPlanSchema } from "@/schemas/savingsPlanSchema"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form"
-import type { FormData } from "@/schemas/savingsPlanSchema"
+import type { SavingFormData } from "@/schemas/savingsPlanSchema"
 import { SavingPlanSuccessModal } from "./SavingPlanSuccessModal"
 import { useNavigate } from "react-router-dom"
 
@@ -22,24 +22,23 @@ import { useNavigate } from "react-router-dom"
 const SavingPlanModal = () => {
     const navigate = useNavigate();
 
-
     const [showPaymentModal, setShowPaymentModal] = useState(false)
     const [planModalOpen, setPlanModalOpen] = useState(false)
-    const [formData, setFormData] = useState<FormData | null>(null)
+    const [formData, setFormData] = useState<SavingFormData | null>(null)
     const [successModal, setSuccessModal] = useState(false)
     
-    const form = useForm<FormData>({
+    const form = useForm<SavingFormData>({
         resolver: zodResolver(savingPlanSchema),
         defaultValues: {
-            saving_goal: undefined,
-            goal_name: "",
-            amount: "",
+            goal_name: undefined,
+            purpose: "",
+            amount_saved: "",
             target_amount: "",
-            saving_frequency: undefined
+            frequency: undefined
         }
     })
 
-    const onSubmit = (data: FormData) => {
+    const onSubmit = (data: SavingFormData) => {
         console.log("Form submitted:", data)
         setFormData(data)
         setPlanModalOpen(false)
@@ -75,7 +74,7 @@ const SavingPlanModal = () => {
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="p-6 pb-12 flex flex-col gap-5 sm:px-18">
-                        <FormField control={form.control} name="saving_goal"
+                        <FormField control={form.control} name="goal_name"
                             render={({ field }) => (
                                 <FormItem className="">
                                     <Label className="font-normal pb-2">What are you Saving For?</Label>
@@ -99,7 +98,7 @@ const SavingPlanModal = () => {
                                 </FormItem>
                             )}
                         />
-                        <FormField control={form.control} name="goal_name"
+                        <FormField control={form.control} name="purpose"
                             render={({ field }) => (
                                 <FormItem className="">
                                     <Label htmlFor="goalName" className="font-normal pb-2">Enter Goal Name</Label>
@@ -115,7 +114,7 @@ const SavingPlanModal = () => {
                                 </FormItem>
                             )}
                         />
-                        <FormField control={form.control} name="amount"
+                        <FormField control={form.control} name="amount_saved"
                             render={({ field }) => (
                                 <FormItem className="relative">
                                     <Label htmlFor="amount" className="font-normal pb-2">Enter Amount you want to save</Label>
@@ -146,7 +145,7 @@ const SavingPlanModal = () => {
                                 </FormItem>
                             )}
                         />
-                        <FormField control={form.control} name="saving_frequency"
+                        <FormField control={form.control} name="frequency"
                             render={({ field }) => (
                                 <FormItem >
                                     <Label className="font-normal pb-2">How often would you like to save?</Label>

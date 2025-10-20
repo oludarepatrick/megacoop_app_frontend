@@ -9,32 +9,14 @@ import { Input } from '@/components/ui/input';
 import { Eye, EyeOff } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {  z } from 'zod';
 import { useMutation } from '@tanstack/react-query';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { Button } from '@/components/ui/button';
 import ErrorIcon from '../../assets/Error_icon.png';
 import megacoop_logo from '../../assets/megacoop-logo-1.png';
 import PageLoader from '@/components/PageLoader';
-
-
-
-
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://34.170.169.65/api/v1/';
-
-// Zod schemas
-const sendPasswordSchema = z.object({
-    email: z.string().email("Invalid email"),
-    token: z.string().min(1, "Token is required"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
-    confirmPassword: z.string().min(8, "Confirm Password must be at least 8 characters"),
-}).refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"], // Set the path of the error to confirmPassword field
-});
-
-type SendPasswordFormData = z.infer<typeof sendPasswordSchema>;
-
+import { sendPasswordSchema, type SendPasswordFormData } from '@/schemas/authSchemas';
+import { authService } from '@/services/authService';
 
 const NewPassword = () => {
     const navigate = useNavigate();
@@ -69,16 +51,7 @@ const NewPassword = () => {
 
     // API mutations
     const sendResetPasswordMutation = useMutation({
-        mutationFn: (data: SendPasswordFormData) => {
-            return axios.post(`${API_BASE_URL}user/reset-password`,
-                {
-                    email: data.email,
-                    token: data.token,
-                    password: data.password,
-                    confirmPassword: data.confirmPassword
-                });
-        },
-
+        mutationFn: (data: SendPasswordFormData) => authService.sendPassword(data),
         onSuccess: (data) => {
             console.log("Password reset successful:", data);
             setSuccessMessage("Password has been reset successfully. Please login with your new password.");
@@ -105,8 +78,6 @@ const NewPassword = () => {
     const onSendPasswordSubmit = (data: SendPasswordFormData) => {
         sendResetPasswordMutation.mutate(data);
     };
-
-        
 
     return (
         <div className="flex flex-row justify-between h-165 lg:h-auto lg:items-center bg-transparent px-4 overflow-hidden relative">

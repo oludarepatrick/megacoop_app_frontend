@@ -1,32 +1,44 @@
 import { Button } from "../ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog"
+import { Input } from "../ui/input"
 import walletBcg from "../../assets/wallet-background.png"
 import savingIcon from "../../assets/saving-wallet-icon.svg"
 import bankCardIcon from "../../assets/bank-card-icon.svg"
 import starCoin1 from "../../assets/star-coin-1.png"
 import starCoin2 from "../../assets/star-coin-2.png"
 import { Label } from "../ui/label"
-import { useState, useEffect } from "react"
+import { useState, useEffect,
+    //  useMemo 
+} from "react"
 import checkIcon from "../../assets/checkmark-icon.svg"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight, Plus, Minus } from "lucide-react"
 import { Card, CardContent } from "../ui/card"
 import { useAuthStore } from "@/store/authStore"
-import type { SavingFormData } from "@/schemas/savingsPlanSchema"
+import type { PooledFormData, HousingFormData } from "@/schemas/investSchema"
+import { useInvestmentPayment } from "@/hooks/useInvestmentPayment"
 
-interface SavingPaymentProps {
+interface InvestPaymentProps {
     isOpen: boolean
     onClose: () => void
-    onSuccess?: () => void
-    savingData: SavingFormData
+    onProceedToConfirmation: (amount: number) => void
+    investData: PooledFormData | HousingFormData
 }
 
-const SavingPayment = ({ isOpen, onClose, onSuccess, savingData }: SavingPaymentProps) => {
+const InvestPayment = ({ isOpen, onClose, onProceedToConfirmation, investData }: InvestPaymentProps) => {
     const { user } = useAuthStore()
+    const walletBalance = user?.amount || 0;
     const [paymentMethod, setPaymentMethod] = useState<string | null>(null)
-    
-    const savingAmount = parseFloat(savingData.amount_saved.replace(/,/g, '')) || 0
-    const walletBalance = user?.amount || 0
-    const isEligible = walletBalance >= savingAmount
+
+    const {
+    amount: investmentAmount,
+    error: amountError,
+    isEligible,
+    increment: incrementAmount,
+    decrement: decrementAmount,
+    handleChange: handleAmountChange,
+    minimumAmount,
+    validateAmount
+    } = useInvestmentPayment(investData, walletBalance);
     
     useEffect(() => {
         if (isEligible) {
@@ -46,13 +58,13 @@ const SavingPayment = ({ isOpen, onClose, onSuccess, savingData }: SavingPayment
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="p-0 font-poppins overflow-y-auto max-h-[90vh] scrollbar-hide"
+            <DialogContent className="p-0 pb-10 font-poppins overflow-y-auto max-h-[90vh] scrollbar-hide"
                 style={{
-                        backgroundImage: `url(${starCoin1}), url(${starCoin2})`,
-                        backgroundPosition: "right center, bottom left",
-                        backgroundRepeat: "no-repeat, no-repeat",
-                        backgroundSize: "30px, 40px",
-                    }}
+                    backgroundImage: `url(${starCoin1}), url(${starCoin2})`,
+                    backgroundPosition: "right center, bottom left",
+                    backgroundRepeat: "no-repeat, no-repeat",
+                    backgroundSize: "30px, 40px",
+                }}
             >
                 <DialogHeader className="rounded-lg bg-wallet p-8 sm:px-20 gap-0 items-center"
                     style={{
@@ -72,10 +84,40 @@ const SavingPayment = ({ isOpen, onClose, onSuccess, savingData }: SavingPayment
                 </DialogHeader>
                 <form className="p-6 flex flex-col gap-4 sm:px-18">
                     <div className="space-y-4 flex justify-center flex-col items-center text-center">
-                        <Label className="font-normal text-muted-foreground">Amount</Label>
-                        <Button type="button" variant="outline" className="bg-[#14AB550D] text-4xl p-8">
-                            {formatAmount(savingAmount)}
-                        </Button>
+                        <Label className="font-normal text-muted-foreground">Input Amount</Label>
+                        <div className="flex items-center gap-4">
+                            <Button 
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={decrementAmount}
+                                disabled={investmentAmount <= minimumAmount}
+                                className="h-12 w-12 rounded-full"
+                            >
+                                <Minus className="h-4 w-4" />
+                            </Button>
+                            
+                            <div className="flex flex-col items-center">
+                                <Input
+                                    type="text"
+                                    value={investmentAmount.toLocaleString()}
+                                    onChange={(e) => handleAmountChange(e.target.value)}
+                                    className="text-center !text-4xl bg-[#14AB550D] border-2 border-none focus-visible:ring-0 w-48 h-16"
+                                />
+                            </div>
+                            <Button 
+                                type="button" 
+                                variant="outline" 
+                                size="sm"
+                                onClick={incrementAmount}
+                                className="h-12 w-12 rounded-full"
+                            >
+                                <Plus className="h-4 w-4" />
+                            </Button>
+                        </div>
+                        {amountError && (
+                            <p className="text-sm text-red-500">{amountError}</p>
+                        )}
                     </div>
                     <div className="space-y-4">
                         <Label className="font-normal">Select Payment to proceed</Label>
@@ -126,17 +168,24 @@ const SavingPayment = ({ isOpen, onClose, onSuccess, savingData }: SavingPayment
                     <Button 
                         onClick={(e) => {
                             e.preventDefault()
-                            console.log('Processing payment with method:', paymentMethod)
-                            console.log('Payment data:', { savingData, paymentMethod })
                             
-                            if (onSuccess) {
-                                onSuccess()
+                            if (!validateAmount(investmentAmount)) {
+                                return
                             }
+                            console.log('Proceeding to confirmation:', {
+                                investData,
+                                amount: investmentAmount,
+                                paymentMethod,
+                                minimumAmount
+                            })
+                            
+                            // Don't call onClose() here - let the parent handle modal transitions
+                            onProceedToConfirmation(investmentAmount)
                         }}
-                        disabled={!paymentMethod}
+                        disabled={!paymentMethod || !!amountError || investmentAmount < minimumAmount}
                         className="bg-gradient-to-t from-[#105D38] to-[#1BE572] disabled:opacity-50"
                     >
-                        Next<ChevronRight/>
+                        Continue to Confirmation<ChevronRight/>
                     </Button>
                     
                 </form>
@@ -144,4 +193,4 @@ const SavingPayment = ({ isOpen, onClose, onSuccess, savingData }: SavingPayment
         </Dialog>
     )
 }
-export default SavingPayment
+export default InvestPayment

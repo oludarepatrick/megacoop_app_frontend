@@ -2,12 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import moneyIcon from "../../assets/money-bag-icon.svg";
 import pieChartIcon from "../../assets/pie-chart-icon.svg";
 import repeatIcon from "../../assets/repeat-icon.svg";
-
-interface InvestmentData {
-  totalInvested: number;
-  numberOfInvestments: number;
-  rateOfReturn: number;
-}
+import type { InvestmentData } from "@/types/investmentType";
 
 interface InvestmentCardsProps {
   data?: InvestmentData;
@@ -23,8 +18,8 @@ export default function InvestmentCards({ data }: InvestmentCardsProps) {
       iconColor: "text-purple-600",
     },
     {
-      title: "Available Investments",
-      value: data?.numberOfInvestments?.toLocaleString() || "0",
+      title: "My Investments",
+      value: data?.myInvestments?.toLocaleString() || "0",
       icon: pieChartIcon,
       bgColor: "bg-pink-100",
       iconColor: "text-pink-600",
@@ -57,7 +52,7 @@ export default function InvestmentCards({ data }: InvestmentCardsProps) {
               </div>
               <div className="flex-1">
                 <p className="text-sm text-green-600 mb-1">{card.title}</p>
-                <p className="text-2xl font-bold">{card.value}</p>
+                <p className="text-2xl font-semibold">{card.value}</p>
               </div>
             </div>
           </CardContent>

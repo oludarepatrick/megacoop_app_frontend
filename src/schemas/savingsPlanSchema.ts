@@ -1,7 +1,7 @@
 import {z} from 'zod';
 
 export const savingPlanSchema = z.object({
-    saving_goal: z.enum([
+    goal_name: z.enum([
         "property-purchase", 
         "house-rent", 
         "personal-project",
@@ -10,10 +10,10 @@ export const savingPlanSchema = z.object({
         "travelling",
         "others"
     ], { message: "this field is required",}), 
-    goal_name: z.string().nonempty("field cannot be empty"),
-    amount: z.string().nonempty("field cannot be empty"),
+    purpose: z.string().nonempty("field cannot be empty"),
+    amount_saved: z.string().nonempty("field cannot be empty"),
     target_amount: z.string().nonempty("field cannot be empty"),
-    saving_frequency:z.enum([
+    frequency:z.enum([
         "daily", 
         "weekly", 
         "monthly",
@@ -24,4 +24,4 @@ export const savingPlanSchema = z.object({
     ], { message: "this field is required",}),
 })
 
-export type FormData = z.infer<typeof savingPlanSchema>
+export type SavingFormData = z.infer<typeof savingPlanSchema>

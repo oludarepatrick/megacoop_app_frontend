@@ -21,7 +21,7 @@ const StatCard= ({title, amount, icon, interest, iconbg, interestBg}:StatProps) 
                 <EllipsisVertical/>
             </CardHeader>
             <CardContent className="px-0 pb-2">
-                <h3 className="text-text-muted font-medium">{title}</h3>
+                <h3 className="text-text-muted font-medium text-[13px]">{title}</h3>
                 <div className="flex justify-between gap-2">
                     <p className="text-[22px] font-bold">₦{amount.toLocaleString()}<span className="text-base">.00</span></p>
                     <span className={`flex items-center justify-center text-xs font-medium px-2 rounded text-dark ${interestBg} rounded-2xl`}>

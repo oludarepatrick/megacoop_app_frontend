@@ -1,12 +1,11 @@
-import axiosInstance from '@/lib/axiosInstance';
+import axios from '@/lib/axiosInstance';
 import { formConfig, jsonConfig } from '@/common/utils';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://api.schooldrive.com.ng/api/v1/';
 
 
 // api to get user details 
 export const fetchUserDetails = async () => {
-  const { data } = await axiosInstance.get(`${API_BASE_URL}user/loan/me`);
+  const { data } = await axios.get('/user/loan/me');
   console.log(data);
   return data;
 };
@@ -14,7 +13,7 @@ export const fetchUserDetails = async () => {
 
 // API to verify guarantor /api/v1/user/loan/guarantor-lookup
 export const verifyGuarantor = async (email: string) => {
-  const { data } = await axiosInstance.post(`${API_BASE_URL}user/loan/guarantor-lookup`, {
+  const { data } = await axios.post('/user/loan/guarantor-lookup', {
     email,
   }, formConfig);
   return data;
@@ -22,7 +21,7 @@ export const verifyGuarantor = async (email: string) => {
 
 // Submit loan application 
 export const submitLoanApplication = async (values: unknown) => {
-  const { data } = await axiosInstance.post(`${API_BASE_URL}user/loan/apply`, {
+  const { data } = await axios.post('/user/loan/apply', {
     values,
   }, jsonConfig);
   return data;
@@ -53,25 +52,25 @@ export const submitLoanDocuments = async (loanApplicationId: string, documents: 
   });
 
   // const { data } = await axios.post(`${API_BASE_URL}user/loan/documents`, formData, formConfig);
-  const { data } = await axiosInstance.post(`${API_BASE_URL}user/loan/${loanApplicationId}/upload-documents`, formData, formConfig);
+  const { data } = await axios.post(`/user/loan/${loanApplicationId}/upload-documents`, formData, formConfig);
   return data;
 };
 
 export async function fetchCreditLimit() {
   // replace this with real endpoint
-  const { data } = await axiosInstance.get(`${API_BASE_URL}user/credit-limit`);
+  const { data } = await axios.get('/user/credit-limit');
   return data?.limit; // adapt to your shape
 }
 
 export async function fetchLoans() {
   // replace this with real endpoint
-  const { data } = await axiosInstance.get(`${API_BASE_URL}user/loans`);
+  const { data } = await axios.get('/user/loans');
   return data?.loans;
 }
 
 // Fetch loan details by ID /api/v1/user/loan/{id}/details
 export async function fetchLoanDetails(loanId: string) {
-  const { data } = await axiosInstance.get(`${API_BASE_URL}user/loan/${loanId}/details`);
+  const { data } = await axios.get(`/user/loan/${loanId}/details`);
   return data;
   // return data?.loan;
 }

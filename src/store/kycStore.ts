@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { KYCStatusData, KYCModalType, KYCState, KYCStep } from '@/types/kycType';
+import type { KYCStatusData, KYCModalType, KYCState, KYCStep, KYCStatus, AdminApprovalStatus } from '@/types/kycType';
 import { kycService } from '@/services/kycService';
 
 type KYCStore = KYCState & {
@@ -184,7 +184,7 @@ export const getKYCStepInfo = (stepNumber: number): KYCStep | undefined => {
 
 export const getKYCStepsWithStatus = (status: KYCStatusData | null): KYCStep[] => {
   return KYC_STEPS.map(step => {
-    const stepStatus = status ? status[step.name] : 'not verified';
+    const stepStatus = status ? (status[step.name] as KYCStatus | AdminApprovalStatus) : 'not verified';
     const isVerified = stepStatus === 'verified';
     
     const shouldShowPending = step.verificationType === 'admin-approval' && isVerified;
@@ -193,7 +193,7 @@ export const getKYCStepsWithStatus = (status: KYCStatusData | null): KYCStep[] =
       ...step,
       completed: isVerified,
       isPending: shouldShowPending,
-      status: stepStatus,
+      status: stepStatus as KYCStatus,
     };
   });
 };
