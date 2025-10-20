@@ -70,7 +70,7 @@ const DashboardTransation= () => {
                             />
                             <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-icon w-4 h-4" />
                     </div> */}
-                    <div className="relative">
+                    <div className="relative hidden sm:flex">
                         <Select>
                             <SelectTrigger className="pl-10">
                                 <SelectValue placeholder="Filter" />

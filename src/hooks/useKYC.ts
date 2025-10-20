@@ -58,7 +58,7 @@ export const useKYC = () => {
     return {
       stepNumber: nextStep,
       stepName: stepInfo?.label || `Step ${nextStep}`,
-      isComplete: nextStep > 5, // All steps completed if nextStep > 5
+      isComplete: isKYCComplete(), // Use the proper KYC completion check
     };
   };
 

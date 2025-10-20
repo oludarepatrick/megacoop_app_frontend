@@ -256,7 +256,7 @@ function CarouselDots({ className, ...props }: React.ComponentProps<"div">) {
           className={cn(
             "h-2 rounded-full transition-all duration-300",
             current === index
-              ? "w-8 bg-megagreen" // Active dot
+              ? "w-6 bg-megagreen" // Active dot
               : "w-2 bg-gray-300 hover:bg-gray-400" // Inactive dot
           )}
           onClick={() => api?.scrollTo(index)}

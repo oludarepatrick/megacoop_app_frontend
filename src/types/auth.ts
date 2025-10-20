@@ -13,6 +13,7 @@ export type User = {
   state?: string;
   city?: string;
   address?: string;
+  amount?: number
 };
 
 export type AuthResponse = {

@@ -35,6 +35,22 @@ export const loginSchema = z.object({
     password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
+export const forgotPasswordEmailSchema = z.object({
+    email: z.string().nonempty("email is required").email("Invalid email format"),
+});
+
+export const sendPasswordSchema = z.object({
+    email: z.string().email("Invalid email"),
+    token: z.string().min(1, "Token is required"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
+    confirmPassword: z.string().min(8, "Confirm Password must be at least 8 characters"),
+}).refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"], // Set the path of the error to confirmPassword field
+});
+
+
+
 // Types - extracted exactly from AuthForm component
 export type AccessCodeFormData = z.infer<typeof accessCodeSchema>;
 export type PersonalInfoFormData = z.infer<typeof personalInfoSchema>;
@@ -44,6 +60,8 @@ export type CombinedFormData = z.infer<typeof combinedSchema>;
 export type CombinedAccessCodeData = AccessCodeFormData & PersonalInfoFormData & AccountInfoFormData;
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type FinalSubmitData = Omit<z.infer<typeof combinedSchema>,"first_name" | "middle_name" | "last_name" | "email" | "phone">;
+export type ForgotPasswordEmailFormData = z.infer<typeof forgotPasswordEmailSchema>;
+export type SendPasswordFormData = z.infer<typeof sendPasswordSchema>;
 
 
 

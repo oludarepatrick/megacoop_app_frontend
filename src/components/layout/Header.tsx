@@ -35,9 +35,9 @@ const Header = ({onMenuToggle}: menuProps) => {
             bg: "bg-card-bg text-theme-text",
             hasSearch: false
         },
-        "/user/message": { 
-            title: "Messages", 
-            bg: "bg-card-bg text-theme-text",
+        "/user/investment": { 
+            title: "Investment", 
+            bg: "bg-megaPrimary text-white",
             hasSearch: false
         },
         "/user/profile": { 

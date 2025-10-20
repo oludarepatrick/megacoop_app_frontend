@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { KYCStatusData, KYCModalType, KYCState, KYCStep } from '@/types/kycType';
+import type { KYCStatusData, KYCModalType, KYCState, KYCStep, KYCStatus, AdminApprovalStatus } from '@/types/kycType';
 import { kycService } from '@/services/kycService';
 
 type KYCStore = KYCState & {
@@ -114,7 +114,10 @@ export const useKYCStore = create<KYCStore>()(
             return step.step;
           }
         }
-        return 6; 
+        
+        // All 5 steps are verified, no more steps needed
+        // We should not return 6 as there is no step 6
+        return 5; // Stay on step 5 if admin hasn't approved yet
       },
 
       isKYCComplete: () => {
@@ -123,7 +126,7 @@ export const useKYCStore = create<KYCStore>()(
 
         const requiredSteps = KYC_STEPS.slice(0, 5); 
         const allStepsVerified = requiredSteps.every(step => status[step.name] === 'verified');
-        const adminApproved = status.admin_approval_status === 'verified';
+        const adminApproved = status.admin_approval_status === 'approved';
         
         return allStepsVerified && adminApproved;
       },
@@ -181,7 +184,7 @@ export const getKYCStepInfo = (stepNumber: number): KYCStep | undefined => {
 
 export const getKYCStepsWithStatus = (status: KYCStatusData | null): KYCStep[] => {
   return KYC_STEPS.map(step => {
-    const stepStatus = status ? status[step.name] : 'not verified';
+    const stepStatus = status ? (status[step.name] as KYCStatus | AdminApprovalStatus) : 'not verified';
     const isVerified = stepStatus === 'verified';
     
     const shouldShowPending = step.verificationType === 'admin-approval' && isVerified;
@@ -190,7 +193,7 @@ export const getKYCStepsWithStatus = (status: KYCStatusData | null): KYCStep[] =
       ...step,
       completed: isVerified,
       isPending: shouldShowPending,
-      status: stepStatus,
+      status: stepStatus as KYCStatus,
     };
   });
 };

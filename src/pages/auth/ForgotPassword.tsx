@@ -9,23 +9,14 @@ import { Input } from '@/components/ui/input';
 // import { Eye, EyeOff } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {  z } from 'zod';
 import { useMutation } from '@tanstack/react-query';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { Button } from '@/components/ui/button';
 import ErrorIcon from '../../assets/Error_icon.png';
 import megacoop_logo from '../../assets/megacoop-logo-1.png';
 import PageLoader from '@/components/PageLoader';
-
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://34.170.169.65/api/v1/';
-
-// Zod schemas
-const sendEmailSchema = z.object({
-    email: z.string().nonempty("email is required").email("Invalid email format"),
-});
-
-type SendEmailFormData = z.infer<typeof sendEmailSchema>;
+import  {forgotPasswordEmailSchema, type ForgotPasswordEmailFormData } from '@/schemas/authSchemas';
+import { authService } from '@/services/authService';
 
 
 const ForgotPassword = () => {
@@ -40,8 +31,8 @@ const ForgotPassword = () => {
 
 
     // forms
-    const SendEmailForm = useForm<SendEmailFormData>({
-        resolver: zodResolver(sendEmailSchema),
+    const SendEmailForm = useForm<ForgotPasswordEmailFormData>({
+        resolver: zodResolver(forgotPasswordEmailSchema),
         defaultValues: {
             email: "",
         },
@@ -49,10 +40,7 @@ const ForgotPassword = () => {
 
     // API mutations
     const sendResetEmailMutation = useMutation({
-        mutationFn: (data: SendEmailFormData) => {
-            return axios.post(`${API_BASE_URL}/auth/forgot-password`, { email: data.email });
-        },
-
+        mutationFn: (data: ForgotPasswordEmailFormData) => authService.forgotPassword(data),
         onSuccess: (data) => {
             console.log("Reset email sent successfully:", data);
             setSuccessMessage("Link for reset password has been sent to this email");
@@ -77,7 +65,7 @@ const ForgotPassword = () => {
     };
 
     // Form handlers
-    const onSendEmailSubmit = (data: SendEmailFormData) => {
+    const onSendEmailSubmit = (data: ForgotPasswordEmailFormData) => {
         sendResetEmailMutation.mutate(data);
         setUserEmail(data.email);
     };

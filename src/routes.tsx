@@ -13,8 +13,7 @@ const Signup = lazy(() => import("./pages/auth/Signup"));
 const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Transactions = lazy(() => import("./pages/Transactions"));
-// const SavingsLoan = lazy(() => import("./pages/SavingsLoan"));
-const LoanDashboard = lazy(() => import("./pages/loans/LoansDashboard"));
+const SavingsLoan = lazy(() => import("./pages/SavingsLoan"));
 const Settings = lazy(() => import("./pages/Settings"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Investment = lazy(() => import("./pages/Investment"));
@@ -98,9 +97,8 @@ export const routes = createBrowserRouter([
                         path: "savings-loan", 
                         element: (
                             <Suspense fallback={<PageLoader/>}>
-                                {/* <Transactions/> */}
-                                <LoanDashboard/>
-                                {/* <SavingsLoan/> */}
+                                {/* <LoanDashboard/> */}
+                                <SavingsLoan/>
                             </Suspense>
                         )
                     },

@@ -1,4 +1,5 @@
 export type KYCStatus = 'verified' | 'not verified' | 'pending';
+export type AdminApprovalStatus = 'approved' | 'not approved' | "pending"
 
 export type KYCStatusData = {
     nin: KYCStatus;
@@ -6,7 +7,7 @@ export type KYCStatusData = {
     valid_id_card: KYCStatus;
     proof_of_address: KYCStatus;
     live_face_verification: KYCStatus;
-    admin_approval_status: KYCStatus;
+    admin_approval_status: AdminApprovalStatus;
 }
 
 export type KYCStatusResponse = {

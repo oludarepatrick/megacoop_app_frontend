@@ -8,11 +8,20 @@ import { Card } from "../ui/card";
 const mockStats = [
     { 
         id: "balance", 
-        title: "Total Balance", 
+        title: "Wallet Balance", 
         amount: 250000, 
         icon: wallet,
         interest: "+1.29%",
         iconbg:"bg-[#FFF2E5]", 
+        interestBg: "bg-[#E5FFF1]",
+    },
+    { 
+        id: "income", 
+        title: "Total Income(ROI)", 
+        amount: 50000, 
+        icon: card,
+        interest: "+1.29%",
+        iconbg:"bg-[#DDFFE7]",
         interestBg: "bg-[#E5FFF1]",
     },
     { 
@@ -23,15 +32,6 @@ const mockStats = [
         interest: "+1.29%",
         iconbg:"bg-[#FFDFF6]",
         interestBg: "bg-[#FFEEEE]",
-    },
-    { 
-        id: "income", 
-        title: "Total Income", 
-        amount: 50000, 
-        icon: card,
-        interest: "+1.29%",
-        iconbg:"bg-[#DDFFE7]",
-        interestBg: "bg-[#E5FFF1]",
     },
     { 
         id: "loan", 
