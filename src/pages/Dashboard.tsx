@@ -5,6 +5,7 @@ import MarketView from "@/components/DashboardComponent/MarketView";
 import SavingGoal from "@/components/SavingGoal";
 
 const Dashboard = () => {
+    
     return (
         <div className="font-poppins">
             <DashboardOverview/>

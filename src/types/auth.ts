@@ -16,6 +16,15 @@ export type User = {
   amount?: number
 };
 
+export type UserWallet = {
+  account_no: string;
+  bank_name: string;
+  balance: string
+  total_savings: number
+  total_loan: number
+  total_income: number
+}
+
 export type AuthResponse = {
   user: User;
   token: string;
@@ -46,3 +55,5 @@ export interface AuthFormProps {
     imgHeight?: number;
     setShowCongratulationsModal: (show: boolean) => void;
 }
+
+

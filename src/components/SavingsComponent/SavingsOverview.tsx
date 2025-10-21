@@ -4,6 +4,7 @@ import SavingsCard from "../SavingsCard";
 import { Button } from "../ui/button";
 import { useState, useEffect } from "react";
 import Watch from "../../assets/watch-product.png"
+import { useUserWallet } from "@/hooks/useAuth";
 
 // Array of product images for carousel
 const productImages = [
@@ -13,10 +14,9 @@ const productImages = [
     Watch, // Replace with different product images
 ];
 
-
-
 const SavingsOverview = () => {
     const user = useAuthStore(state => state.user);
+    const {data} = useUserWallet()
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     
     // Auto-slide carousel every 3 seconds
@@ -38,7 +38,7 @@ const SavingsOverview = () => {
     return (
         <section className="grid grid-cols-1 md:grid-cols-12 gap-4">
             <Card className="md:col-span-8 bg-gradient-to-br from-[#06152A] to-[#0E5D36] p-0 px-6 py-4 text-white md:justify-center">
-                <SavingsCard amount={10000000.00.toLocaleString()} firstName={user?.first_name || "dear"} />
+                <SavingsCard amount={data?.total_savings.toLocaleString() || 0} firstName={user?.first_name || "dear"} />
             </Card>
             <Card className="md:col-span-4 bg-[#06152A] border-none text-white">
                 <CardContent className="px-4">

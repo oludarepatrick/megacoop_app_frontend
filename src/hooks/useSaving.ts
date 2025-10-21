@@ -1,6 +1,6 @@
 import type { SavingFormData } from "@/schemas/savingsPlanSchema"
 import { savingService } from "@/services/savingsService"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import type { AxiosError } from "axios"
 
 export const useCreatePlan = (
@@ -16,5 +16,12 @@ export const useCreatePlan = (
         onError: (error: AxiosError<{message: string}>) => {
             console.log("error creating savings plan", error);
         }
+    })
+}
+
+export const useSavingPlans = () => {
+    return useQuery({
+        queryKey: ["my-plans"],
+        queryFn: savingService.getSavingPlans
     })
 }

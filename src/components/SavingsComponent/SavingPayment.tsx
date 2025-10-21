@@ -10,22 +10,23 @@ import { useState, useEffect } from "react"
 import checkIcon from "../../assets/checkmark-icon.svg"
 import { ChevronRight } from "lucide-react"
 import { Card, CardContent } from "../ui/card"
-import { useAuthStore } from "@/store/authStore"
 import type { SavingFormData } from "@/schemas/savingsPlanSchema"
+import { useUserWallet } from "@/hooks/useAuth"
 
 interface SavingPaymentProps {
     isOpen: boolean
     onClose: () => void
     onSuccess?: () => void
+    isPending?: boolean
     savingData: SavingFormData
 }
 
-const SavingPayment = ({ isOpen, onClose, onSuccess, savingData }: SavingPaymentProps) => {
-    const { user } = useAuthStore()
+const SavingPayment = ({ isOpen, onClose, onSuccess, savingData, isPending }: SavingPaymentProps) => {
+    const {data} = useUserWallet()
     const [paymentMethod, setPaymentMethod] = useState<string | null>(null)
     
     const savingAmount = parseFloat(savingData.amount_saved.replace(/,/g, '')) || 0
-    const walletBalance = user?.amount || 0
+    const walletBalance = Number(data?.balance) || 0
     const isEligible = walletBalance >= savingAmount
     
     useEffect(() => {
@@ -136,7 +137,7 @@ const SavingPayment = ({ isOpen, onClose, onSuccess, savingData }: SavingPayment
                         disabled={!paymentMethod}
                         className="bg-gradient-to-t from-[#105D38] to-[#1BE572] disabled:opacity-50"
                     >
-                        Next<ChevronRight/>
+                        {isPending ? "Processing..." : "Next"} <ChevronRight />
                     </Button>
                     
                 </form>

@@ -3,6 +3,7 @@ import wallet from "../../assets/expense-icon.svg";
 import { Progress } from "../ui/progress";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "../ui/chart";
+import { useUserWallet } from "@/hooks/useAuth";
 
 
 const cashflowData = [
@@ -25,6 +26,7 @@ const chartConfig = {
 } satisfies ChartConfig
 
 const MonthlySavingGoal = ()=> {
+    const {data: totalSaving} = useUserWallet();
     return (
         <Card className="flex-1 min-w-[280px] max-w-full">
             <CardHeader className="flex justify-between gap-4 items-center">
@@ -39,7 +41,7 @@ const MonthlySavingGoal = ()=> {
                     <div className="flex-1 space-y-4 min-w-0">
                         <div className="flex justify-between text-sm gap-2">
                             <span className="truncate">Cashflow</span>
-                            <span className="font-medium whitespace-nowrap">₦30,000,000.00</span>
+                            <span className="font-medium whitespace-nowrap">₦{totalSaving?.total_savings.toLocaleString()}.00</span>
                         </div>
                         <Progress value={40} className="h-2 bg-megaorange" />
                         <p className="text-xs text-muted-foreground break-words">More money left than you made 👀</p>

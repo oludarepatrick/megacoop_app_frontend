@@ -1,5 +1,6 @@
 import axios from '@/lib/axiosInstance';
 import type { SavingFormData } from '@/schemas/savingsPlanSchema';
+import type { SavingPlan } from '@/types/savingType';
 
 export const savingService = {
     createSavingPlan: async (data : SavingFormData) => {
@@ -7,9 +8,9 @@ export const savingService = {
         return response.data
     },
 
-    getSavingPlans: async() => {
-        const response = await axios.post('/savings/my-plans')
-        return response.data;
+    getSavingPlans: async () : Promise<SavingPlan> => {
+        const response = await axios.get('/savings/my-plans')
+        return response.data.data
     }
 
 }

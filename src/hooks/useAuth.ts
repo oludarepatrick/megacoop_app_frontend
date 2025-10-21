@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { authService } from '@/services/authService';
 import { useAuthStore } from '@/store/authStore';
@@ -6,6 +6,7 @@ import type {
     FinalSubmitData,
     CombinedAccessCodeData
 } from '@/schemas/authSchemas';
+// import type { UserWallet } from '@/types/auth';
 
 export const useVerifyAccessCode = (
     onSuccess: (data: CombinedAccessCodeData) => void,
@@ -99,8 +100,6 @@ export const useSubmitSignUpData = (
         },
     });
 };
-
-// Removed useLoginUser - login now happens through OTP verification
 
 export const useVerifyEmailCode = (
     onSuccess: () => void,
@@ -212,3 +211,10 @@ export const useLogout = () => {
         }
     });
 };
+
+export const useUserWallet = () => {
+    return useQuery({
+        queryKey: ["get-user-wallet"],
+        queryFn: authService.getUserWallet,
+    })
+}

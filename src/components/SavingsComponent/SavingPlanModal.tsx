@@ -17,9 +17,14 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form"
 import type { SavingFormData } from "@/schemas/savingsPlanSchema"
 import { SavingPlanSuccessModal } from "./SavingPlanSuccessModal"
 import { useNavigate } from "react-router-dom"
+import { useCreatePlan } from "@/hooks/useSaving"
 
 
 const SavingPlanModal = () => {
+    const {mutate: createPlan, isPending} = useCreatePlan(() => {
+        setShowPaymentModal(false)
+        setSuccessModal(true)}
+    )
     const navigate = useNavigate();
 
     const [showPaymentModal, setShowPaymentModal] = useState(false)
@@ -85,13 +90,13 @@ const SavingPlanModal = () => {
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            <SelectItem value="property-purchase">Property Purchase</SelectItem>
-                                            <SelectItem value="house-rent">House Rent</SelectItem>
-                                            <SelectItem value="personal-project">Personal Project</SelectItem>
-                                            <SelectItem value="car">Car</SelectItem>
-                                            <SelectItem value="home-appliances">Home Appliances</SelectItem>
-                                            <SelectItem value="travelling">Travelling</SelectItem>
-                                            <SelectItem value="others">Others</SelectItem>
+                                            <SelectItem value="Property Purchase">Property Purchase</SelectItem>
+                                            <SelectItem value="House Rent">House Rent</SelectItem>
+                                            <SelectItem value="Personal Project">Personal Project</SelectItem>
+                                            <SelectItem value="Car">Car</SelectItem>
+                                            <SelectItem value="Home Appliances">Home Appliances</SelectItem>
+                                            <SelectItem value="Travelling">Travelling</SelectItem>
+                                            <SelectItem value="Others">Others</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     <FormMessage />
@@ -181,13 +186,18 @@ const SavingPlanModal = () => {
                 <SavingPayment 
                     isOpen={showPaymentModal}
                     onClose={() => setShowPaymentModal(false)}
+                    isPending={isPending}
                     onSuccess={() => {
-                        setShowPaymentModal(false)
-                        setSuccessModal(true)
+                        if(formData) {
+                            createPlan(formData)
+                        }
+                        // setShowPaymentModal(false)
+                        // setSuccessModal(true)
                     }}
                     savingData={formData}
                 />
             )}
+
             {successModal && (
                 <SavingPlanSuccessModal 
                     isOpen={successModal}
