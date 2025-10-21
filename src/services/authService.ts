@@ -7,6 +7,7 @@ import type {
     ForgotPasswordEmailFormData,
     SendPasswordFormData
 } from '@/schemas/authSchemas';
+import type { UserWallet } from '@/types/auth';
 
 export const authService = {
     verifyAccessCode: async (accessCode: AccessCodeFormData) => {
@@ -103,5 +104,10 @@ export const authService = {
     logout: async (): Promise<void> => {
         const response = await axios.get("/user/logout")
         return response.data
+    },
+
+    getUserWallet: async (): Promise<UserWallet> => {
+        const response = await axios.get('/user/get-user-wallet')
+        return response.data.data
     }
 };
