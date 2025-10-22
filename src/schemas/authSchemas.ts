@@ -43,10 +43,10 @@ export const sendPasswordSchema = z.object({
     email: z.string().email("Invalid email"),
     token: z.string().min(1, "Token is required"),
     password: z.string().min(8, "Password must be at least 8 characters"),
-    confirmPassword: z.string().min(8, "Confirm Password must be at least 8 characters"),
-}).refine((data) => data.password === data.confirmPassword, {
+    password_confirmation: z.string().min(8, "Confirm Password must be at least 8 characters"),
+}).refine((data) => data.password === data.password_confirmation, {
     message: "Passwords do not match",
-    path: ["confirmPassword"], // Set the path of the error to confirmPassword field
+    path: ["password_confirmation"], // Set the path of the error to password_confirmation field
 });
 
 
