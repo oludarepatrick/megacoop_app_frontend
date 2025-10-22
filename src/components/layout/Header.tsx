@@ -21,23 +21,23 @@ const Header = ({onMenuToggle}: menuProps) => {
         // Sidebar pages - Default background
         "/user/dashboard": { 
             title: "Dashboard", 
-            bg: "bg-card-bg text-theme-text",
+            bg: "bg-megaPrimary text-white",
             hasSearch: true,
             searchPlaceholder: "Search for transaction, item, etc"
         },
         "/user/savings-loan": { 
             title: "Savings & Loan", 
-            bg: "bg-card-bg text-theme-text",
+            bg: "bg-megaPrimary text-white",
             hasSearch: false
         },
         "/user/market-place": { 
             title: "Market Place", 
-            bg: "bg-card-bg text-theme-text",
+            bg: "bg-megaPrimary text-white",
             hasSearch: false
         },
-        "/user/message": { 
-            title: "Messages", 
-            bg: "bg-card-bg text-theme-text",
+        "/user/investment": { 
+            title: "Investment", 
+            bg: "bg-megaPrimary text-white",
             hasSearch: false
         },
         "/user/profile": { 
@@ -56,6 +56,11 @@ const Header = ({onMenuToggle}: menuProps) => {
             input: "text-icon",
             hasSearch: true,
             searchPlaceholder: "Search for something..."
+        },
+        "/user/cart": { 
+            title: "My Cart", 
+            bg: "bg-megaPrimary text-white",
+            hasSearch: false
         },
        
     };

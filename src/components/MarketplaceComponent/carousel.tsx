@@ -44,10 +44,10 @@ export function Carousel({ items }: CarouselProps) {
   console.log("current.image", current.image)
 
   return (
-    <div className="relative w-full h-64 md:h-80 lg:h-96 rounded-lg  shadow-md">
+    <div className="relative w-full h-full md:h-80 lg:h-96 rounded-lg  shadow-md">
       {/* Carousel Content */}
       <div
-        className={`${current.backgroundColor} w-full h-full flex items-center rounded-lg justify-between px-8 text-white relative`}
+        className={`${current.backgroundColor} w-full h-full flex flex-col-reverse md:flex-row items-center rounded-lg justify-between px-8 py-4 gap-4 text-white relative`}
       >
         {/* Floating Image */}
         <div className="absolute top-0 left-[40%] inset-0 overflow-hidden z-0 pointer-events-none">

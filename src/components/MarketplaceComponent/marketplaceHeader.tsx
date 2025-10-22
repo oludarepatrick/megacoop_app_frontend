@@ -27,7 +27,8 @@ export function MarketplaceHeader({
   }
 
   const handleCartClick = () => {
-    navigate("/cart")
+    // navigate("cart")
+    navigate("/user/cart")
   }
 
   return (

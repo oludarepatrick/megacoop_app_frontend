@@ -1,44 +1,7 @@
-import axios from "axios"
+import axios from "@/lib/axiosInstance";
+import type { InvestmentData, Investment, TrendingStock, AvailableInvestment } from "@/types/investmentType";
+import { simpleInvestment, detailedInvestment } from "@/common/investmentData";
 
-const baseUrl = import.meta.env.VITE_API_URL ?? 'http://34.56.64.14/api/v1/';
-
-
-const apiClient = axios.create({
-  baseURL: baseUrl,
-  timeout: 10000,
-  headers: {
-    "Content-Type": "application/json",
-  },
-})
-
-export interface InvestmentData {
-  totalInvested: number
-  numberOfInvestments: number
-  rateOfReturn: number
-}
-
-export interface ChartDataPoint {
-  year: number
-  investment: number
-  revenue: number
-}
-
-export interface Investment {
-  id: string
-  name: string
-  category: string
-  value: number
-  returnValue: number
-  returnPercentage: number
-  icon: string
-}
-
-export interface TrendingStock {
-  id: string
-  name: string
-  price: number
-  returnPercentage: number
-}
 
 export async function getInvestmentData(): Promise<InvestmentData> {
   try {
@@ -46,10 +9,13 @@ export async function getInvestmentData(): Promise<InvestmentData> {
     // const response = await apiClient.get('/investments/summary')
     // return response.data
 
+    // Get available investments count dynamically
+    // const availableInvestments = await getAvailableInvestments()
+    
     // Dummy data for now
     return {
-      totalInvested: 150000,
-      numberOfInvestments: 1250,
+      totalInvested: 0.00,
+      myInvestments: 0, // Dynamic count
       rateOfReturn: 5.8,
     }
   } catch (error) {
@@ -58,26 +24,6 @@ export async function getInvestmentData(): Promise<InvestmentData> {
   }
 }
 
-export async function getChartData(): Promise<ChartDataPoint[]> {
-  try {
-    // TODO: Will Replace with actual API call when ready
-    // const response = await apiClient.get('/investments/charts')
-    // return response.data
-
-    // Dummy data for now
-    return [
-      { year: 2016, investment: 5000, revenue: 10000 },
-      { year: 2017, investment: 23000, revenue: 15000 },
-      { year: 2018, investment: 16000, revenue: 20000 },
-      { year: 2019, investment: 35000, revenue: 30000 },
-      { year: 2020, investment: 20000, revenue: 25000 },
-      { year: 2021, investment: 28000, revenue: 35000 },
-    ]
-  } catch (error) {
-    console.error("Error fetching chart data:", error)
-    throw error
-  }
-}
 
 export async function getPortfolioData(): Promise<Investment[]> {
   try {
@@ -87,33 +33,25 @@ export async function getPortfolioData(): Promise<Investment[]> {
 
     // Dummy data for now
     return [
-      {
-        id: "1",
-        name: "Apple Store",
-        category: "E-commerce, Marketplace",
-        value: 54000,
-        returnValue: 8640,
-        returnPercentage: 16,
-        icon: "🍎",
-      },
-      {
-        id: "2",
-        name: "Samsung Mobile",
-        category: "E-commerce, Marketplace",
-        value: 25300,
-        returnValue: -1012,
-        returnPercentage: -4,
-        icon: "📱",
-      },
-      {
-        id: "3",
-        name: "Tesla Motors",
-        category: "Electric Vehicles",
-        value: 8200,
-        returnValue: 2050,
-        returnPercentage: 25,
-        icon: "🚗",
-      },
+      // g
+      // {
+      //   id: "2",
+      //   name: "Samsung Mobile",
+      //   category: "E-commerce, Marketplace",
+      //   value: 25300,
+      //   returnValue: -1012,
+      //   returnPercentage: -4,
+      //   icon: "📱",
+      // },
+      // {
+      //   id: "3",
+      //   name: "Tesla Motors",
+      //   category: "Electric Vehicles",
+      //   value: 8200,
+      //   returnValue: 2050,
+      //   returnPercentage: 25,
+      //   icon: "🚗",
+      // },
     ]
   } catch (error) {
     console.error("Error fetching portfolio data:", error)
@@ -141,10 +79,124 @@ export async function getTrendingStocks(): Promise<TrendingStock[]> {
   }
 }
 
+export async function getAvailableInvestments(): Promise<AvailableInvestment[]> {
+  try {
+    // // First hardcoded investment - with simple modal 
+    // const simpleInvestment: AvailableInvestment = {
+    //   card: {
+    //     id: "megacoop-invest-1",
+    //     name: "Pooled Investment Products",
+    //     category: "Savings Plan",
+    //     minInvestment: 100000,
+    //     expectedReturn: '16% - 20%',
+    //     duration: "3 years",
+    //     riskLevel: "Medium",
+    //     image: image1,
+    //     shortDescription: "Start investing with as little as ₦5,000",
+    //     detailType: "pooled"
+    //   },
+    //   modalData: {
+    //     id: "megacoop-invest-1",
+    //     basicDescription: "A straightforward savings plan designed for beginners. Perfect for those looking to start their investment journey with minimal risk and guaranteed returns.",
+    //     poolOption: [
+    //       {
+    //         name: "Starter Pool",
+    //         range: "100k-499,999",
+    //         roi: "16-18%",
+    //         entry: "Entry",
+    //         color: "bg-orange-100 text-orange-800",
+    //         icon: "💼"
+    //       },
+    //       {
+    //         name: "Growth Pool",
+    //         range: "500k-1,999,999",
+    //         roi: "17-19%",
+    //         entry: "Diversified",
+    //         color: "bg-blue-100 text-blue-800",
+    //         icon: "📈"
+    //       },
+    //       {
+    //         name: "Premium Pool",
+    //         range: "2m+",
+    //         roi: "18-20%",
+    //         entry: "Premium",
+    //         color: "bg-green-100 text-green-800",
+    //         icon: "⭐"
+    //       }
+    //     ],
+    //     keyBenefits: [
+    //       "Low minimum investment",
+    //       "Guaranteed returns",
+    //       "Flexible withdrawal options",
+    //       "No hidden charges"
+    //     ],
+    //     requirements: [
+    //       "Minimum age: 18 years",
+    //       "Valid government ID",
+    //       "Bank account for direct debit",
+    //       "Initial deposit of ₦5,000"
+    //     ]
+    //   } as SimpleInvestmentModal
+    // } 
+
+    // // Second hardcoded investment - with detailed modal
+    
+    // const detailedInvestment: AvailableInvestment = {
+    //   card: {
+    //     id: "megacoop-invest-2",
+    //     name: "Housing Projects Investment",
+    //     category: "Real Estate Investment",
+    //     minInvestment: 500000,
+    //     expectedReturn: '16% - 20%',
+    //     duration: "3 years",
+    //     riskLevel: "Medium",
+    //     image: image2,
+    //     shortDescription: "Invest in premium commercial and residential properties",
+    //     detailType: "housing"
+    //   },
+    //   modalData: {
+    //     id: "megacoop-invest-2",
+    //     description: "Our Premium Real Estate Fund offers exposure to carefully selected commercial and residential properties across major metropolitan areas. Properties are managed by experienced real estate professionals with a track record of delivering consistent returns.",
+    //     features: [
+    //       "Quarterly dividend payments",
+    //       "Professional property management",
+    //       "Full insurance coverage included",
+    //       "Early exit option after 18 months with 2% penalty",
+    //       "Monthly performance reports",
+    //       "Direct property ownership certificates"
+    //     ],
+    //     totalSlots: 50,
+    //     availableSlots: 23,
+    //     historicalReturns: [
+    //       { year: 2021, return: 16.2 },
+    //       { year: 2022, return: 19.1 },
+    //       { year: 2023, return: 17.8 }
+    //     ],
+    //     managementFee: 2.5,
+    //     exitTerms: "Early exit allowed after 18 months with 2% penalty fee. Full exit available at maturity with no penalties.",
+    //     documentation: ["Property Portfolio Report", "Legal Documentation", "Insurance Certificates", "Management Agreement"]
+    //   } as DetailedInvestmentModal
+    // }
+
+    // TODO: Fetch additional investments from API when ready
+    // const response = await axios.get('/investments/available')
+    // const apiInvestments = response.data
+    const apiInvestments: AvailableInvestment[] = [] 
+
+    // Combine all investments
+    const allInvestments = [simpleInvestment, detailedInvestment, ...apiInvestments]
+    
+    return allInvestments
+  } catch (error) {
+    console.error("Error fetching available investments:", error)
+    throw error
+  }
+}
+
 export async function createInvestment(investmentData: Partial<Investment>): Promise<Investment> {
   try {
     // TODO: Replace with actual API call when ready
-    const response = await apiClient.post('/investments', investmentData)
+    const response = await axios.post('/investments', investmentData)
     return response.data
 
     // throw new Error("API not implemented yet")
@@ -154,27 +206,3 @@ export async function createInvestment(investmentData: Partial<Investment>): Pro
   }
 }
 
-// export async function updateInvestment(id: string, investmentData: Partial<Investment>): Promise<Investment> {
-//   try {
-//     // TODO: Replace with actual API call when ready
-//     // const response = await apiClient.put(`/investments/${id}`, investmentData)
-//     // return response.data
-
-//     throw new Error("API not implemented yet")
-//   } catch (error) {
-//     console.error("Error updating investment:", error)
-//     throw error
-//   }
-// }
-
-// export async function deleteInvestment(id: string): Promise<void> {
-//   try {
-//     // TODO: Replace with actual API call when ready
-//     // await apiClient.delete(`/investments/${id}`)
-
-//     throw new Error("API not implemented yet")
-//   } catch (error) {
-//     console.error("Error deleting investment:", error)
-//     throw error
-//   }
-// }

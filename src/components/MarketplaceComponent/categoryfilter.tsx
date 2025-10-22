@@ -48,6 +48,20 @@ export function CategoryFilter({ selectedCategories, onCategoryChange }: Categor
             </Button>
           </div>
         ))}
+        {/* Add more categories as needed */}
+        {openDropdowns["more"] && (<div className="absolute mt-2 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+          {/* Dropdown content for more categories */}
+          {CATEGORIES.filter((category) => !selectedCategories.includes(category)).map((category) => (
+            <Button
+              key={category}
+              variant="outline"
+              className="whitespace-nowrap rounded-full text-xs bg-green-50 text-gray-700 border-gray-300 hover:bg-green-100"
+              onClick={() => handleCategorySelect(category)}
+            >
+              {category}
+            </Button>
+          ))}
+        </div>)}
       </div>
     </div>
   )

@@ -89,7 +89,7 @@ export const useSubmitSignUpData = (
 ) => {
     return useMutation({
         mutationFn: ({ data, userProfileDetails }: { data: FinalSubmitData, userProfileDetails: CombinedAccessCodeData | null }) =>
-            authService.submitSignUpData(data, userProfileDetails),
+            authServzice.submitSignUpData(data, userProfileDetails),
         onSuccess: (response) => {
             console.log("submitSignUpData response", response);
             onSuccess();
@@ -192,6 +192,7 @@ export const useResendLoginOtp = (
         },
     });
 };
+
 
 export const useLogout = () => {
     const { logout: logoutFromStore, setIsLoading } = useAuthStore();

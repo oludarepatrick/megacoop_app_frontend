@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { NavLink } from "react-router-dom";
 import { LayoutGrid } from "lucide-react";
 import walletIcon from "../../assets/wallet-icon.svg"
-import messageIcon from "../../assets/message-icon.svg"
+// import messageIcon from "../../assets/message-icon.svg"
 import profileIcon from "../../assets/profile-icon.svg"
 import helpIcon from "../../assets/help-icon.svg"
 import moonIcon from "../../assets/moon-icon.svg"
@@ -37,7 +37,7 @@ const Sidebar = ({onClick}:menuProps) => {
     }
 
     return (
-        <aside className="w-[306px] h-full bg-megaPrimary text-white rounded-r-lg pt-20 px-12 overflow-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative">
+        <aside className="w-[306px] h-full bg-megaPrimary text-white  rounded-br-lg  pt-20 px-12 overflow-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative">
             <Button 
                 variant="ghost" 
                 className="hover:bg-transparent lg:hidden absolute top-4 right-10"
@@ -55,18 +55,13 @@ const Sidebar = ({onClick}:menuProps) => {
                     Savings & Loan
                 </NavLink>
 
-                <NavLink to="market-place" className={activeClass}>
-                    <img src={walletIcon} alt="" aria-hidden="true" />
-                    Market place
-                </NavLink>
-
                 <NavLink to="investment" className={activeClass}>
                     <CircleDollarSign /> Invest
                 </NavLink>
 
-                <NavLink to="message" className={activeClass}>
-                    <img src={messageIcon} alt="" aria-hidden="true" />
-                    Messages
+                <NavLink to="market-place" className={activeClass}>
+                    <img src={walletIcon} alt="" aria-hidden="true" />
+                    Market place
                 </NavLink>
 
                 <NavLink to="profile" className={activeClass}>
