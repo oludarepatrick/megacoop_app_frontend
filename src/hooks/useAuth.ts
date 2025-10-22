@@ -89,7 +89,7 @@ export const useSubmitSignUpData = (
 ) => {
     return useMutation({
         mutationFn: ({ data, userProfileDetails }: { data: FinalSubmitData, userProfileDetails: CombinedAccessCodeData | null }) =>
-            authServzice.submitSignUpData(data, userProfileDetails),
+            authService.submitSignUpData(data, userProfileDetails),
         onSuccess: (response) => {
             console.log("submitSignUpData response", response);
             onSuccess();

@@ -33,8 +33,8 @@ const dummyCartItems: CartItem[] = [
       rating: 4.5,
       reviews: 128,
     },
-    quantity: 123,
-    totalPrice: 184500,
+    quantity: 1,
+    totalPrice: 1500,
   },
   {
     id: "cart-3",
@@ -48,8 +48,8 @@ const dummyCartItems: CartItem[] = [
       rating: 4.5,
       reviews: 128,
     },
-    quantity: 123,
-    totalPrice: 184500,
+    quantity: 1,
+    totalPrice: 1500,
   },
   {
     id: "cart-4",
