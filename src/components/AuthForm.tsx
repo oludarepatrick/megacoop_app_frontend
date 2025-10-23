@@ -121,9 +121,13 @@ const sendPhoneVerification = useSendPhoneVerification(onError);
     const submitSignUpData = useSubmitSignUpData(
         () => {
             // onSignUpStepChange(6);
-            setShowCongratulationsModal(true);
+            setShowCongratulationsModal(true)
+
             onTabChange("login");
             onLoginStepChange(1);
+            setTimeout(() => {
+                setShowCongratulationsModal(false);
+            }, 5000);
         },
         onError
     );

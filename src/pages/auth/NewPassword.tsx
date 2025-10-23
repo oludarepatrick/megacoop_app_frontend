@@ -45,7 +45,7 @@ const NewPassword = () => {
             email,
             token,
             password: "",
-            confirmPassword: "",
+            password_confirmation: "",
         },
     });
 
@@ -141,7 +141,7 @@ const NewPassword = () => {
                                     />
                                 <FormField
                                     control={SendPasswordForm.control}
-                                    name="confirmPassword"
+                                    name="password_confirmation"
                                     render={({ field }) => (
                                         <>
                                          <FormItem>

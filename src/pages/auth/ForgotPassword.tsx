@@ -7,6 +7,7 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 // import { Eye, EyeOff } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -28,6 +29,12 @@ const ForgotPassword = () => {
     const [showErrorModal, setShowErrorModal] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
+
+
+    // function to go back to the login page
+    const handleBackToLogin = () => {
+        navigate('/login');
+    };
 
 
     // forms
@@ -137,10 +144,20 @@ const ForgotPassword = () => {
                 className="absolute -bottom-50 right-[-120px] h-[400px] w-[400px] rounded-full bg-transparent border-[100px] border-[#0F7033] opacity-50 z-0"
             />
 
+            {/* Back to Login floating button */}
+            <Button
+                onClick={handleBackToLogin}
+                className="absolute top-4 left-2 bg-white hover:bg-green-100 border border-gray-300 rounded-full p-2 shadow-md hover:shadow-lg transition z-50 cursor-pointer"
+            >
+                <ChevronLeft className="h-5 w-5 text-gray-600" />
+            </Button>
+
             <AuthCarousel
                 imgHeight={imgHeight}
                 onImgHeightChange={setImgHeight}
             />
+
+
 
 
             <div className="overflow-hidden items-stretch flex justify-center p-4 flex-1 relative">

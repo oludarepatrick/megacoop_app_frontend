@@ -19,6 +19,8 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const Investment = lazy(() => import("./pages/Investment"));
 const NewPassword = lazy(() => import("./pages/auth/NewPassword"));
 const KYCVerification = lazy(() => import("./pages/KYCPage"));
+const Marketplace = lazy(() => import("./pages/Marketplace/Marketplace"));
+const MarketplaceCart = lazy(() => import("./pages/Marketplace/Cart"));
 
 
 
@@ -118,6 +120,22 @@ export const routes = createBrowserRouter([
                             </Suspense>
                         )
                     },
+                    {
+                        path: "market-place",
+                        element: (
+                            <Suspense fallback={<PageLoader/>}>
+                                <Marketplace/>
+                            </Suspense>
+                        )
+                    },
+                    {
+                        path: "cart",
+                        element: (
+                            <Suspense fallback={<PageLoader/>}>
+                                <MarketplaceCart/>
+                            </Suspense>
+                        )
+                    }
                 ]
             }
         ]
