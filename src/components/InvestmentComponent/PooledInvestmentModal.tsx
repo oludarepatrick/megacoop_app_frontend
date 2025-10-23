@@ -1,5 +1,5 @@
 import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from "@/components/ui/dialog"
-import type { AvailableInvestmentCard, SimpleInvestmentModal } from "@/types/investmentType"
+import type { SimpleInvestment } from "@/types/investmentType"
 import { ArrowUpRight, ChartColumnIncreasing, ChartLine, Check, Clock, Info } from "lucide-react"
 import progressline from "@/assets/progress-bar-line.png";
 import { Card, CardContent } from "../ui/card";
@@ -14,11 +14,10 @@ interface PooledInvestmentModalProps {
   isOpen: boolean
   onClose: () => void
   onApply: () => void
-  cardData: AvailableInvestmentCard
-  modalData: SimpleInvestmentModal
+  modalData:  SimpleInvestment
 }
 
-const PooledInvestmentModal = ({isOpen, onClose, onApply, cardData, modalData}: PooledInvestmentModalProps) => {
+const PooledInvestmentModal = ({isOpen, onClose, onApply, modalData}: PooledInvestmentModalProps) => {
     const [termsAccepted, setTermsAccepted] = useState(false)
     const [showError, setShowError] = useState(false)
     
@@ -35,7 +34,7 @@ const PooledInvestmentModal = ({isOpen, onClose, onApply, cardData, modalData}: 
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="font-poppins sm:max-w-2xl p-10 max-h-[90vh] overflow-y-auto scrollbar-hide">
                 <DialogHeader>
-                    <DialogTitle className="text-2xl font-semibold">{cardData.name} Benefit</DialogTitle>
+                    <DialogTitle className="text-2xl font-semibold">{modalData.title} Benefit</DialogTitle>
                     <DialogDescription className="text-megagreen font-semibold">{modalData.basicDescription}</DialogDescription>
                 </DialogHeader>
                 {/*Main content */}
@@ -45,7 +44,7 @@ const PooledInvestmentModal = ({isOpen, onClose, onApply, cardData, modalData}: 
                         <div className="grid grid-cols-2 grid-cols-auto gap-4 text-sm">
                             <div className="p-3 bg-[#D57725] rounded-2xl text-white">
                                 <p className="text-xs font-medium">Minimum Investment</p>
-                                <p className="font-semibold text-sm">{cardData.minInvestment.toLocaleString()}K</p>
+                                <p className="font-semibold text-sm">{modalData.minimum_amount.toLocaleString()}K</p>
                             </div>
                             <div className="p-3 bg-green-50 rounded-lg font-semibold text-xs space-y-1">
                                 <p className="text-gray-500">ROI</p>
@@ -57,7 +56,7 @@ const PooledInvestmentModal = ({isOpen, onClose, onApply, cardData, modalData}: 
                             </div>
                             <div className="p-3 bg-green-50 rounded-lg font-semibold text-xs space-y-1">
                                 <p className="text-gray-500">Risk Level</p>
-                                <p className="font-semibold">Medium</p>
+                                <p className="font-semibold">{modalData.riskLevel}</p>
                             </div>
                         </div>
 
@@ -70,7 +69,7 @@ const PooledInvestmentModal = ({isOpen, onClose, onApply, cardData, modalData}: 
                                         ROI Range
                                     </p>
                                 </div>
-                                <span className="font-semibold">{cardData.expectedReturn}</span>
+                                <span className="font-semibold">{modalData.roi}</span>
                             </div>
                             <img src={progressline} alt="Progress Line" className="w-full mb-2" />
                             <div className="flex flex-wrap gap-2 [&_div]:bg-[#E6F8EE] [&_div]:px-2 [&_div]:py-[2px]  ">
@@ -166,7 +165,7 @@ const PooledInvestmentModal = ({isOpen, onClose, onApply, cardData, modalData}: 
                     </div>
 
                     <div className="max-w-[250px] w-full">
-                        <img src={cardData.image} alt="" aria-hidden="true" className="object-contain w-full h-50" />
+                        <img src={modalData.image} alt="" aria-hidden="true" className="object-contain w-full h-50" />
                     </div>
 
                 </section>

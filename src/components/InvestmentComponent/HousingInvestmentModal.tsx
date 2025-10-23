@@ -1,5 +1,5 @@
 import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/components/ui/dialog"
-import type { AvailableInvestmentCard, DetailedInvestmentModal} from "@/types/investmentType"
+import type { DetailedInvestment} from "@/types/investmentType"
 import { Banknote, Building2, Calendar, Check, House, Key, Play, TrendingUp } from "lucide-react"
 import { Card, CardContent, } from "../ui/card";
 import { Button } from "../ui/button";
@@ -13,11 +13,10 @@ interface HousingInvestmentModalProps {
   isOpen: boolean
   onClose: () => void
   onApply: () => void
-  cardData: AvailableInvestmentCard
-  modalData: DetailedInvestmentModal
+  modalData: DetailedInvestment
 }
 
-const HousingInvestmentModal = ({isOpen, onClose, onApply, cardData, modalData}: HousingInvestmentModalProps) => {
+const HousingInvestmentModal = ({isOpen, onClose, onApply, modalData}: HousingInvestmentModalProps) => {
     const [termsAccepted, setTermsAccepted] = useState(false)
     const [showError, setShowError] = useState(false)
     
@@ -34,13 +33,13 @@ const HousingInvestmentModal = ({isOpen, onClose, onApply, cardData, modalData}:
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="font-poppins sm:max-w-[800px] p-10 max-h-[90vh] overflow-y-auto scrollbar-hide">
                 <DialogHeader>
-                    <DialogTitle className="text-2xl font-semibold">{cardData.name} Benefits</DialogTitle>
+                    <DialogTitle className="text-2xl font-semibold">{modalData.title} Benefits</DialogTitle>
                 </DialogHeader>
                 {/*Main content */}
                 <section className="flex flex-col sm:flex-row gap-4 justify-between items-center py-4">
                     <div className="w-full flex flex-col gap-5">
                         <div className="flex items-center justify-between w-full flex-wrap gap-y-2">
-                            <h4 className="text-sm font-semibold">{cardData.name}</h4> 
+                            <h4 className="text-sm font-semibold">{modalData.title}</h4> 
                             <div className="flex items-center bg-[#F8C060] rounded-full px-2 py-1 gap-1">
                                 <Banknote className="w-4 h-4" />
                                 <p className="text-gray-600 text-xs font-medium">Min: 500K</p>
@@ -50,7 +49,7 @@ const HousingInvestmentModal = ({isOpen, onClose, onApply, cardData, modalData}:
                         <div className="flex flex-wrap items-center gap-2 text-sm font-medium ">
                             <div className="px-2 py-1 rounded-md border border-green-200 text-xs flex gap-2 items-center">
                                 <TrendingUp className="w-3 h-3 text-megagreen" />
-                                {cardData.expectedReturn}
+                                {modalData.roi}
                             </div>
                             <div className="px-2 py-1 rounded-md border border-green-200 text-xs flex gap-2 items-center">
                                 <Calendar className="w-3 h-3 text-megagreen" />
@@ -58,7 +57,7 @@ const HousingInvestmentModal = ({isOpen, onClose, onApply, cardData, modalData}:
                             </div>
                             <div className="flex items-center gap-1 px-2 py-1 rounded-md border border-green-200 text-xs">
                                 <div className="w-2 h-2 bg-megagreen rounded" />
-                                Risk: {cardData.riskLevel}
+                                Risk: {modalData.riskLevel}
                             </div>
 
                         </div>
@@ -102,7 +101,7 @@ const HousingInvestmentModal = ({isOpen, onClose, onApply, cardData, modalData}:
                             ))}
                             <div className="flex items-center gap-1 text-xs text-muted-foreground">
                                 <div className="w-2 h-2 bg-megagreen rounded" />
-                                {cardData.riskLevel} Risk
+                                {modalData.riskLevel} Risk
                             </div>
                         </Card>
 
@@ -217,7 +216,7 @@ const HousingInvestmentModal = ({isOpen, onClose, onApply, cardData, modalData}:
                         </Button>
                     </div>
                     <div className="max-w-[250px] w-full">
-                        <img src={cardData.image} alt="" aria-hidden="true" className="object-contain w-full h-70" />
+                        <img src={modalData.image} alt="" aria-hidden="true" className="object-contain w-full h-70" />
                     </div>
                 </section>
             </DialogContent>

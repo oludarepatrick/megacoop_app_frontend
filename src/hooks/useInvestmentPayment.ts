@@ -1,19 +1,37 @@
 import { useState, useEffect, useMemo } from "react";
-import type { PooledFormData, HousingFormData } from "@/schemas/investSchema";
+import type { PooledFormData, HousingFormData, ApiInvestmentFormData } from "@/schemas/investSchema";
 
-export const useInvestmentPayment = (investData: PooledFormData | HousingFormData, walletBalance: number) => {
+export const useInvestmentPayment = (
+    investData: PooledFormData | HousingFormData | ApiInvestmentFormData, 
+    walletBalance: number
+) => {
     const getMinimumAmount = () => {
-        const type = investData.investmentType;
-        switch (type) {
-            case "starter-pool": return 100000;
-            case "growth-pool": return 500000;
-            case "premium-pool": return 2000000;
-            case "MoFi-housing-fund":
-            case "NHF": return 50000;
-            case "housing-project-investment": return 500000;
-            default: return 100000;
+        // Handle pooled and housing investments
+        if("sub_type" in investData && investData.sub_type){
+            switch(investData.sub_type){
+                // pooled investments
+                case "starter-pool": return 100000;
+                case "growth-pool": return 500000;
+                case "premium-pool": return 2000000;
+                // housing investments
+                case "MoFi-housing-fund":
+                case "NHF": return 50000;
+                case "housing-project-investment": return 500000;
+                // default: return 100000;
+            }
         }
+
+        if ('amount' in investData && investData.amount > 0) {
+            return investData.amount; 
+        }
+
+        return 100000
+        // // Check if it's an API investment (has investment_id instead of investmentType)
+        // if ('investment_id' in investData) {
+        //     return investData.amount; // API investments use the amount from schema as minimum
+        // }
     };
+
     const minimumAmount = useMemo(() => getMinimumAmount(), [investData]);
     const [amount, setAmount] = useState(minimumAmount);
     const [error, setError] = useState("");

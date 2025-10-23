@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { KYCStatusData, KYCModalType, KYCState, KYCStep, KYCStatus, AdminApprovalStatus } from '@/types/kycType';
 import { kycService } from '@/services/kycService';
+import { useAuthStore } from './authStore';
 
 type KYCStore = KYCState & {
   checkKYCStatus: () => Promise<void>;
@@ -35,8 +36,15 @@ export const useKYCStore = create<KYCStore>()(
   persist(
     (set, get) => ({
       ...initialState,
-
+      
       checkKYCStatus: async () => {
+        const {user} = useAuthStore.getState()
+        
+        if (get().modalType === 'none' && get().isKYCComplete() || user?.kyc_status === 1) {
+          return; // User already verified, skip re-setting state or fetching again
+        }
+
+
         set({ isLoading: true });
         
         try {
@@ -53,16 +61,16 @@ export const useKYCStore = create<KYCStore>()(
             return;
           }
 
-          if (typeof response.data === 'string') {
-            set({
-              status: null,
-              currentStep: 1,
-              modalType: 'required',
-              isLoading: false,
-              hasCheckedStatus: true,
-            });
-            return;
-          }
+          // if (typeof response.data === 'string') {
+          //   set({
+          //     status: null,
+          //     currentStep: 1,
+          //     modalType: 'required',
+          //     isLoading: false,
+          //     hasCheckedStatus: true,
+          //   });
+          //   return;
+          // }
 
           const kycData = response.data as KYCStatusData;
           

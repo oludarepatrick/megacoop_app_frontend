@@ -5,8 +5,6 @@ import moneyReceive from "../../assets/money-sent-icon.svg"
 import StatCard from "../StatCard";
 import { Card } from "../ui/card";
 import { useUserWallet } from "@/hooks/useAuth";
-// import PageLoader from "../PageLoader";
-
 
 const DashboardOverview = () => {
     const { data } = useUserWallet();
@@ -15,7 +13,7 @@ const DashboardOverview = () => {
     { 
         id: "balance", 
         title: "Wallet Balance", 
-        amount: Number(data?.balance) || 0, 
+        amount: Number(data?.balance),
         icon: wallet,
         interest: "+1.29%",
         iconbg:"bg-[#FFF2E5]",
@@ -24,7 +22,7 @@ const DashboardOverview = () => {
     { 
         id: "income", 
         title: "Total Income(ROI)", 
-        amount: data?.total_income || 0, 
+        amount: data?.total_income, 
         icon: card,
         interest: "+1.29%",
         iconbg:"bg-[#DDFFE7]",
@@ -33,7 +31,7 @@ const DashboardOverview = () => {
     { 
         id: "savings", 
         title: "Total Savings", 
-        amount: data?.total_savings || 0, 
+        amount: data?.total_savings, 
         icon: moneySent,
         interest: "+1.29%",
         iconbg:"bg-[#FFDFF6]",
@@ -42,15 +40,13 @@ const DashboardOverview = () => {
     { 
         id: "loan", 
         title: "Total Loan", 
-        amount: data?.total_loan || 0, 
+        amount: data?.total_loan, 
         icon: moneyReceive,
         interest: "+1.29%",
         iconbg:"bg-[#FFEBEA]",
         interestBg: "bg-[#FFEEEE]"
     },
 ];
-
-    console.log(data, data?.balance);
 
     return (
         <section className="

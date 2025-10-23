@@ -2,13 +2,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import moneyIcon from "../../assets/money-bag-icon.svg";
 import pieChartIcon from "../../assets/pie-chart-icon.svg";
 import repeatIcon from "../../assets/repeat-icon.svg";
-import type { InvestmentData } from "@/types/investmentType";
+import type { InvestmentData, UserInvestment } from "@/types/investmentType";
 
 interface InvestmentCardsProps {
   data?: InvestmentData;
+  totalInvestment?: UserInvestment[]
 }
 
-export default function InvestmentCards({ data }: InvestmentCardsProps) {
+export default function InvestmentCards({ data, totalInvestment }: InvestmentCardsProps) {
   const cards = [
     {
       title: "Total Invested Amount",
@@ -19,7 +20,7 @@ export default function InvestmentCards({ data }: InvestmentCardsProps) {
     },
     {
       title: "My Investments",
-      value: data?.myInvestments?.toLocaleString() || "0",
+      value: totalInvestment?.length || 0,
       icon: pieChartIcon,
       bgColor: "bg-pink-100",
       iconColor: "text-pink-600",

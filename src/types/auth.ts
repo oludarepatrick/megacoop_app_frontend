@@ -6,7 +6,7 @@ export type User = {
   middle_name: string;
   avatar?: string;
   role?: string;
-  kyc_status?: string | null;
+  kyc_status?: number | null;
   createdAt: string;
   updatedAt: string;
   phone?: string;

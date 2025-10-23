@@ -13,20 +13,23 @@ import { useState, useEffect,
 import checkIcon from "../../assets/checkmark-icon.svg"
 import { ChevronRight, Plus, Minus } from "lucide-react"
 import { Card, CardContent } from "../ui/card"
-import { useAuthStore } from "@/store/authStore"
-import type { PooledFormData, HousingFormData } from "@/schemas/investSchema"
+import type { 
+    // PooledFormData, HousingFormData, ApiInvestmentFormData, 
+    InvestPaymentFormData } from "@/schemas/investSchema"
 import { useInvestmentPayment } from "@/hooks/useInvestmentPayment"
+import { useUserWallet } from "@/hooks/useAuth"
 
 interface InvestPaymentProps {
     isOpen: boolean
     onClose: () => void
-    onProceedToConfirmation: (amount: number) => void
-    investData: PooledFormData | HousingFormData
+    onProceedToConfirmation: (data: InvestPaymentFormData) => void
+    investData:InvestPaymentFormData
 }
 
 const InvestPayment = ({ isOpen, onClose, onProceedToConfirmation, investData }: InvestPaymentProps) => {
-    const { user } = useAuthStore()
-    const walletBalance = user?.amount || 0;
+    // const { user } = useAuthStore()
+    const {data} = useUserWallet()
+    const walletBalance = Number(data?.balance) || 0;
     const [paymentMethod, setPaymentMethod] = useState<string | null>(null)
 
     const {
@@ -180,12 +183,12 @@ const InvestPayment = ({ isOpen, onClose, onProceedToConfirmation, investData }:
                             })
                             
                             // Don't call onClose() here - let the parent handle modal transitions
-                            onProceedToConfirmation(investmentAmount)
+                            onProceedToConfirmation({...investData, amount: investmentAmount})
                         }}
-                        disabled={!paymentMethod || !!amountError || investmentAmount < minimumAmount}
+                        disabled={!paymentMethod || !!amountError || investmentAmount < minimumAmount || paymentMethod==="bank"}
                         className="bg-gradient-to-t from-[#105D38] to-[#1BE572] disabled:opacity-50"
                     >
-                        Continue to Confirmation<ChevronRight/>
+                        Proceed<ChevronRight/>
                     </Button>
                     
                 </form>
