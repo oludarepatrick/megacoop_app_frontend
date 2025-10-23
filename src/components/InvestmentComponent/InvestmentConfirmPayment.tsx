@@ -4,11 +4,13 @@ import walletBcg from "../../assets/wallet-background.png"
 import starCoin1 from "../../assets/star-coin-1.png"
 import starCoin2 from "../../assets/star-coin-2.png"
 import { Label } from "../ui/label"
-import { useAuthStore } from "@/store/authStore"
-import type { PooledFormData, HousingFormData } from "@/schemas/investSchema"
+import type { 
+    // PooledFormData, HousingFormData, 
+    InvestPaymentFormData } from "@/schemas/investSchema"
 import warningIcon from "@/assets/warning-icon.svg"
 import { CancelModal } from "./investmentSecondaryModals"
 import { useState } from "react"
+import { useApplyInvestment } from "@/hooks/useInvestment"
 
 interface InvestmentConfirmPaymentProps {
     isOpen: boolean
@@ -16,51 +18,36 @@ interface InvestmentConfirmPaymentProps {
     onCancel: () => void
     onSuccess: () => void
     onFailure: () => void
-    investData: PooledFormData | HousingFormData
+    investData: InvestPaymentFormData
     amount: number
 }
 
 const InvestmentConfirmPayment = ({ isOpen, onCancel, onClose, onSuccess, onFailure, investData, amount }: InvestmentConfirmPaymentProps) => {
-    const { user } = useAuthStore()
-    const [isProcessing, setIsProcessing] = useState(false)
+    const {mutate: applyInvestment, isPending} = useApplyInvestment()
+
     const [showCancelModal, setShowCancelModal] = useState(false)
     
     const investmentAmount = amount
     
-    // Simulate payment processing
+    
     const processPayment = async () => {
-        setIsProcessing(true)
-        
-        try {
-            // TODO: Replace with actual payment API call
-            const paymentData = {
-                investmentType: investData.investmentType,
-                amount: investmentAmount,
-                userId: user?.id
-            }
-            
-            console.log('Processing payment:', paymentData)
-            
-            // Simulate API call with delay
-            await new Promise(resolve => setTimeout(resolve, 2000))
-            
-            // Simulate 90% success rate for demo
-            const isSuccess = Math.random() > 0.1
-            
-            if (isSuccess) {
-                onClose()
+        const paymentData : InvestPaymentFormData = {
+            ...investData, 
+            amount: investmentAmount,
+        }
+
+        applyInvestment(paymentData, {
+            onSuccess: () => {
+                onClose();
                 onSuccess()
-            } else {
+            },
+            onError: (error) => {
+                console.error("Investment application failed:", error)
                 onClose()
                 onFailure()
             }
-        } catch (error) {
-            console.error('Payment failed:', error)
-            onClose()
-            onFailure()
-        } finally {
-            setIsProcessing(false)
-        }
+        })
+        
     }
     
     const handleCancelConfirmation = () => {
@@ -113,7 +100,7 @@ const InvestmentConfirmPayment = ({ isOpen, onCancel, onClose, onSuccess, onFail
                             <img src={warningIcon} alt="warning-icon" />
                         </div>
                         <p className="text-sm font-bold">
-                            Initiating Transaction! Understand that {investmentAmount} 
+                            Initiating Transaction! Understand that {formatAmount(investmentAmount)} {" "} 
                             Will be Deducted Automatically from your Account. Click on 
                             Pay now to Continue or Cancel to Terminate the Transaction.
                         </p>
@@ -121,16 +108,16 @@ const InvestmentConfirmPayment = ({ isOpen, onCancel, onClose, onSuccess, onFail
                     
                     <Button 
                         onClick={processPayment}
-                        disabled={isProcessing}
+                        disabled={isPending}
                         className="bg-gradient-to-t from-[#105D38] to-[#1BE572] disabled:opacity-50"
                     >
-                        {isProcessing ? 'Processing...' : 'Pay Now'}
+                        {isPending ? 'Processing...' : 'Pay Now'}
                     </Button>
                     
                     <Button 
                         variant="outline" 
                         onClick={() => setShowCancelModal(true)}
-                        disabled={isProcessing}
+                        disabled={isPending}
                         className="border-red-500 text-red-500 hover:bg-red-50"
                     >
                         Cancel Transaction

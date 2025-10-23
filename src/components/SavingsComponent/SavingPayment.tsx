@@ -109,11 +109,11 @@ const SavingPayment = ({ isOpen, onClose, onSuccess, savingData, isPending }: Sa
                                     </div>
                                     <div className="text-[11px] space-y-1">
                                         <h3 className="font-medium ">Bank</h3>
-                                        <p className="text-megagreen">GTBank</p>
+                                        <p className="text-megagreen">{data?.bank_name}</p>
                                     </div>
                                     <div className="text-[11px] space-y-1">
                                         <h3 className="font-medium">Account Number</h3>
-                                        <p className="text-megagreen">2034567804</p>
+                                        <p className="text-megagreen">{data?.account_no}</p>
                                     </div>
                                     <div className="text-[11px] space-y-1">
                                         <h3 className="font-medium">Account Name</h3>

@@ -4,7 +4,7 @@ import { EllipsisVertical } from "lucide-react";
 
 type StatProps = {
     title: string;
-    amount: number;
+    amount: number | undefined;
     icon: string;
     interest: string;
     iconbg: string;
@@ -24,12 +24,14 @@ const StatCard= ({title, amount, icon, interest, iconbg, interestBg}:StatProps) 
                 <h3 className="text-text-muted font-medium text-[13px]">{title}</h3>
                 <div className="flex justify-between gap-2">
                     {/* <p className="text-[22px] font-bold">₦{amount.toLocaleString()}<span className="text-base">.00</span></p> */}
-                    <p className="text-[22px] font-bold">
-                        ₦{Number(amount).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-                        <span className="text-base">
-                            .{String(Number(amount).toFixed(2)).split(".")[1] || "00"}
-                        </span>
-                    </p>
+                    {amount === undefined? <span className=" block animate-spin rounded-full h-4 w-4 border-b-2 border-megagreen my-2"></span> : (
+                        <p className="text-[22px] font-bold">
+                            ₦{Number(amount).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                            <span className="text-base">
+                                .{String(Number(amount).toFixed(2)).split(".")[1] || "00"}
+                            </span>
+                        </p>
+                    )}
 
                     <span className={`flex items-center justify-center text-xs font-medium px-2 rounded text-dark ${interestBg} rounded-2xl`}>
                         {interest}
