@@ -64,6 +64,8 @@ export async function fetchCreditLimit() {
 
 export async function fetchLoans() {
   // replace this with real endpoint
+  // const { data } = await axiosInstance.get(`${API_BASE_URL}user/loan/dashboard`);
+  // console.log(data);
   const { data } = await axios.get('/user/loans');
   return data?.loans;
 }

@@ -7,6 +7,7 @@ import CompleteKYCModal from "../KYC/KYCRequiredModal";
 import KYCContinueModal from "../KYC/KYCContinueModal";
 import KYCPendingModal from "../KYC/KYCPendingModal";
 import { useLogout } from "@/hooks/useAuth";
+import { Toaster } from "../ui/sonner";
 import { useKYCModal } from "@/hooks/useKYC";
 
 const DashboardLayout = () => {
@@ -98,6 +99,9 @@ const DashboardLayout = () => {
                 isOpen={showModal && modalType === 'pending'}
                 onClose={handleKYCClose}
             />
+
+            {/* ✅ Global Toaster (for protected routes only) */}
+            <Toaster richColors position="top-right" />
 
         </div>
     )
