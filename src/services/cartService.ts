@@ -2,6 +2,8 @@ import type { Cart, CartItem, RecommendationProduct } from "@/types/cartTypes"
 import axios from '@/lib/axiosInstance';
 import imageTomatoes from "@/assets/marketplace/organic-apples.png";
 import imageRecommendation from "@/assets/marketplace/smartwatch-lifestyle.png";
+import { dummyProducts } from "@/services/marketplaceService";
+import { jsonConfig } from "@/common/utils";
 
 
 // Dummy cart data
@@ -13,7 +15,7 @@ const dummyCartItems: CartItem[] = [
       name: "Sweet Green Seedless Grapes 1.5-2 lb",
       description: "Fresh and juicy grapes",
       price: 1500,
-      image: imageTomatoes,
+      images:[imageTomatoes],
       category: "Premium Fruits",
       rating: 4.5,
       reviews: 128,
@@ -28,7 +30,7 @@ const dummyCartItems: CartItem[] = [
       name: "Sweet Green Seedless Grapes 1.5-2 lb",
       description: "Fresh and juicy grapes",
       price: 1500,
-      image: imageTomatoes,
+      images: [imageTomatoes],
       category: "Premium Fruits",
       rating: 4.5,
       reviews: 128,
@@ -43,7 +45,7 @@ const dummyCartItems: CartItem[] = [
       name: "Sweet Green Seedless Grapes 1.5-2 lb",
       description: "Fresh and juicy grapes",
       price: 1500,
-      image: imageTomatoes,
+      images: [imageTomatoes],
       category: "Premium Fruits",
       rating: 4.5,
       reviews: 128,
@@ -58,7 +60,7 @@ const dummyCartItems: CartItem[] = [
       name: "Sweet Green Seedless Grapes 1.5-2 lb",
       description: "Fresh and juicy grapes",
       price: 1500,
-      image: imageTomatoes,
+      images: [imageTomatoes],
       category: "Premium Fruits",
       rating: 4.5,
       reviews: 128,
@@ -74,7 +76,7 @@ const dummyRecommendations: RecommendationProduct[] = [
     name: "Comfortable Armchair",
     description: "This is product a",
     price: 9999,
-    image: imageRecommendation,
+    images: [imageRecommendation],
     category: "Home & Kitchen",
     rating: 4.5,
     reviews: 128,
@@ -85,7 +87,7 @@ const dummyRecommendations: RecommendationProduct[] = [
     name: "Fresh Flowers Bouquet",
     description: "This is product a",
     price: 9999,
-    image: imageRecommendation,
+    images: [imageRecommendation],
     category: "Premium Fruits",
     rating: 4.5,
     reviews: 128,
@@ -96,7 +98,7 @@ const dummyRecommendations: RecommendationProduct[] = [
     name: "Gold Necklace",
     description: "This is product a",
     price: 9999,
-    image: imageRecommendation,
+    images: [imageRecommendation],
     category: "Fashion",
     rating: 4.5,
     reviews: 128,
@@ -107,7 +109,7 @@ const dummyRecommendations: RecommendationProduct[] = [
     name: "Premium Watch",
     description: "This is product a",
     price: 9999,
-    image: imageRecommendation,
+    images: [imageRecommendation],
     category: "Electronics",
     rating: 4.5,
     reviews: 128,
@@ -121,7 +123,7 @@ const dummyRecommendations: RecommendationProduct[] = [
 export const getCart = async (): Promise<Cart> => {
   try {
     // TODO: Replace with actual API call when ready
-    // const response = await axios.get(`${API_BASE_URL}/cart`)
+    // const response = await axios.get(`/markets/cart`)
     // return response.data
 
     await new Promise((resolve) => setTimeout(resolve, 300))
@@ -138,6 +140,36 @@ export const getCart = async (): Promise<Cart> => {
     }
   } catch (error) {
     console.error("Error fetching cart:", error)
+    throw error
+  }
+}
+
+export const addToCart = async (productId: string, quantity: number = 1): Promise<CartItem> => {
+  try {
+    // TODO: Replace with actual API call when ready
+    const response = await axios.post(`/markets/cart/add`, {
+      product_id: productId,
+      quantity
+    }, jsonConfig)
+    console.log("Add to cart response:", response.data);
+    // return response.data
+
+    await new Promise((resolve) => setTimeout(resolve, 300))
+
+    const product = dummyProducts.find((p) => p.id === productId)
+    if (!product) throw new Error("Product not found")
+
+    const newItem: CartItem = {
+      id: `cart-${Date.now()}`,
+      product,
+      quantity,
+      totalPrice: product.price * quantity,
+    }
+
+    dummyCartItems.push(newItem)
+    return newItem
+  } catch (error) {
+    console.error("Error adding to cart:", error)
     throw error
   }
 }

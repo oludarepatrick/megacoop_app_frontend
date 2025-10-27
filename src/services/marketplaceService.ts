@@ -1,4 +1,5 @@
 // import axiosInstance from '@/lib/axiosInstance';
+import axios from '@/lib/axiosInstance';
 // import { formConfig, jsonConfig } from '@/common/utils';
 import SmartWatch from "@/assets/marketplace/smartwatch-lifestyle.png";
 import ElectronicsGadgets from "@/assets/marketplace/electronics-gadgets.png";
@@ -19,17 +20,32 @@ import type { CarouselItem, FilterType, Product, RecentlyViewed } from "@/types/
 // const API_BASE_URL = process.env.VITE_API_BASE_URL ?? 'https://api.schooldrive.com.ng/api/v1/';
 // const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://api.schooldrive.com.ng/api/v1/';
 
+export interface PaginatedProductsResponse {
+  status: boolean;
+  message: string;
+  data: {
+    current_page: number;
+    data: Product[];
+    first_page_url?: string;
+    last_page: number;
+    next_page_url?: string | null;
+    prev_page_url?: string | null;
+    per_page: number;
+    total: number;
+  };
+}
 
 
 
 // Dummy Data
-const dummyProducts: Product[] = [
+export const dummyProducts: Product[] = [
   {
     id: "1",
     name: "Fresh Tomatoes",
     description: "Lorem ipsum dolor sit amet consectetur",
     price: 3200,
-    image: FreshTomatoes,
+    // image: FreshTomatoes,
+    images: [FreshTomatoes],
     category: "Groceries",
     rating: 4.5,
     reviews: 128,
@@ -39,7 +55,7 @@ const dummyProducts: Product[] = [
     name: "Organic Apples",
     description: "Lorem ipsum dolor sit amet consectetur",
     price: 1700,
-    image: OrganicApples,
+    images: [OrganicApples],
     category: "Premium Fruits",
     rating: 4.8,
     reviews: 256,
@@ -49,7 +65,7 @@ const dummyProducts: Product[] = [
     name: "Coffee Maker",
     description: "Lorem ipsum dolor sit amet consectetur",
     price: 5400,
-    image: CoffeeMaker,
+    images: [CoffeeMaker],
     category: "Home & Kitchen",
     rating: 4.3,
     reviews: 89,
@@ -59,7 +75,7 @@ const dummyProducts: Product[] = [
     name: "Casual T-Shirt",
     description: "Lorem ipsum dolor sit amet consectetur",
     price: 2100,
-    image: CasualTShirt,
+    images: [CasualTShirt],
     category: "Fashion",
     rating: 4.6,
     reviews: 342,
@@ -69,7 +85,7 @@ const dummyProducts: Product[] = [
     name: "Wireless Headphones",
     description: "Lorem ipsum dolor sit amet consectetur",
     price: 8900,
-    image: WirelessHeadphones,
+    images: [WirelessHeadphones],
     category: "Electronics",
     rating: 4.7,
     reviews: 512,
@@ -79,7 +95,7 @@ const dummyProducts: Product[] = [
     name: "Face Cream",
     description: "Lorem ipsum dolor sit amet consectetur",
     price: 4200,
-    image: FaceCreamDisplay,
+    images: [FaceCreamDisplay],
     category: "Beauty",
     rating: 4.4,
     reviews: 178,
@@ -89,7 +105,7 @@ const dummyProducts: Product[] = [
     name: "Paint Brush Set",
     description: "Lorem ipsum dolor sit amet consectetur",
     price: 1500,
-    image: PaintBrushSet,
+    images: [PaintBrushSet],
     category: "Home Improvement",
     rating: 4.2,
     reviews: 67,
@@ -99,7 +115,7 @@ const dummyProducts: Product[] = [
     name: "Running Shoes",
     description: "Lorem ipsum dolor sit amet consectetur",
     price: 6800,
-    image: RunningShoes,
+    images: [RunningShoes],
     category: "Sports, Toys & Luggage",
     rating: 4.9,
     reviews: 423,
@@ -164,13 +180,25 @@ const dummyRecentlyViewed: RecentlyViewed[] = [
   },
 ]
 
-
+export const CATEGORIES = [
+  "Groceries",
+  "Premium Fruits",
+  "Home & Kitchen",
+  "Fashion",
+  "Electronics",
+  "Beauty",
+  "Home Improvement",
+  "Sports, Toys & Luggage",
+]
 
 // Service Functions
-export const getProducts = async (category?: string): Promise<Product[]> => {
+export const getProducts = async (
+  category?: string
+  // , page?: number
+): Promise<Product[]> => {
   try {
     // TODO: Replace with actual API call when ready
-    // const response = await axios.get(`${API_BASE_URL}/products`, {
+    // const response = await axios.get(`/markets/products?page=${page}`, {
     //   params: { category }
     // })
     // return response.data
@@ -188,10 +216,39 @@ export const getProducts = async (category?: string): Promise<Product[]> => {
   }
 }
 
+export const getAllProducts = async (page = 1): Promise<PaginatedProductsResponse> => {
+  try {
+    // TODO: Replace with actual API call when ready
+    const response = await axios.get(`/markets/products?page=${page}`)
+    console.log("All Products Response:", response)
+    // return response
+
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    return {
+      status: true,
+      message: "Products fetched successfully",
+      data: {
+        current_page: page,
+        data: dummyProducts,
+        first_page_url: `/markets/products?page=1`,
+        last_page: 1,
+        next_page_url: null,
+        prev_page_url: null,
+        per_page: dummyProducts.length,
+        total: dummyProducts.length,
+      },
+    } 
+    
+  } catch (error) {
+    console.error("Error fetching all products:", error)
+    throw error
+  }
+}
+
 export const getProductById = async (id: string): Promise<Product | null> => {
   try {
     // TODO: Replace with actual API call when ready
-    // const response = await axios.get(`${API_BASE_URL}/products/${id}`)
+    // const response = await axios.get(`/markets/products/${id}`)
     // return response.data
 
     await new Promise((resolve) => setTimeout(resolve, 200))
@@ -205,7 +262,7 @@ export const getProductById = async (id: string): Promise<Product | null> => {
 export const searchProducts = async (query: string): Promise<Product[]> => {
   try {
     // TODO: Replace with actual API call when ready
-    // const response = await axios.get(`${API_BASE_URL}/products/search`, {
+    // const response = await axios.get(`/products/search`, {
     //   params: { q: query }
     // })
     // return response.data
@@ -227,7 +284,7 @@ export const searchProducts = async (query: string): Promise<Product[]> => {
 export const filterProducts = async (products: Product[], filterType: FilterType): Promise<Product[]> => {
   try {
     // TODO: Replace with actual API call when ready
-    // const response = await axios.post(`${API_BASE_URL}/products/filter`, {
+    // const response = await axios.post(`/products/filter`, {
     //   products,
     //   filterType
     // })
@@ -283,13 +340,4 @@ export const getRecentlyViewed = async (): Promise<RecentlyViewed[]> => {
   }
 }
 
-export const CATEGORIES = [
-  "Groceries",
-  "Premium Fruits",
-  "Home & Kitchen",
-  "Fashion",
-  "Electronics",
-  "Beauty",
-  "Home Improvement",
-  "Sports, Toys & Luggage",
-]
+
