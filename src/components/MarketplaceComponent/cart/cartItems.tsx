@@ -11,8 +11,9 @@ interface CartItemsProps {
 
 export function CartItems({ items, onQuantityChange, onRemove }: CartItemsProps) {
   return (
+    <>
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-gray-900">Items Name</h3>
+      {/* <h3 className="text-lg font-semibold text-gray-900">Items Name</h3> */}
 
       {items.map((item) => (
         <div key={item.id} className="flex flex-col lg:flex-row  gap-4 p-4 bg-white rounded-lg border border-gray-200">
@@ -74,6 +75,7 @@ export function CartItems({ items, onQuantityChange, onRemove }: CartItemsProps)
           </div>
         </div>
       ))}
-    </div>
+      </div>
+    </>
   )
 }
