@@ -54,11 +54,11 @@ export function Carousel({ items }: CarouselProps) {
           <img
             src={floatingImg}
             alt={current.subtitle}
-            className=" h-full object-cover z-0"
+            className=" md:h-full object-cover z-0"
           />
         </div>
         {/* Left Content */}
-        <div className="flex-1 z-10">
+        <div className="flex-1 z-10 bg-transparent">
           <p className="text-sm md:text-base text-gray-300 mb-2">{current.title}</p>
           <h2 className="text-3xl md:text-5xl font-bold mb-2">{current.subtitle}</h2>
           <p className="text-lg md:text-2xl font-semibold mb-4">{current.description}</p>

@@ -55,7 +55,7 @@ export function RecommendationsCarousel({ products, onAddToCart }: Recommendatio
           <Card key={product.id} className="overflow-hidden bg-green-50 border-0 p-0 hover:shadow-lg transition-shadow cursor-pointer">
             <div className="relative w-full h-48 bg-green-100 overflow-hidden">
               <img
-                src={product.image || "/placeholder.svg"}
+                src={product.images[0] || "/placeholder.svg"}
                 alt={product.name}
                 className="w-full h-full object-cover"
               />

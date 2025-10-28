@@ -15,7 +15,7 @@ export function ProductCard({ product, onClick, onAddToCart }: ProductCardProps)
       {/* Product Image */}
       <div className="relative w-full h-48 bg-gray-100 overflow-hidden">
         <img
-          src={product.image || "/placeholder.svg"}
+          src={product.images[0] || "/placeholder.svg"}
           alt={product.name}
           className="w-full h-full object-cover hover:scale-105 transition-transform"
         />
