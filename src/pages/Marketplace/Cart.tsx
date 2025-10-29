@@ -17,6 +17,7 @@ import { MarketplaceHeader } from "@/components/MarketplaceComponent/marketplace
 import type { Cart } from "@/types/cartTypes"
 import { CartItems } from "@/components/MarketplaceComponent/cart/cartItems"
 import { OrderSummary} from "@/components/MarketplaceComponent/cart/orderSummary"
+import { getDisplayDate } from "@/common/utils"
 
 export default function CartPage() {
   const navigate = useNavigate()
@@ -171,7 +172,7 @@ export default function CartPage() {
       <MarketplaceHeader cartCount={cartCount} onSearch={() => {}} />
 
       {/* Cart Content */}
-      <div className="max-w-7xl mx-auto px-4 py-6">
+      <div className="max-w-7xl mx-auto  py-6">
         {/* Top Info */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
           <div className="flex items-center gap-4">
@@ -184,7 +185,7 @@ export default function CartPage() {
           <div className="flex flex-col md:flex-row gap-4">
             <Button variant="outline" className="flex items-center gap-2 bg-transparent">
               <Calendar className="w-5 h-5" />
-              Wed 123
+              {getDisplayDate()}
             </Button>
             <div className="text-right">
               <p className="text-sm font-semibold text-gray-900">Free delivery + saving $3.00 on this order</p>
@@ -194,7 +195,8 @@ export default function CartPage() {
         </div>
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">Cart Items</h3>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 mb-12">
           {/* Cart Items */}
           <div className="lg:col-span-2">
             <CartItems items={cart.items} onQuantityChange={handleQuantityChange} onRemove={handleRemoveItem} />

@@ -198,8 +198,8 @@ export const getProducts = async (
 ): Promise<Product[]> => {
   try {
     // TODO: Replace with actual API call when ready
-    // const response = await axios.get(`/markets/products?page=${page}`, {
-    //   params: { category }
+    // const response = await axios.get(`/markets/products/by-category?page=${page}`, {
+    //   category_name: category
     // })
     // return response.data
 
@@ -262,9 +262,12 @@ export const getProductById = async (id: string): Promise<Product | null> => {
 export const searchProducts = async (query: string): Promise<Product[]> => {
   try {
     // TODO: Replace with actual API call when ready
-    // const response = await axios.get(`/products/search`, {
-    //   params: { q: query }
-    // })
+    const response = await axios.get(`/products/search`, {
+      params: {
+        product_name: query
+      }
+    })
+    console.log("Search Products Response:", response)
     // return response.data
 
     await new Promise((resolve) => setTimeout(resolve, 300))

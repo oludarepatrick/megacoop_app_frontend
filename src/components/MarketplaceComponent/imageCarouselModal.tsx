@@ -23,11 +23,13 @@ export function ImageCarouselModal({ images, initialIndex, isOpen, onClose }: Im
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl w-full h-screen max-h-screen p-0 bg-black border-0">
+      {/* <DialogContent className="max-w-4xl w-full h-screen max-h-screen p-0 bg-transparent/70 border-0"> */}
+      <DialogContent className="max-w-4xl w-full h-screen max-h-screen p-0 bg-white/10 border-0 backdrop-blur-md shadow-xl rounded-2xl">
+
         <DialogClose asChild>
                 <Button
                   variant="ghost"
-                  className="absolute right-3 top-4 z-50 h-8 w-8 p-0 rounded-full bg-green-600 hover:bg-white text-gray-600 hover:text-gray-800 shadow-sm"
+                  className="absolute right-3 top-4 z-50 h-8 w-8 p-0 rounded-full bg-green-200 hover:bg-white text-gray-600 hover:text-gray-800 shadow-sm"
                   onClick={onClose}
                 >
                   <X className="h-4 w-4" />
@@ -46,7 +48,7 @@ export function ImageCarouselModal({ images, initialIndex, isOpen, onClose }: Im
           <Button
             variant="ghost"
             size="icon"
-            className="absolute left-4 top-1/2 -translate-y-1/2 bg-green-600/20 hover:bg-white/40 text-white rounded-full"
+            className="absolute left-4 top-1/2 -translate-y-1/2 bg-green-600/40 hover:bg-white/40 text-white rounded-full"
             onClick={handlePrevious}
           >
             <ChevronLeft className="w-6 h-6" />
@@ -56,7 +58,7 @@ export function ImageCarouselModal({ images, initialIndex, isOpen, onClose }: Im
           <Button
             variant="ghost"
             size="icon"
-            className="absolute right-4 top-1/2 -translate-y-1/2 bg-green-600/20 hover:bg-white/40 text-white rounded-full"
+            className="absolute right-4 top-1/2 -translate-y-1/2 bg-green-600/40 hover:bg-white/40 text-white rounded-full"
             onClick={handleNext}
           >
             <ChevronRight className="w-6 h-6" />

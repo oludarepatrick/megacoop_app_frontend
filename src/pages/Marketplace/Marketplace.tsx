@@ -126,7 +126,7 @@ refetchInterval: 300000,
     }
   } catch (error) {
     console.error("Error adding to cart:", error)
-    toast("Error", {
+    toast.error("Error", {
       description: `Failed to add ${product.name} to cart. Please try again.`,
       // variant: "destructive",
       })

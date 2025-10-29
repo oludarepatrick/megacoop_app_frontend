@@ -14,7 +14,7 @@ export function OrderSummary({ cart, onCheckout, isLoading }: OrderSummaryProps)
 //   const navigate = useNavigate()
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6 sticky top-24 h-fit">
+    <div className="bg-white rounded-lg border border-gray-200 p-4 sticky top-24 h-fit">
       <h3 className="text-lg font-semibold text-gray-900 mb-6">Order Summary</h3>
 
       <div className="space-y-4 mb-6">
@@ -33,13 +33,13 @@ export function OrderSummary({ cart, onCheckout, isLoading }: OrderSummaryProps)
       </div>
 
       <Button
-        className="w-full bg-green-600 hover:bg-green-700 text-white py-6 text-lg font-semibold"
+        className="w-full bg-green-600 hover:bg-green-700 text-white py-6 text-md font-semibold"
         onClick={onCheckout}
         disabled={isLoading || cart.items.length === 0}
       >
-        <ShoppingCart className="w-5 h-5 mr-2" />
+        <ShoppingCart className="w-3 h-3 " />
         Checkout
-        <span className="ml-2">₦{cart.total.toLocaleString()}</span>
+        <span className="ml-1">₦{cart.total.toLocaleString()}</span>
       </Button>
     </div>
   )

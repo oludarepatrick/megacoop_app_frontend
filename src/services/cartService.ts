@@ -151,7 +151,7 @@ export const addToCart = async (productId: string, quantity: number = 1): Promis
       product_id: productId,
       quantity
     }, jsonConfig)
-    console.log("Add to cart response:", response.data);
+    console.log("Add to cart response:", response);
     // return response.data
 
     await new Promise((resolve) => setTimeout(resolve, 300))
