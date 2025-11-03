@@ -11,7 +11,8 @@ interface OrderSummaryProps {
 }
 
 export function OrderSummary({ cart, onCheckout, isLoading }: OrderSummaryProps) {
-//   const navigate = useNavigate()
+  //   const navigate = useNavigate()
+  console.log("OrderSummary cart:", cart)
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-4 sticky top-24 h-fit">
@@ -21,6 +22,10 @@ export function OrderSummary({ cart, onCheckout, isLoading }: OrderSummaryProps)
         <div className="flex justify-between text-gray-600">
           <span>Items total</span>
           <span>₦{cart.subtotal.toLocaleString()}</span>
+        </div>
+        <div className="flex justify-between text-gray-600">
+          <span>VAT (7.5%)</span>
+          <span>₦{cart.vat.toLocaleString()}</span>
         </div>
         <div className="flex justify-between text-gray-600">
           <span>Delivery fee</span>

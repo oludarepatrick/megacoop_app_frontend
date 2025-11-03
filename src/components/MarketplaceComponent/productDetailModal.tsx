@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { ShoppingCart, Star, X } from "lucide-react"
 import type { Product } from "@/types/marketplaceTypes"
 import { ImageCarouselModal } from "./imageCarouselModal"
+import fallbackImage from "@/assets/marketplace/wireless-headphones.png"
 interface ProductDetailModalProps {
   product: Product
   onClose: () => void
@@ -17,9 +18,9 @@ export function ProductDetailModal({ product, onClose, onAddToCart }: ProductDet
   return (
     <>
       <Dialog open={true} onOpenChange={onClose}>
-        <DialogContent className="max-w-4xl max-h-screen overflow-y-auto">
+        <DialogContent className="max-w-8xl max-h-screen overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{product.name}</DialogTitle>
+            <DialogTitle>{product.product_name}</DialogTitle>
             <DialogClose asChild>
               <button className="absolute right-4 top-4">
                 <X className="w-4 h-4" />
@@ -36,8 +37,11 @@ export function ProductDetailModal({ product, onClose, onAddToCart }: ProductDet
                 onClick={() => setIsCarouselOpen(true)}
               >
                 <img
-                  src={product.images[selectedImageIndex] || "/placeholder.svg"}
-                  alt={product.name}
+                  src={product.images[selectedImageIndex] || fallbackImage}
+                  onError={(e) => {
+                    e.currentTarget.src = fallbackImage
+                  }}
+                  alt={product.product_name}
                   className="w-full h-auto max-h-196 object-contain"
                 />
               </div>
@@ -48,6 +52,7 @@ export function ProductDetailModal({ product, onClose, onAddToCart }: ProductDet
                   <button
                     key={index}
                     onClick={() => setSelectedImageIndex(index)}
+                    
                     className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
                       selectedImageIndex === index ? "border-green-600" : "border-gray-200 hover:border-gray-300"
                     }`}
@@ -65,8 +70,8 @@ export function ProductDetailModal({ product, onClose, onAddToCart }: ProductDet
             {/* Product Details */}
             <div className="space-y-4">
               <div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">{product.name}</h3>
-                <p className="text-gray-600">{product.description}</p>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">{product.product_name}</h3>
+                <p className="text-gray-600">{product.brief_description}</p>
               </div>
 
               {/* Rating */}
@@ -91,13 +96,13 @@ export function ProductDetailModal({ product, onClose, onAddToCart }: ProductDet
               {/* Category */}
               <div>
                 <p className="text-sm text-gray-600">Category</p>
-                <p className="font-semibold text-gray-900">{product.category}</p>
+                <p className="font-semibold text-gray-900">{product.product_category}</p>
               </div>
 
               {/* Price */}
               <div className="border-t border-b border-gray-200 py-4">
                 <p className="text-sm text-gray-600 mb-2">Price</p>
-                <p className="text-3xl font-bold text-gray-900">₦{product.price.toLocaleString()}</p>
+                <p className="text-3xl font-bold text-gray-900">₦{product?.price?.toLocaleString() ?? "0.00"}</p>
               </div>
 
               {/* Add to Cart Button */}

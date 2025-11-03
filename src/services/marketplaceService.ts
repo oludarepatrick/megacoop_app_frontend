@@ -21,6 +21,7 @@ import type { CarouselItem, FilterType, Product, RecentlyViewed } from "@/types/
 // const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://api.schooldrive.com.ng/api/v1/';
 
 export interface PaginatedProductsResponse {
+  // filter(arg0: (p: any) => boolean): import("../types/cartTypes").RecommendationProduct[];
   status: boolean;
   message: string;
   data: {
@@ -40,83 +41,83 @@ export interface PaginatedProductsResponse {
 // Dummy Data
 export const dummyProducts: Product[] = [
   {
-    id: "1",
-    name: "Fresh Tomatoes",
-    description: "Lorem ipsum dolor sit amet consectetur",
+    product_id: "1",
+    product_name: "Fresh Tomatoes",
+    brief_description: "Lorem ipsum dolor sit amet consectetur",
     price: 3200,
     // image: FreshTomatoes,
     images: [FreshTomatoes],
-    category: "Groceries",
+    product_category: "Groceries",
     rating: 4.5,
     reviews: 128,
   },
   {
-    id: "2",
-    name: "Organic Apples",
-    description: "Lorem ipsum dolor sit amet consectetur",
+    product_id: "2",
+    product_name: "Organic Apples",
+    brief_description: "Lorem ipsum dolor sit amet consectetur",
     price: 1700,
     images: [OrganicApples],
-    category: "Premium Fruits",
+    product_category: "Premium Fruits",
     rating: 4.8,
     reviews: 256,
   },
   {
-    id: "3",
-    name: "Coffee Maker",
-    description: "Lorem ipsum dolor sit amet consectetur",
+    product_id: "3",
+    product_name: "Coffee Maker",
+    brief_description: "Lorem ipsum dolor sit amet consectetur",
     price: 5400,
     images: [CoffeeMaker],
-    category: "Home & Kitchen",
+    product_category: "Home & Kitchen",
     rating: 4.3,
     reviews: 89,
   },
   {
-    id: "4",
-    name: "Casual T-Shirt",
-    description: "Lorem ipsum dolor sit amet consectetur",
+    product_id: "4",
+    product_name: "Casual T-Shirt",
+    brief_description: "Lorem ipsum dolor sit amet consectetur",
     price: 2100,
     images: [CasualTShirt],
-    category: "Fashion",
+    product_category: "Fashion",
     rating: 4.6,
     reviews: 342,
   },
   {
-    id: "5",
-    name: "Wireless Headphones",
-    description: "Lorem ipsum dolor sit amet consectetur",
+    product_id: "5",
+    product_name: "Wireless Headphones",
+    brief_description: "Lorem ipsum dolor sit amet consectetur",
     price: 8900,
     images: [WirelessHeadphones],
-    category: "Electronics",
+    product_category: "Electronics",
     rating: 4.7,
     reviews: 512,
   },
   {
-    id: "6",
-    name: "Face Cream",
-    description: "Lorem ipsum dolor sit amet consectetur",
+    product_id: "6",
+    product_name: "Face Cream",
+    brief_description: "Lorem ipsum dolor sit amet consectetur",
     price: 4200,
     images: [FaceCreamDisplay],
-    category: "Beauty",
+    product_category: "Beauty",
     rating: 4.4,
     reviews: 178,
   },
   {
-    id: "7",
-    name: "Paint Brush Set",
-    description: "Lorem ipsum dolor sit amet consectetur",
+    product_id: "7",
+    product_name: "Paint Brush Set",
+    brief_description: "Lorem ipsum dolor sit amet consectetur",
     price: 1500,
     images: [PaintBrushSet],
-    category: "Home Improvement",
+    product_category: "Home Improvement",
     rating: 4.2,
     reviews: 67,
   },
   {
-    id: "8",
-    name: "Running Shoes",
-    description: "Lorem ipsum dolor sit amet consectetur",
+    product_id: "8",
+    product_name: "Running Shoes",
+    brief_description: "Lorem ipsum dolor sit amet consectetur",
     price: 6800,
     images: [RunningShoes],
-    category: "Sports, Toys & Luggage",
+    product_category: "Sports, Toys & Luggage",
     rating: 4.9,
     reviews: 423,
   },
@@ -193,21 +194,25 @@ export const CATEGORIES = [
 
 // Service Functions
 export const getProducts = async (
-  category?: string
-  // , page?: number
+  category?: string,
+  // page = 1
 ): Promise<Product[]> => {
   try {
     // TODO: Replace with actual API call when ready
-    // const response = await axios.get(`/markets/products/by-category?page=${page}`, {
-    //   category_name: category
+    // const response = await axios.get(`/markets/products/by-category`, {
+    //   params: {
+    //     // page,
+    //     category_name: category
+    //   }
     // })
+    // console.log("Products by Category Response:", response.data)
     // return response.data
 
     // Simulate API delay
     await new Promise((resolve) => setTimeout(resolve, 300))
 
     if (category && category !== "all") {
-      return dummyProducts.filter((p) => p.category === category)
+      return dummyProducts.filter((p) => p.product_category === category)
     }
     return dummyProducts
   } catch (error) {
@@ -220,22 +225,37 @@ export const getAllProducts = async (page = 1): Promise<PaginatedProductsRespons
   try {
     // TODO: Replace with actual API call when ready
     const response = await axios.get(`/markets/products?page=${page}`)
-    console.log("All Products Response:", response)
+    console.log("All Products Response:", response.data)
+    const apiData = response.data
     // return response
 
     await new Promise((resolve) => setTimeout(resolve, 300))
-    return {
-      status: true,
-      message: "Products fetched successfully",
+    // return {
+    //   status: true,
+    //   message: "Products fetched successfully",
+    //   data: {
+    //     current_page: page,
+    //     data: dummyProducts,
+    //     first_page_url: `/markets/products?page=1`,
+    //     last_page: 1,
+    //     next_page_url: null,
+    //     prev_page_url: null,
+    //     per_page: dummyProducts.length,
+    //     total: dummyProducts.length,
+    //   },
+
+      return {
+      status: apiData.status,
+      message: apiData.message,
       data: {
-        current_page: page,
-        data: dummyProducts,
-        first_page_url: `/markets/products?page=1`,
-        last_page: 1,
-        next_page_url: null,
-        prev_page_url: null,
-        per_page: dummyProducts.length,
-        total: dummyProducts.length,
+        current_page: apiData.data.current_page,
+        data: apiData.data.data,
+        first_page_url: apiData.data.first_page_url,
+        last_page: apiData.data.last_page,
+        next_page_url: apiData.data.next_page_url,
+        prev_page_url: apiData.data.prev_page_url,
+        per_page: apiData.data.per_page,
+        total: apiData.data.total,
       },
     } 
     
@@ -252,7 +272,7 @@ export const getProductById = async (id: string): Promise<Product | null> => {
     // return response.data
 
     await new Promise((resolve) => setTimeout(resolve, 200))
-    return dummyProducts.find((p) => p.id === id) || null
+    return dummyProducts.find((p) => p.product_id === id) || null
   } catch (error) {
     console.error("Error fetching product:", error)
     throw error
@@ -274,9 +294,9 @@ export const searchProducts = async (query: string): Promise<Product[]> => {
     const lowerQuery = query.toLowerCase()
     return dummyProducts.filter(
       (p) =>
-        p.name.toLowerCase().includes(lowerQuery) ||
-        p.description.toLowerCase().includes(lowerQuery) ||
-        p.category.toLowerCase().includes(lowerQuery),
+        p.product_name.toLowerCase().includes(lowerQuery) ||
+        p.brief_description.toLowerCase().includes(lowerQuery) ||
+        p.product_category.toLowerCase().includes(lowerQuery),
     )
   } catch (error) {
     console.error("Error searching products:", error)

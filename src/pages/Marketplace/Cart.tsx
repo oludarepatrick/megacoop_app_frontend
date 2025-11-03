@@ -7,37 +7,81 @@ import { toast } from "sonner"
 
 import { RecommendationsCarousel } from "@/components/MarketplaceComponent/cart/recommendationsCarousel"
 import {
-  getCart,
+  // getCart,
   updateCartItemQuantity,
   removeCartItem,
   getRecommendedProducts,
   checkout,
+  getWalletBalance
 } from "@/services/cartService"
 import { MarketplaceHeader } from "@/components/MarketplaceComponent/marketplaceHeader"
-import type { Cart } from "@/types/cartTypes"
+import type { Cart, CartItem, RecommendationProduct } from "@/types/cartTypes"
 import { CartItems } from "@/components/MarketplaceComponent/cart/cartItems"
 import { OrderSummary} from "@/components/MarketplaceComponent/cart/orderSummary"
 import { getDisplayDate } from "@/common/utils"
+import { useAuthStore } from "@/store/authStore"
+import PageLoader from "@/components/PageLoader"
 
 export default function CartPage() {
+  const { user } = useAuthStore()
+  console.log("User in CartPage:", user)
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [cartCount, setCartCount] = useState(0)
 
   // Fetch cart data
-  const { data: cart, isLoading: cartLoading } = useQuery({
-    queryKey: ["cart"],
-    queryFn: getCart,
-    refetchInterval: 30000,
-  })
+  // const { data: cart, isLoading: cartLoading } = useQuery({
+  //   queryKey: ["cart"],
+  //   queryFn: getCart,
+  //   refetchInterval: 30000,
+  // })
+
+  const cart = JSON.parse(localStorage.getItem("cartItems") || "[]")
+
+  // calculate cart subtotal, deliveryFee, total
+  const calculateCartTotals = (items: typeof cart) => {
+  const subtotal = items.reduce((sum: number, item: CartItem) => {
+    const itemTotal = Number(item.totalPrice) || (Number(item.price) * (Number(item.quantity) || 1))
+    return sum + itemTotal
+  }, 0)
+
+  const vat = subtotal * 0.075
+  const deliveryFee = subtotal > 50000 ? 0 : 1500 // Free delivery above ₦50,000
+  const total = subtotal + deliveryFee + vat
+
+  return {
+    items,
+    subtotal,
+    deliveryFee,
+    total,
+    vat,
+  }
+}
+
 
   // Fetch recommendations based on cart categories
-  const cartCategories = cart?.items.map((item) => item.product.category) || []
-  const { data: recommendations = [] } = useQuery({
+  // const cartCategories = cart?.items.map((item) => item.product.category) || []
+  // const { data: recommendations = [] } = useQuery({
+  //   queryKey: ["recommendations", cartCategories],
+  //   queryFn: () => getRecommendedProducts(cartCategories),
+  //   refetchInterval: 30000,
+  // })
+
+  const { data: walletBalance } = useQuery({
+    queryKey: ["walletBalance"],
+    queryFn: getWalletBalance,
+  })
+
+  console.log("Wallet Balance:", walletBalance)
+
+  const cartCategories = cart?.map((item: CartItem) => item.product_category) || []
+  const { data: recommendations = [], isPending: recommendationsLoading } = useQuery({
     queryKey: ["recommendations", cartCategories],
     queryFn: () => getRecommendedProducts(cartCategories),
     refetchInterval: 30000,
   })
+
+  
 
   // Update quantity mutation
   const updateQuantityMutation = useMutation({
@@ -112,10 +156,12 @@ export default function CartPage() {
 
 
 
-  // Update cart count
+  // Update cart countconst cartItems = JSON.parse(localStorage.getItem("cartItems") || "[]")
+
   useEffect(() => {
     if (cart) {
-      setCartCount(cart.items.length)
+      // setCartCount(cart.items.length)
+      setCartCount(cart.length)
     }
   }, [cart])
 
@@ -129,36 +175,62 @@ export default function CartPage() {
   }
 
   const handleCheckout = () => {
+    // check the total price of all the items in the cart together
+    const totalCartPrice = cart.reduce((sum: number, item: { totalPrice: number }) => sum + item.totalPrice, 0)
+    // calculate vat which is 7.5% of totalCartPrice
+    const vat = totalCartPrice * 0.075
+    const totalPrice = totalCartPrice + (totalCartPrice > 50000 ? 0 : 1500) + vat // include delivery fee + vat
+    console.log("Total Price:", totalPrice)
+    // check if user has enough balance in wallet
+    if (walletBalance !== undefined && walletBalance < totalPrice) {
+      toast("Insufficient Balance", {
+        description: "You do not have enough balance in your wallet to complete this purchase.",
+      })
+      return
+    }
     if (cart) {
       checkoutMutation.mutate(cart)
     }
   }
 
-  const handleAddRecommendationToCart = (product: any) => {
-    toast("Added to cart", {
-      description: `${product.name} has been added to your cart.`,
+  const handleAddRecommendationToCart = (product: RecommendationProduct) => {
+   
+    //add product to localStorage cart
+    const storedCart = JSON.parse(localStorage.getItem("cartItems") || "[]")
+    const existingItem = storedCart.find((item: CartItem) => item.product_id === product.product_id)
+    
+        if (existingItem) {
+          toast.info(`${product.product_name} is already in your cart.`)
+          return
+        }
+    const updatedCart = [...storedCart, { ...product, quantity: 1, totalPrice: product.price }]
+    localStorage.setItem("cartItems", JSON.stringify(updatedCart))
+    setCartCount(updatedCart.length)
+     toast("Added to cart", {
+      description: `${product.product_name} has been added to your cart.`,
     })
     queryClient.invalidateQueries({ queryKey: ["cart"] })
   }
 
-  if (cartLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <MarketplaceHeader cartCount={cartCount} onSearch={() => {}} />
-        <div className="flex items-center justify-center h-96">
-          <p className="text-gray-600">Loading cart...</p>
-        </div>
-      </div>
-    )
-  }
+  // if (cartLoading) {
+  //   return (
+  //     <div className="min-h-screen bg-gray-50">
+  //       <MarketplaceHeader cartCount={cartCount} onSearch={() => {}} />
+  //       <div className="flex items-center justify-center h-96">
+  //         <p className="text-gray-600">Loading cart...</p>
+  //       </div>
+  //     </div>
+  //   )
+  // }
 
-  if (!cart || cart.items.length === 0) {
+  // if (!cart || cart.items.length === 0) {
+  if (!cart || cart.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50">
         <MarketplaceHeader cartCount={0} onSearch={() => {}} />
         <div className="max-w-7xl mx-auto px-4 py-12 text-center">
           <p className="text-gray-600 text-lg mb-4">Your cart is empty</p>
-          <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={() => navigate("/marketplace")}>
+          <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={() => navigate("/user/market-place")}>
             Continue Shopping
           </Button>
         </div>
@@ -199,18 +271,26 @@ export default function CartPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 mb-12">
           {/* Cart Items */}
           <div className="lg:col-span-2">
-            <CartItems items={cart.items} onQuantityChange={handleQuantityChange} onRemove={handleRemoveItem} />
+            {/* <CartItems items={cart.items} onQuantityChange={handleQuantityChange} onRemove={handleRemoveItem} /> */}
+            <CartItems items={cart} onQuantityChange={handleQuantityChange} onRemove={handleRemoveItem} />
           </div>
 
           {/* Order Summary */}
           <div>
-            <OrderSummary cart={cart} onCheckout={handleCheckout} isLoading={checkoutMutation.isPending} />
+            {/* <OrderSummary cart={cart} onCheckout={handleCheckout} isLoading={checkoutMutation.isPending} /> */}
+            <OrderSummary cart={calculateCartTotals(cart)} onCheckout={handleCheckout} isLoading={checkoutMutation.isPending} />
           </div>
         </div>
 
         {/* Recommendations */}
         <div className="mb-12">
-          <RecommendationsCarousel products={recommendations} onAddToCart={handleAddRecommendationToCart} />
+          {/* <RecommendationsCarousel products={recommendations} onAddToCart={handleAddRecommendationToCart}  /> */}
+          { recommendationsLoading ? (
+            // <p className="text-gray-600">Loading recommendations...</p>
+          <PageLoader />
+          ) : (
+            <RecommendationsCarousel products={recommendations} onAddToCart={handleAddRecommendationToCart}  />
+          ) }
         </div>
       </div>
     </div>

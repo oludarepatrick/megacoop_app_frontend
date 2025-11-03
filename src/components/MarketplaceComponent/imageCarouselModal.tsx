@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { Dialog, DialogClose, DialogContent } from "@/components/ui/dialog"
+import { useEffect, useState } from "react"
+import { Dialog, DialogClose, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { ChevronLeft, ChevronRight, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -12,6 +12,14 @@ interface ImageCarouselModalProps {
 
 export function ImageCarouselModal({ images, initialIndex, isOpen, onClose }: ImageCarouselModalProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex)
+  console.log("ImageCarouselModal images:", images, "initialIndex:", initialIndex, "isOpen:", isOpen)
+  console.log("Current Index:", currentIndex)
+
+  useEffect(() => {
+    if (isOpen) {
+      setCurrentIndex(initialIndex)
+    }
+  }, [initialIndex, isOpen])
 
   const handlePrevious = () => {
     setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1))
@@ -23,7 +31,7 @@ export function ImageCarouselModal({ images, initialIndex, isOpen, onClose }: Im
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      {/* <DialogContent className="max-w-4xl w-full h-screen max-h-screen p-0 bg-transparent/70 border-0"> */}
+      <DialogTitle className="sr-only">Image Carousel</DialogTitle>
       <DialogContent className="max-w-4xl w-full h-screen max-h-screen p-0 bg-white/10 border-0 backdrop-blur-md shadow-xl rounded-2xl">
 
         <DialogClose asChild>

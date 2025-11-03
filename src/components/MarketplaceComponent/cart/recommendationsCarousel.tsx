@@ -10,7 +10,10 @@ interface RecommendationsCarouselProps {
   onAddToCart: (product: RecommendationProduct) => void
 }
 
-export function RecommendationsCarousel({ products, onAddToCart }: RecommendationsCarouselProps) {
+export function RecommendationsCarousel({
+  products,
+  onAddToCart
+}: RecommendationsCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const itemsPerView = 4
 
@@ -52,17 +55,17 @@ export function RecommendationsCarousel({ products, onAddToCart }: Recommendatio
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {visibleProducts.map((product) => (
-          <Card key={product.id} className="overflow-hidden bg-green-50 border-0 p-0 hover:shadow-lg transition-shadow cursor-pointer">
+          <Card key={product.product_id} className="overflow-hidden bg-green-50 border-0 p-0 hover:shadow-lg transition-shadow cursor-pointer">
             <div className="relative w-full h-48 bg-green-100 overflow-hidden">
               <img
                 src={product.images[0] || "/placeholder.svg"}
-                alt={product.name}
+                alt={product.product_name}
                 className="w-full h-full object-cover"
               />
             </div>
 
             <div className="p-4">
-              <h4 className="font-semibold text-gray-900 mb-2 line-clamp-2">{product.name}</h4>
+              <h4 className="font-semibold text-gray-900 mb-2 line-clamp-2">{product.product_name}</h4>
 
               <div className="flex items-baseline gap-2 mb-3">
                 <span className="text-lg font-bold text-gray-900">₦{product.price.toLocaleString()}</span>
