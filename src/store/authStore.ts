@@ -32,6 +32,7 @@ export const useAuthStore = create<AuthStore>()(
       logout: async () => {
         await new Promise(resolve => setTimeout(resolve, 800));
         set(initialState);
+        localStorage.removeItem('cartItems');
         // window.location.href = '/login';
       },
       setIsLoading: (loading) => set({ isLoading: loading }),

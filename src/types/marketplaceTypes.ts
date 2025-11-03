@@ -1,11 +1,11 @@
 // Types
 export interface Product {
-  id: string
-  name: string
-  description: string
+  product_id: string
+  product_name: string
+  brief_description: string
   price: number
   images: string[]
-  category: string
+  product_category: string
   rating?: number
   reviews?: number
 }

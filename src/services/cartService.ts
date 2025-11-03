@@ -2,69 +2,66 @@ import type { Cart, CartItem, RecommendationProduct } from "@/types/cartTypes"
 import axios from '@/lib/axiosInstance';
 import imageTomatoes from "@/assets/marketplace/organic-apples.png";
 import imageRecommendation from "@/assets/marketplace/smartwatch-lifestyle.png";
-import { dummyProducts } from "@/services/marketplaceService";
+import {
+  dummyProducts,
+  // getProducts
+} from "@/services/marketplaceService";
 import { jsonConfig } from "@/common/utils";
 
 
 // Dummy cart data
 const dummyCartItems: CartItem[] = [
   {
-    id: "cart-1",
-    product: {
-      id: "1",
-      name: "Sweet Green Seedless Grapes 1.5-2 lb",
-      description: "Fresh and juicy grapes",
+    
+      product_id: "1",
+      product_name: "Sweet Green Seedless Grapes 1.5-2 lb",
+      brief_description: "Fresh and juicy grapes",
       price: 1500,
       images:[imageTomatoes],
-      category: "Premium Fruits",
+      product_category: "Premium Fruits",
       rating: 4.5,
       reviews: 128,
-    },
     quantity: 1,
     totalPrice: 1500,
   },
   {
-    id: "cart-2",
-    product: {
-      id: "2",
-      name: "Sweet Green Seedless Grapes 1.5-2 lb",
-      description: "Fresh and juicy grapes",
+
+      product_id: "2",
+      product_name: "Sweet Green Seedless Grapes 1.5-2 lb",
+      brief_description: "Fresh and juicy grapes",
       price: 1500,
       images: [imageTomatoes],
-      category: "Premium Fruits",
+      product_category: "Premium Fruits",
       rating: 4.5,
       reviews: 128,
-    },
+    
     quantity: 1,
     totalPrice: 1500,
   },
   {
-    id: "cart-3",
-    product: {
-      id: "3",
-      name: "Sweet Green Seedless Grapes 1.5-2 lb",
-      description: "Fresh and juicy grapes",
+
+      product_id: "3",
+      product_name: "Sweet Green Seedless Grapes 1.5-2 lb",
+      brief_description: "Fresh and juicy grapes",
       price: 1500,
       images: [imageTomatoes],
-      category: "Premium Fruits",
+      product_category: "Premium Fruits",
       rating: 4.5,
       reviews: 128,
-    },
+    
     quantity: 1,
     totalPrice: 1500,
   },
   {
-    id: "cart-4",
-    product: {
-      id: "4",
-      name: "Sweet Green Seedless Grapes 1.5-2 lb",
-      description: "Fresh and juicy grapes",
+
+      product_id: "4",
+      product_name: "Sweet Green Seedless Grapes 1.5-2 lb",
+      brief_description: "Fresh and juicy grapes",
       price: 1500,
       images: [imageTomatoes],
-      category: "Premium Fruits",
+      product_category: "Premium Fruits",
       rating: 4.5,
       reviews: 128,
-    },
     quantity: 123,
     totalPrice: 184500,
   },
@@ -72,45 +69,45 @@ const dummyCartItems: CartItem[] = [
 
 const dummyRecommendations: RecommendationProduct[] = [
   {
-    id: "rec-1",
-    name: "Comfortable Armchair",
-    description: "This is product a",
+    product_id: "rec-1",
+    product_name: "Comfortable Armchair",
+    brief_description: "This is product a",
     price: 9999,
     images: [imageRecommendation],
-    category: "Home & Kitchen",
+    product_category: "Home & Kitchen",
     rating: 4.5,
     reviews: 128,
     stock: 12,
   },
   {
-    id: "rec-2",
-    name: "Fresh Flowers Bouquet",
-    description: "This is product a",
+    product_id: "rec-2",
+    product_name: "Fresh Flowers Bouquet",
+    brief_description: "This is product a",
     price: 9999,
     images: [imageRecommendation],
-    category: "Premium Fruits",
+    product_category: "Premium Fruits",
     rating: 4.5,
     reviews: 128,
     stock: 12,
   },
   {
-    id: "rec-3",
-    name: "Gold Necklace",
-    description: "This is product a",
+    product_id: "rec-3",
+    product_name: "Gold Necklace",
+    brief_description: "This is product a",
     price: 9999,
     images: [imageRecommendation],
-    category: "Fashion",
+    product_category: "Fashion",
     rating: 4.5,
     reviews: 128,
     stock: 12,
   },
   {
-    id: "rec-4",
-    name: "Premium Watch",
-    description: "This is product a",
+    product_id: "rec-4",
+    product_name: "Premium Watch",
+    brief_description: "This is product a",
     price: 9999,
     images: [imageRecommendation],
-    category: "Electronics",
+    product_category: "Electronics",
     rating: 4.5,
     reviews: 128,
     stock: 12,
@@ -129,14 +126,16 @@ export const getCart = async (): Promise<Cart> => {
     await new Promise((resolve) => setTimeout(resolve, 300))
 
     const subtotal = dummyCartItems.reduce((sum, item) => sum + item.totalPrice, 0)
-    const deliveryFee = 578
-    const total = subtotal + deliveryFee
+    const deliveryFee = subtotal > 50000 ? 0 : 1500 // Free delivery above ₦50,000
+    const vat = subtotal * 0.075
+    const total = subtotal + deliveryFee + vat
 
     return {
       items: dummyCartItems,
       subtotal,
       deliveryFee,
       total,
+      vat,
     }
   } catch (error) {
     console.error("Error fetching cart:", error)
@@ -156,12 +155,12 @@ export const addToCart = async (productId: string, quantity: number = 1): Promis
 
     await new Promise((resolve) => setTimeout(resolve, 300))
 
-    const product = dummyProducts.find((p) => p.id === productId)
+    const product = dummyProducts.find((p) => p.product_id === productId)
     if (!product) throw new Error("Product not found")
 
     const newItem: CartItem = {
-      id: `cart-${Date.now()}`,
-      product,
+      // id: `cart-${Date.now()}`,
+      ...product,
       quantity,
       totalPrice: product.price * quantity,
     }
@@ -182,14 +181,24 @@ export const updateCartItemQuantity = async (cartItemId: string, quantity: numbe
 
     await new Promise((resolve) => setTimeout(resolve, 200))
 
-    const item = dummyCartItems.find((i) => i.id === cartItemId)
-    if (!item) throw new Error("Cart item not found")
+    const localStorageCart = JSON.parse(localStorage.getItem("cartItems") || "[]");
+    const itemIndex = localStorageCart.findIndex((i: CartItem) => i.product_id === cartItemId);
+    if (itemIndex > -1) {
+      localStorageCart[itemIndex].quantity = quantity;
+      localStorageCart[itemIndex].totalPrice = localStorageCart[itemIndex].price * quantity;
+      localStorage.setItem("cartItems", JSON.stringify(localStorageCart));
+    }
 
-    const newQuantity = Math.max(1, quantity)
-    item.quantity = newQuantity
-    item.totalPrice = item.product.price * newQuantity
+    // const item = dummyCartItems.find((i) => i.id === cartItemId)
+    // if (!item) throw new Error("Cart item not found")
 
-    return item
+    // const newQuantity = Math.max(1, quantity)
+    // item.quantity = newQuantity
+    // item.totalPrice = item.price * newQuantity
+
+    // return item
+
+    return localStorageCart[itemIndex];
   } catch (error) {
     console.error("Error updating cart item:", error)
     throw error
@@ -204,10 +213,14 @@ export const removeCartItem = async (cartItemId: string): Promise<void> => {
 
     await new Promise((resolve) => setTimeout(resolve, 200))
 
-    const index = dummyCartItems.findIndex((i) => i.id === cartItemId)
-    if (index > -1) {
-      dummyCartItems.splice(index, 1)
-    }
+    // const index = dummyCartItems.findIndex((i) => i.id === cartItemId)
+    // if (index > -1) {
+    //   dummyCartItems.splice(index, 1)
+    // }
+
+    const localStorageCart = JSON.parse(localStorage.getItem("cartItems") || "[]");
+    const updatedCart = localStorageCart.filter((i: CartItem) => i.product_id !== cartItemId);
+    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
   } catch (error) {
     console.error("Error removing cart item:", error)
     throw error
@@ -216,16 +229,32 @@ export const removeCartItem = async (cartItemId: string): Promise<void> => {
 
 export const getRecommendedProducts = async (categories?: string[]): Promise<RecommendationProduct[]> => {
   try {
-    // TODO: Replace with actual API call when ready
-    // const response = await axios.get(`${API_BASE_URL}/recommendations`, {
-    //   params: { categories }
-    // })
-    // return response.data
+    // if (!categories.length) return []
 
+    // // Fetch products for all categories in parallel
+    // const allResponses = await Promise.all(
+    //   categories.map(async (category) => {
+    //     const res = await getProducts(category)
+    //     // if getProducts returns the API response directly:
+    //     return res?.data ?? []
+    //   })
+    // )
+
+    // // Flatten arrays from all categories
+    // const allProducts = allResponses.flat()
+
+    // // Remove duplicates (based on product id)
+    // const uniqueProducts = Array.from(
+    //   new Map(allProducts.map((p) => [p.id, p])).values()
+    // )
+
+    // return uniqueProducts as RecommendationProduct[]
     await new Promise((resolve) => setTimeout(resolve, 300))
 
     if (categories && categories.length > 0) {
-      return dummyRecommendations.filter((p) => categories.includes(p.category))
+      return dummyRecommendations.filter((p) => categories.includes(p.product_category))
+      // const RecommendedProducts = await getProducts();
+      // return RecommendedProducts.filter((p) => categories.includes(p.product_category)) as RecommendationProduct[];
     }
 
     return dummyRecommendations
@@ -236,11 +265,12 @@ export const getRecommendedProducts = async (categories?: string[]): Promise<Rec
 }
 
 export const checkout = async (cartData: Cart): Promise<{ orderId: string; paymentUrl: string }> => {
+  console.log("Checkout called with cart data:", cartData);
   try {
     // TODO: Replace with actual API call when ready
-    const response = await axios.post(`/checkout`, cartData)
+    const response = await axios.post(`/products/checkout`, cartData)
     // return response.data
-    console.log("Checkout response:", response.data);
+    console.log("Checkout response:", response);
 
     await new Promise((resolve) => setTimeout(resolve, 500))
 
@@ -250,6 +280,19 @@ export const checkout = async (cartData: Cart): Promise<{ orderId: string; payme
     }
   } catch (error) {
     console.error("Error during checkout:", error)
+    throw error
+  }
+}
+
+export const getWalletBalance = async (): Promise<number> => {
+  try {
+    const response = await axios.get('/user/get-user-wallet')
+    console.log("Wallet Balance Response:", response);
+    return response.data.balance
+    // await new Promise((resolve) => setTimeout(resolve, 300))
+    // return 10000 // Dummy wallet balance
+  } catch (error) {
+    console.error("Error fetching wallet balance:", error)
     throw error
   }
 }

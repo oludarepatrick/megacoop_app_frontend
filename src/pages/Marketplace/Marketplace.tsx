@@ -9,7 +9,7 @@ import {
   searchProducts,
   filterProducts,
 } from "@/services/marketplaceService"
-import { addToCart } from "@/services/cartService"
+// import { addToCart } from "@/services/cartService"
 import { MarketplaceHeader } from "@/components/MarketplaceComponent/marketplaceHeader"
 import { Carousel } from "@/components/MarketplaceComponent/carousel"
 import { TabNavigation } from "@/components/MarketplaceComponent/tabNavigation"
@@ -34,6 +34,13 @@ export default function MarketplacePage() {
   const [page, setPage] = useState(1)
   const [allFetchedProducts, setAllFetchedProducts] = useState<Product[]>([])
   const [totalPages, setTotalPages] = useState(1)
+
+
+  useEffect(() => {
+  const storedCart = JSON.parse(localStorage.getItem("cartItems") || "[]")
+  setCartCount(storedCart.length)
+}, [])
+
   
   // Fetch carousel items
   const { data: carouselItems = [] } = useQuery({
@@ -75,7 +82,7 @@ useEffect(() => {
     if (pagedProducts?.products && pagedProducts.products.length > 0) {
       setAllFetchedProducts((prev) => {
         const merged = [...prev, ...pagedProducts.products]
-        const unique = [...new Map(merged.map((p) => [p.id, p])).values()]
+        const unique = [...new Map(merged.map((p) => [p.product_id, p])).values()]
         return unique
       })
       setTotalPages(pagedProducts.totalPages)
@@ -108,30 +115,72 @@ queryFn: filteredProducts,
 refetchInterval: 300000,
 })
 
+  // const handleAddToCart = async (product: Product) => {
+  //   // add to local storage first
+  //   localStorage.setItem(`cart_${product.id}`, JSON.stringify(product))
+  //   try {
+  //     const result = await addToCart(product.id, 1)
+  //     if (result) {
+  //     setCartCount((prev) => prev + 1)
+  //     toast("Added to cart", {
+  //       description: `${product.name} has been added to your cart.`,
+  //       action: {
+  //         label: "View Cart",
+  //         onClick: () => {
+  //           // Navigate to cart page or open cart modal
+  //           navigate("/user/cart")
+  //         },
+  //       },
+  //     })
+  //   }
+  // } catch (error) {
+  //   console.error("Error adding to cart:", error)
+  //   toast.error("Error", {
+  //     description: `Failed to add ${product.name} to cart. Please try again.`,
+  //     // variant: "destructive",
+  //     })
+  //   }
+  // }
+
   const handleAddToCart = async (product: Product) => {
-    try {
-      const result = await addToCart(product.id, 1)
-      if (result) {
-      setCartCount((prev) => prev + 1)
-      toast("Added to cart", {
-        description: `${product.name} has been added to your cart.`,
-        action: {
-          label: "View Cart",
-          onClick: () => {
-            // Navigate to cart page or open cart modal
-            navigate("/user/cart")
-          },
-        },
-      })
+  try {
+    // Get existing cart from localStorage
+    const storedCart = JSON.parse(localStorage.getItem("cartItems") || "[]")
+
+    // Check if product already exists in cart
+    const existingItem = storedCart.find((item: Product) => item.product_id === product.product_id)
+
+    if (existingItem) {
+      toast.info(`${product.product_name} is already in your cart.`)
+      return
     }
+
+    // Add new product to cart
+    const updatedCart = [...storedCart, { ...product, quantity: 1, totalPrice: product.price }]
+
+    // Save back to localStorage
+    localStorage.setItem("cartItems", JSON.stringify(updatedCart))
+
+    // Update UI count
+    setCartCount(updatedCart.length)
+
+    toast.success("Added to cart", {
+      description: `${product.product_name} has been added to your cart.`,
+      action: {
+        label: "View Cart",
+        onClick: () => navigate("/user/cart"),
+      },
+    })
+
+    // await addToCart(product.id, 1)
   } catch (error) {
     console.error("Error adding to cart:", error)
     toast.error("Error", {
-      description: `Failed to add ${product.name} to cart. Please try again.`,
-      // variant: "destructive",
-      })
-    }
+      description: `Failed to add ${product.product_name} to cart. Please try again.`,
+    })
   }
+}
+
 
 // Pagination
   const handleLoadMore = () => {
