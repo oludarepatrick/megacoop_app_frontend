@@ -2,6 +2,7 @@ import { ShoppingCart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { Cart } from "@/types/cartTypes"
 
+
 // import { useNavigate } from "react-router-dom"
 
 interface OrderSummaryProps {
@@ -14,6 +15,7 @@ export function OrderSummary({ cart, onCheckout, isLoading }: OrderSummaryProps)
   //   const navigate = useNavigate()
   console.log("OrderSummary cart:", cart)
 
+
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-4 sticky top-24 h-fit">
       <h3 className="text-lg font-semibold text-gray-900 mb-6">Order Summary</h3>
@@ -21,19 +23,19 @@ export function OrderSummary({ cart, onCheckout, isLoading }: OrderSummaryProps)
       <div className="space-y-4 mb-6">
         <div className="flex justify-between text-gray-600">
           <span>Items total</span>
-          <span>₦{cart.subtotal.toLocaleString()}</span>
+          <span>₦{cart?.subtotal?.toLocaleString()}</span>
         </div>
         <div className="flex justify-between text-gray-600">
           <span>VAT (7.5%)</span>
-          <span>₦{cart.vat.toLocaleString()}</span>
+          <span>₦{cart?.vat?.toLocaleString()}</span>
         </div>
         <div className="flex justify-between text-gray-600">
           <span>Delivery fee</span>
-          <span>₦{cart.deliveryFee.toLocaleString()}</span>
+          <span>₦{cart?.deliveryFee?.toLocaleString()}</span>
         </div>
         <div className="border-t border-gray-200 pt-4 flex justify-between font-semibold text-gray-900">
           <span>Subtotal</span>
-          <span>₦{cart.total.toLocaleString()}</span>
+          <span>₦{cart?.total?.toLocaleString()}</span>
         </div>
       </div>
 
@@ -44,7 +46,7 @@ export function OrderSummary({ cart, onCheckout, isLoading }: OrderSummaryProps)
       >
         <ShoppingCart className="w-3 h-3 " />
         Checkout
-        <span className="ml-1">₦{cart.total.toLocaleString()}</span>
+        <span className="ml-1">₦{cart?.total?.toLocaleString()}</span>
       </Button>
     </div>
   )

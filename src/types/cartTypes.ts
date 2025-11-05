@@ -29,10 +29,11 @@ export interface CartItem extends Product {
 
 export interface Cart {
   items: CartItem[]
-  subtotal: number
-  deliveryFee: number
-  total: number
-  vat: number
+  subtotal?: number
+  deliveryFee?: number
+  total?: number
+  vat?: number
+  userId?: string
 }
 
 export interface RecommendationProduct extends Product {
