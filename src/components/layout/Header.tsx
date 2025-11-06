@@ -21,13 +21,13 @@ const Header = ({onMenuToggle}: menuProps) => {
         // Sidebar pages - Default background
         "/user/dashboard": { 
             title: "Dashboard", 
-            bg: "bg-megaPrimary text-white",
+            bg: "bg-card-bg text-theme-text",
             hasSearch: true,
             searchPlaceholder: "Search for transaction, item, etc"
         },
         "/user/savings-loan": { 
             title: "Savings & Loan", 
-            bg: "bg-megaPrimary text-white",
+            bg: "bg-card-bg text-theme-text",
             hasSearch: false
         },
         "/user/market-place": { 

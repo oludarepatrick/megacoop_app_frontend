@@ -19,7 +19,7 @@ export type User = {
 export type UserWallet = {
   account_no: string;
   bank_name: string;
-  balance: string
+  balance: number
   total_savings: number
   total_loan: number
   total_income: number

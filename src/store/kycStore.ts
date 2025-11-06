@@ -41,10 +41,8 @@ export const useKYCStore = create<KYCStore>()(
         const {user} = useAuthStore.getState()
         
         if (get().modalType === 'none' && get().isKYCComplete() || user?.kyc_status === 1) {
-          return; // User already verified, skip re-setting state or fetching again
+          return; 
         }
-
-
         set({ isLoading: true });
         
         try {

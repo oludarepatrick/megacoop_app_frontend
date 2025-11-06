@@ -11,7 +11,6 @@ import moonIcon from "../../assets/moon-icon.svg"
 import { Switch } from "../ui/switch";
 import { useThemeStore } from "@/store/themeStore";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-// import { useAuthState } from "@/hooks/useAuth";
 import { useAuthStore } from "@/store/authStore";
 import { useLogout } from "@/hooks/useAuth";
 import PageLoader from "../PageLoader";
