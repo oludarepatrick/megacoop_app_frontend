@@ -12,9 +12,10 @@ type Transaction ={
 }
 type TransactionTableProps = {
     transactions: Transaction[];
+    onClick: (transaction: Transaction) => void
 }
 
-const TransactionTable = ({transactions}: TransactionTableProps) => {
+const TransactionTable = ({transactions, onClick}: TransactionTableProps) => {
     return (
         <Card className="p-4">
             <div className="overflow-x-auto green-scrollbar">
@@ -44,8 +45,10 @@ const TransactionTable = ({transactions}: TransactionTableProps) => {
                                 <TableCell className={transaction.type === "credit" ? "text-megagreen" : "text-red-500"}>
                                     {transaction.type === "credit" ? "+" : "-"}₦{transaction.amount.toLocaleString()}
                                 </TableCell>
-                                <TableCell className=" w-[120px] ">
-                                    <span className="border-megagreen border text-megagreen py-1 px-3 rounded-2xl">Download</span>
+                                <TableCell className=" w-[120px] cursor-pointer">
+                                    <span className="border-megagreen border text-megagreen py-1 px-3 rounded-2xl " onClick={() => onClick(transaction)}>
+                                        Download
+                                    </span>
                                 </TableCell>
                             </TableRow>
                         ))}

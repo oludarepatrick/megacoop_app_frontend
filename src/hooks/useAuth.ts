@@ -216,8 +216,8 @@ export const useUserWallet = () => {
     return useQuery({
         queryKey: ["get-user-wallet"],
         queryFn: authService.getUserWallet,
-        staleTime: 0,
-        refetchInterval: 2000, 
-        refetchOnWindowFocus: true,
+        // staleTime: 0,
+        // refetchInterval: 2000, 
+        // refetchOnWindowFocus: true,
     })
 }

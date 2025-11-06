@@ -1,5 +1,5 @@
 import { CardContent, CardHeader } from "./ui/card";
-import { EllipsisVertical } from "lucide-react";
+import { EllipsisVertical} from "lucide-react";
 
 
 type StatProps = {
@@ -26,7 +26,7 @@ const StatCard= ({title, amount, icon, interest, iconbg, interestBg}:StatProps) 
                     {/* <p className="text-[22px] font-bold">₦{amount.toLocaleString()}<span className="text-base">.00</span></p> */}
                     {amount === undefined? <span className=" block animate-spin rounded-full h-4 w-4 border-b-2 border-megagreen my-2"></span> : (
                         <p className="text-[22px] font-bold">
-                            ₦{Number(amount).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                            ₦{(amount).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                             <span className="text-base">
                                 .{String(Number(amount).toFixed(2)).split(".")[1] || "00"}
                             </span>

@@ -9,11 +9,11 @@ import { useUserWallet } from "@/hooks/useAuth";
 const DashboardOverview = () => {
     const { data } = useUserWallet();
 
-    const mockStats = [
+    const dataOverview = [
     { 
         id: "balance", 
         title: "Wallet Balance", 
-        amount: Number(data?.balance),
+        amount: data?.balance,
         icon: wallet,
         interest: "+1.29%",
         iconbg:"bg-[#FFF2E5]",
@@ -54,7 +54,7 @@ const DashboardOverview = () => {
             [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]
             xl:grid xl:grid-cols-4 xl:overflow-visible xl:snap-none
         ">
-            {mockStats.map((stat) => (
+            {dataOverview.map((stat) => (
                 <Card key={stat.id} className="w-[254px] xl:w-full p-0 px-3 pt-4 snap-start shrink-0">
                     <StatCard {...stat} />
                 </Card>

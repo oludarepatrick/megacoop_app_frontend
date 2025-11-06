@@ -1,10 +1,9 @@
-import { Button } from "../ui/button";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "../ui/tabs";
-// import TransactionPagination from "./TransactionPagination";
 import TransactionTable from "./TransactionTable";
 import type { TabType, Transaction } from "@/pages/Transactions";
-import LoanModal from "../LoansComponent/ApplyLoanModal";
+// import LoanModal from "../LoansComponent/ApplyLoanModal";
 import { useState } from "react";
+import TransactionReceipt from "./TransactionReceipt";
 
 type TabProps = {
     activeTab: TabType
@@ -14,7 +13,14 @@ type TabProps = {
 }
 
 const TransactionTabs = ({ activeTab, setActiveTab, transactions }: TabProps) => {
-    const [isLoanModalOpen, setIsLoanModalOpen] = useState(false);
+    // const [isLoanModalOpen, setIsLoanModalOpen] = useState(false);
+    const [isReceiptModal, setIsReceiptModal]  = useState(false)
+    const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null)
+
+    const handleClick = (transaction: Transaction) => {
+        setSelectedTransaction(transaction)
+        setIsReceiptModal(true)
+    }
     
     return (
         <>
@@ -25,18 +31,26 @@ const TransactionTabs = ({ activeTab, setActiveTab, transactions }: TabProps) =>
                     <TabsTrigger value="expense" className="pb-2 border-0 border-b  data-[state=active]:rounded-none data-[state=active]:border-b-2 data-[state=active]:border-megagreen data-[state=active]:text-megagreen ">Expense</TabsTrigger>
                 </TabsList>
                 <TabsContent value="all">
-                    <TransactionTable transactions={transactions} />
+                    <TransactionTable transactions={transactions} onClick={handleClick} />
                 </TabsContent>
                 <TabsContent value="income">
-                    <TransactionTable transactions={transactions} />
+                    <TransactionTable transactions={transactions} onClick={handleClick} />
                 </TabsContent>
                 <TabsContent value="expense">
-                    <TransactionTable transactions={transactions} />
+                    <TransactionTable transactions={transactions} onClick={handleClick} />
                 </TabsContent>
 
             </Tabs>
-            <Button variant="ghost" className="text-megagreen underline mt-4" onClick={() => setIsLoanModalOpen(true)}>Apply Loan</Button>
-            <LoanModal open={isLoanModalOpen} onClose={() => setIsLoanModalOpen(false)} />
+            {/* <Button variant="ghost" className="text-megagreen underline mt-4" onClick={() => setIsLoanModalOpen(true)}>Apply Loan</Button> */}
+            {/* <LoanModal open={isLoanModalOpen} onClose={() => setIsLoanModalOpen(false)} /> */}
+            
+            {selectedTransaction && (
+                <TransactionReceipt 
+                    isOpen={isReceiptModal} 
+                    onClose={()=> setIsReceiptModal(false)}
+                    transactions={selectedTransaction}
+                />
+            )}
         </>
     )
 }
