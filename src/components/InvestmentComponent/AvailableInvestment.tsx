@@ -1,6 +1,6 @@
 import type { ApiInvestment, AvailableInvestment, DetailedInvestment, SimpleInvestment } from "@/types/investmentType";
 import { Card, CardContent } from "../ui/card";
-import { Carousel, CarouselContent, CarouselDots, CarouselItem, CarouselNext } from "../ui/carousel";
+import { Carousel, CarouselContent, CarouselDots, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import PooledInvestmentModal from "./PooledInvestmentModal";
@@ -28,15 +28,14 @@ const AvailableInvestments = ({ cards, investmentlength }: AvailableInvestmentPr
   const [selectedInvestment, setSelectedInvestment] = useState<AvailableInvestment | null>(null);
   const [investmentData, setInvestmentData] = useState<InvestPaymentFormData | null>(null);
 
-    const closeAllModals = () => {
-        setDetailsModalOpen(false);
-        setTypeModalOpen(false);
-        setPaymentModalOpen(false);
-        setConfirmPaymentModalOpen(false);
-        setSuccessModalOpen(false);
-        setFailureModalOpen(false);
-    };
-
+  const closeAllModals = () => {
+    setDetailsModalOpen(false);
+    setTypeModalOpen(false);
+    setPaymentModalOpen(false);
+    setConfirmPaymentModalOpen(false);
+    setSuccessModalOpen(false);
+    setFailureModalOpen(false);
+  };
 
   // Step 1: Apply clicked → open type modal
   const handleApplyClick = () => {
@@ -132,6 +131,7 @@ const AvailableInvestments = ({ cards, investmentlength }: AvailableInvestmentPr
             </CarouselItem>
           ))}
         </CarouselContent>
+        <CarouselPrevious className="ml-10" />
         <CarouselNext className="mr-30" />
         <CarouselDots />
       </Carousel>
