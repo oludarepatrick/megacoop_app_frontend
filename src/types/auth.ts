@@ -14,6 +14,7 @@ export type User = {
   city?: string;
   address?: string;
   amount?: number
+  uuid?: string;
 };
 
 export type UserWallet = {

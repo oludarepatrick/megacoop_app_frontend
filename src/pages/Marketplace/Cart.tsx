@@ -117,35 +117,21 @@ export default function CartPage() {
     },
   })
 
-  // Checkout mutation
-//   const checkoutMutation = useMutation({
-//     mutationFn: (cartData: Cart) => checkout(cartData),
-//     onSuccess: (data) => {
-//       toast({
-//         title: "Checkout successful",
-//         description: "Redirecting to payment page...",
-//       })
-//       // Navigate to payment page with order data
-//       navigate(`/payment?orderId=${data.orderId}`)
-//     },
-//     onError: () => {
-//       toast({
-//         title: "Checkout failed",
-//         description: "Failed to process checkout. Please try again.",
-//         variant: "destructive",
-//       })
-//     },
-//   })
-    
     // Checkout mutation
     const checkoutMutation = useMutation<{ orderId: string }, unknown, Cart>({
       mutationFn: (cartData: Cart) => checkout(cartData),
       onSuccess: (data) => {
         toast("Checkout successful", {
-          description: "Redirecting to payment page...",
+          description: "Your order has been placed successfully.",
         })
         // Navigate to payment page with order data
-        navigate(`/payment?orderId=${data.orderId}`)
+        // navigate(`/payment?orderId=${data.orderId}`)
+
+        // navigate to marketplace after checkout and clear cart
+        console.log("Checkout successful, order ID:", data.orderId)
+        localStorage.removeItem("cartItems")
+        queryClient.invalidateQueries({ queryKey: ["cart"] })
+        navigate("/user/market-place")
       },
       onError: () => {
         toast("Checkout failed", {
@@ -174,24 +160,63 @@ export default function CartPage() {
     removeItemMutation.mutate(cartItemId)
   }
 
+  // const handleCheckout = () => {
+  //   // check the total price of all the items in the cart together
+  //   const totalCartPrice = cart.reduce((sum: number, item: { totalPrice: number }) => sum + item.totalPrice, 0)
+  //   // calculate vat which is 7.5% of totalCartPrice
+  //   const vat = totalCartPrice * 0.075
+  //   const totalPrice = totalCartPrice + (totalCartPrice > 50000 ? 0 : 1500) + vat // include delivery fee + vat
+  //   console.log("Total Price:", totalPrice)
+  //   console.log("walletBalance:", walletBalance)
+  //   // check if user has enough balance in wallet
+  //   if (walletBalance !== undefined && walletBalance < totalPrice) {
+  //     toast("Insufficient Balance", {
+  //       description: "You do not have enough balance in your wallet to complete this purchase. kindly top up and try again.",
+  //     })
+  //     console.log("Insufficient wallet balance for checkout")
+  //     return
+  //   }
+  //   if (cart) {
+  //     checkoutMutation.mutate(cart)
+  //   }
+  // }
+
   const handleCheckout = () => {
-    // check the total price of all the items in the cart together
-    const totalCartPrice = cart.reduce((sum: number, item: { totalPrice: number }) => sum + item.totalPrice, 0)
-    // calculate vat which is 7.5% of totalCartPrice
-    const vat = totalCartPrice * 0.075
-    const totalPrice = totalCartPrice + (totalCartPrice > 50000 ? 0 : 1500) + vat // include delivery fee + vat
-    console.log("Total Price:", totalPrice)
-    // check if user has enough balance in wallet
-    if (walletBalance !== undefined && walletBalance < totalPrice) {
-      toast("Insufficient Balance", {
-        description: "You do not have enough balance in your wallet to complete this purchase.",
-      })
-      return
-    }
-    if (cart) {
-      checkoutMutation.mutate(cart)
-    }
+  const totalCartPrice = cart.reduce((sum: number, item: CartItem) => {
+    const itemTotal = Number(item.price) * (Number(item.quantity) || 1)
+    return sum + itemTotal
+  }, 0)
+
+  const vat = totalCartPrice * 0.075
+  const deliveryFee = totalCartPrice > 50000 ? 0 : 1500
+  const totalPrice = totalCartPrice + deliveryFee + vat
+
+  console.log("Total Price:", totalPrice)
+  console.log("walletBalance:", walletBalance)
+
+  if (walletBalance !== undefined && walletBalance < totalPrice) {
+    toast("Insufficient Balance", {
+      description: "You do not have enough balance in your wallet to complete this purchase. Kindly top up and try again.",
+    })
+    console.log("Insufficient wallet balance for checkout")
+    return
   }
+
+    if (cart && user) {
+    const payload = {
+      user_id: user.uuid,
+      delivery_fee: deliveryFee,
+      items: cart.map((item: CartItem) => ({
+        product_id: item.product_id, // or item.id, depending on your API response
+        quantity: item.quantity,
+      })),
+    }
+
+    console.log("Checkout Payload:", payload)
+    checkoutMutation.mutate(payload)
+  }
+}
+
 
   const handleAddRecommendationToCart = (product: RecommendationProduct) => {
    

@@ -43,6 +43,7 @@ export function CartItems({ items, onQuantityChange, onRemove }: CartItemsProps)
               variant="ghost"
               size="sm"
               onClick={() => onQuantityChange(item.product_id, item.quantity - 1)}
+              disabled={item.quantity <= 1}
               className="text-gray-600 hover:text-gray-900"
             >
               <Minus className="w-4 h-4" />
@@ -52,6 +53,7 @@ export function CartItems({ items, onQuantityChange, onRemove }: CartItemsProps)
               variant="ghost"
               size="sm"
               onClick={() => onQuantityChange(item.product_id, item.quantity + 1)}
+              disabled={item?.available_stock !== undefined && item.quantity >= item.available_stock}
               className="bg-green-600 hover:bg-green-700 text-white"
             >
               <Plus className="w-4 h-4" />

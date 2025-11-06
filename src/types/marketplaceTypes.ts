@@ -8,6 +8,7 @@ export interface Product {
   product_category: string
   rating?: number
   reviews?: number
+  available_stock?: number
 }
 
 export interface CarouselItem {
