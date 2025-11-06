@@ -10,26 +10,29 @@ interface CartItemsProps {
 }
 
 export function CartItems({ items, onQuantityChange, onRemove }: CartItemsProps) {
+  console.log("Rendering CartItems with items:", items)
   return (
+    <>
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-gray-900">Items Name</h3>
+      {/* <h3 className="text-lg font-semibold text-gray-900">Items Name</h3> */}
 
       {items.map((item) => (
-        <div key={item.id} className="flex flex-col lg:flex-row  gap-4 p-4 bg-white rounded-lg border border-gray-200">
+        <div key={item.product_id} className="flex flex-col lg:flex-row  gap-4 p-4 bg-white rounded-lg border border-gray-200">
           {/* Product Image */}
           <div className="flex-shrink-0 w-20 h-20 bg-gray-100 rounded-lg overflow-hidden">
             <img
-              src={item.product.image || "/placeholder.svg"}
-              alt={item.product.name}
+              // src={item.product.image || "/placeholder.svg"}
+              src={item.images[0] || "/placeholder.svg"}
+              alt={item.product_name}
               className="w-full h-full object-cover"
             />
           </div>
 
           {/* Product Details */}
           <div className="flex-1">
-            <h4 className="font-semibold text-gray-900 mb-1">{item.product.name}</h4>
+            <h4 className="font-semibold text-gray-900 mb-1">{item.product_name}</h4>
             <div className="flex gap-2 mb-2">
-              <span className="text-sm text-green-600 font-semibold">₦{item.product.price.toLocaleString()}</span>
+              <span className="text-sm text-green-600 font-semibold">₦{item?.price?.toLocaleString() ?? "0.00"}</span>
               <span className="text-sm text-gray-400 line-through">₦399.99</span>
             </div>
           </div>
@@ -39,7 +42,8 @@ export function CartItems({ items, onQuantityChange, onRemove }: CartItemsProps)
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onQuantityChange(item.id, item.quantity - 1)}
+              onClick={() => onQuantityChange(item.product_id, item.quantity - 1)}
+              disabled={item.quantity <= 1}
               className="text-gray-600 hover:text-gray-900"
             >
               <Minus className="w-4 h-4" />
@@ -48,7 +52,8 @@ export function CartItems({ items, onQuantityChange, onRemove }: CartItemsProps)
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onQuantityChange(item.id, item.quantity + 1)}
+              onClick={() => onQuantityChange(item.product_id, item.quantity + 1)}
+              disabled={item?.available_stock !== undefined && item.quantity >= item.available_stock}
               className="bg-green-600 hover:bg-green-700 text-white"
             >
               <Plus className="w-4 h-4" />
@@ -60,7 +65,7 @@ export function CartItems({ items, onQuantityChange, onRemove }: CartItemsProps)
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => onRemove(item.id)}
+            onClick={() => onRemove(item.product_id)}
             className="text-green-600 hover:text-green-700 font-semibold"
           >
             Remove
@@ -68,11 +73,12 @@ export function CartItems({ items, onQuantityChange, onRemove }: CartItemsProps)
 
           {/* Total Price */}
           <div className="flex-shrink-0 text-right">
-            <p className="font-semibold text-gray-900">₦{item.totalPrice.toLocaleString()}</p>
+            <p className="font-semibold text-gray-900">₦{item?.totalPrice?.toLocaleString() ?? "0.00"}</p>
           </div>
           </div>
         </div>
       ))}
-    </div>
+      </div>
+    </>
   )
 }

@@ -22,3 +22,17 @@ export const formatDate = (iso?: string) => {
   const d = new Date(iso);
   return d.toLocaleDateString();
 };
+
+export const getDisplayDate = () => {
+const today = new Date();
+  const formattedDate = today.toLocaleDateString("en-GB", {
+    weekday: "short",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }); // e.g. "Wed, 12 Jul 2024"
+
+  // remove the comma to match your desired format
+  const displayDate = formattedDate.replace(",", "");
+  return displayDate;
+};

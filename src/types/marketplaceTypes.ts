@@ -1,13 +1,14 @@
 // Types
 export interface Product {
-  id: string
-  name: string
-  description: string
+  product_id: string
+  product_name: string
+  brief_description: string
   price: number
-  image: string
-  category: string
+  images: string[]
+  product_category: string
   rating?: number
   reviews?: number
+  available_stock?: number
 }
 
 export interface CarouselItem {

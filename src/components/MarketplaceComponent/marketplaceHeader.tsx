@@ -1,10 +1,10 @@
-import type React from "react"
+import React from "react"
 import { ShoppingCart, Search, Menu, MapPin, TruckElectric, BadgeIndianRupee } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useNavigate } from "react-router-dom"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 interface MarketplaceHeaderProps {
   cartCount: number
@@ -19,11 +19,34 @@ export function MarketplaceHeader({
 }: MarketplaceHeaderProps) {
   const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState("")
+  const [debouncedQuery, setDebouncedQuery] = useState("")
+
+
+// Debounce search input
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedQuery(searchQuery)
+    }, 1000) 
+
+    return () => clearTimeout(handler)
+  }, [searchQuery])
+
+// Trigger search when debounced query changes and has +3 characters
+   useEffect(() => {
+    const trimmed = debouncedQuery.trim()
+    if (trimmed.length >= 3 || trimmed.length === 0) {
+      // Only call API when input has 3+ chars or is cleared
+      onSearch(trimmed)
+    }
+  }, [debouncedQuery, onSearch])
+
+
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value
-    setSearchQuery(query)
-    onSearch(query)
+    // const query = e.target.value
+    // setSearchQuery(query)
+    // onSearch(query)
+    setSearchQuery(e.target.value)
   }
 
   const handleCartClick = () => {
