@@ -17,23 +17,23 @@ export function OrderSummary({ cart, onCheckout, isLoading }: OrderSummaryProps)
 
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4 sticky top-24 h-fit">
-      <h3 className="text-lg font-semibold text-gray-900 mb-6">Order Summary</h3>
+    <div className=" rounded-lg border border-gray-200 p-4 sticky top-24 h-fit">
+      <h3 className="text-lg font-semibold mb-6">Order Summary</h3>
 
       <div className="space-y-4 mb-6">
-        <div className="flex justify-between text-gray-600">
+        <div className="flex justify-between text-green-600">
           <span>Items total</span>
           <span>₦{cart?.subtotal?.toLocaleString()}</span>
         </div>
-        <div className="flex justify-between text-gray-600">
+        <div className="flex justify-between">
           <span>VAT (7.5%)</span>
           <span>₦{cart?.vat?.toLocaleString()}</span>
         </div>
-        <div className="flex justify-between text-gray-600">
+        <div className="flex justify-between">
           <span>Delivery fee</span>
           <span>₦{cart?.deliveryFee?.toLocaleString()}</span>
         </div>
-        <div className="border-t border-gray-200 pt-4 flex justify-between font-semibold text-gray-900">
+        <div className="border-t border-gray-200 pt-4 flex justify-between font-semibold">
           <span>Subtotal</span>
           <span>₦{cart?.total?.toLocaleString()}</span>
         </div>

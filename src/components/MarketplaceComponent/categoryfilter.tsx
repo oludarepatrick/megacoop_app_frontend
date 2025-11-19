@@ -39,7 +39,7 @@ export function CategoryFilter({ selectedCategories, onCategoryChange }: Categor
               className={`whitespace-nowrap rounded-full text-xs ${
                 selectedCategories.includes(category)
                   ? "bg-green-600 hover:bg-green-700 text-white"
-                  : "bg-green-50 text-gray-700 border-gray-300 hover:bg-green-100"
+                  : "bg-green-50 border-gray-300 hover:bg-green-100"
               }`}
               onClick={() => handleCategorySelect(category)}
             >

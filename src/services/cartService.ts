@@ -288,9 +288,9 @@ export const getWalletBalance = async (): Promise<number> => {
   try {
     // const response = await axios.get('/user/get-user-wallet')
     // console.log("Wallet Balance Response:", response);
-    // return response.data.data.balance
     await new Promise((resolve) => setTimeout(resolve, 300))
-    return 100000 // Dummy wallet balance
+    return 10000 // Dummy wallet balance
+    // return response.data.data.balance;
   } catch (error) {
     console.error("Error fetching wallet balance:", error)
     throw error
