@@ -26,6 +26,7 @@ import {
     useVerifyEmailCode,
     useVerifyPhoneCode
 } from '@/hooks/useAuth';
+import { useLocalStorage } from '@/hooks/useLocalstorage';
 import type { AuthFormProps } from '@/types/auth';
 import { Input } from '@/components/ui/input';
 import PageLoader from '@/components/PageLoader';
@@ -39,6 +40,7 @@ import { Label } from '@radix-ui/react-label';
 import ConfirmSignIn from '../pages/auth/ConfirmLogin';
 import ProgressSteps from './AuthProgressSteps';
 import VerificationStep from './AuthVerificationStep';
+import { Checkbox } from './ui/checkbox';
 
 const AuthForm = ({
     activeTab,
@@ -62,7 +64,32 @@ const AuthForm = ({
     const [phoneTimer, setPhoneTimer] = useState(30);
     const [emailTimerActive, setEmailTimerActive] = useState(true);
     const [phoneTimerActive, setPhoneTimerActive] = useState(true);
-    
+     const [rememberMe, setRememberMe] = useLocalStorage('rememberMe', false);
+    const [savedCredentials, setSavedCredentials] = useLocalStorage<{ email: string; password: string } | null>(
+        'userCredentials',
+        null
+    );
+
+    const loginForm = useForm<LoginFormData>({
+        resolver: zodResolver(loginSchema),
+        defaultValues: {
+            email: "",
+            password: "",
+            rememberMe: false
+        },
+    });
+
+    // Load saved credentials when component mounts
+    useEffect(() => {
+        if (rememberMe && savedCredentials) {
+            loginForm.reset({
+                ...loginForm.getValues(),
+                email: savedCredentials.email,
+                password: savedCredentials.password,
+                rememberMe: true
+            });
+        }
+    }, [rememberMe, savedCredentials, loginForm]);
 
      useEffect(() => {
         let emailInterval: NodeJS.Timeout;
@@ -158,10 +185,7 @@ const sendPhoneVerification = useSendPhoneVerification(onError);
         defaultValues: { code: "" },
     });
 
-    const loginForm = useForm<LoginFormData>({
-        resolver: zodResolver(loginSchema),
-        defaultValues: { email: "", password: "" },
-    });
+    
 
 
     const signUpForm = useForm<CombinedFormData>({
@@ -235,6 +259,55 @@ const sendPhoneVerification = useSendPhoneVerification(onError);
 
     };
 
+    // const handleLoginProceed = async () => {
+        
+    //     const isLoginValid = await loginForm.trigger([
+    //         "email",
+    //         "password"
+    //     ]);
+
+    //     if (isLoginValid) {
+    //         // Send email verification code
+    //         try {
+    //             const { email, password } = loginForm.getValues();
+    //             console.log('Email to send verification to:', email);
+    //             console.log('Password length:', password ? password.length : 'NO PASSWORD');
+    //             onLoginEmailChange(email);
+    //             const result = await sendLoginEmailVerification.mutateAsync({ email, password });
+    //             console.log("Login email verification code sent:", result);
+    //             onLoginStepChange(2);
+    //         } catch (error) {
+    //             // Error handling is done in the mutation
+    //             console.error("Failed to send login email verification code:", error);
+    //         }
+    //     } else {
+    //         console.log('Form validation failed');
+    //     }
+    // };
+
+     // Update handleLoginProceed to save credentials
+    
+    const handleRememberMeChange = (checked: boolean) => {
+        loginForm.setValue('rememberMe', checked);
+        setRememberMe(checked);
+        
+        if (!checked) {
+            // Clear saved credentials if remember me is unchecked
+            setSavedCredentials(null);
+        }
+    };
+
+    const clearSavedCredentials = () => {
+        setSavedCredentials(null);
+        setRememberMe(false);
+        loginForm.setValue('rememberMe', false);
+        loginForm.reset({
+            email: '',
+            password: '',
+            rememberMe: false
+        });
+    };
+    
     const handleLoginProceed = async () => {
         console.log('handleLoginProceed called');
         console.log('Current form values:', loginForm.getValues());
@@ -247,9 +320,21 @@ const sendPhoneVerification = useSendPhoneVerification(onError);
         console.log('Form validation result:', isLoginValid);
 
         if (isLoginValid) {
+            // Save credentials if remember me is checked
+            const formData = loginForm.getValues();
+            if (formData.rememberMe) {
+                setSavedCredentials({
+                    email: formData.email,
+                    password: formData.password
+                });
+            } else {
+                // Clear saved credentials if remember me is unchecked
+                setSavedCredentials(null);
+            }
+
             // Send email verification code
             try {
-                const { email, password } = loginForm.getValues();
+                const { email, password } = formData;
                 console.log('Email to send verification to:', email);
                 console.log('Password length:', password ? password.length : 'NO PASSWORD');
                 onLoginEmailChange(email);
@@ -257,14 +342,12 @@ const sendPhoneVerification = useSendPhoneVerification(onError);
                 console.log("Login email verification code sent:", result);
                 onLoginStepChange(2);
             } catch (error) {
-                // Error handling is done in the mutation
                 console.error("Failed to send login email verification code:", error);
             }
         } else {
             console.log('Form validation failed');
         }
     };
-
     const handleStep3Continue = async () => {
     const isValid = await signUpForm.trigger([
         "address",
@@ -721,18 +804,29 @@ const sendPhoneVerification = useSendPhoneVerification(onError);
                             />
                             <div className="flex items-center justify-between text-sm">
                                 <label className="flex items-center gap-2 cursor-pointer">
-                                    <Input type="checkbox" className="sr-only peer" />
-                                    <span className="w-4 h-4 rounded border border-gray-300 flex items-center justify-center transition-colors peer-checked:bg-green-600 peer-checked:border-green-600 peer-focus:ring-2 peer-focus:ring-green-300">
-                                        <svg className="hidden peer-checked:block w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                                            <polyline points="20 6 9 17 4 12" />
-                                        </svg>
-                                    </span>
+                                <Checkbox
+                                    id="remember-me"
+                                    checked={loginForm.watch("rememberMe")}
+                                    onCheckedChange={handleRememberMeChange}
+                                />
                                     <span className="text-gray-700">Remember me</span>
                                 </label>
                                 <NavLink to="/forgot-password" className="text-green-600 hover:underline">
                                     Forgot password?
                                 </NavLink>
+                        </div>
+                        
+                        {savedCredentials && (
+                            <div className="text-sm">
+                                <button
+                                    type="button"
+                                    onClick={clearSavedCredentials}
+                                    className="text-red-600 hover:underline text-xs"
+                                >
+                                    Clear saved credentials
+                                </button>
                             </div>
+                        )}
                         <Button
                             type="button"
                             className="w-full bg-[#14AB55] text-white hover:bg-[#0f8b3d] h-11 disabled:bg-green-300 disabled:text-gray-800"

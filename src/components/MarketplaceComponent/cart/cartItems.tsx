@@ -17,7 +17,7 @@ export function CartItems({ items, onQuantityChange, onRemove }: CartItemsProps)
       {/* <h3 className="text-lg font-semibold text-gray-900">Items Name</h3> */}
 
       {items.map((item) => (
-        <div key={item.product_id} className="flex flex-col lg:flex-row  gap-4 p-4 bg-white rounded-lg border border-gray-200">
+        <div key={item.product_id} className="flex flex-col lg:flex-row  gap-4 p-4 rounded-lg border border-gray-200">
           {/* Product Image */}
           <div className="flex-shrink-0 w-20 h-20 bg-gray-100 rounded-lg overflow-hidden">
             <img
@@ -30,7 +30,7 @@ export function CartItems({ items, onQuantityChange, onRemove }: CartItemsProps)
 
           {/* Product Details */}
           <div className="flex-1">
-            <h4 className="font-semibold text-gray-900 mb-1">{item.product_name}</h4>
+            <h4 className="font-semibold mb-1">{item.product_name}</h4>
             <div className="flex gap-2 mb-2">
               <span className="text-sm text-green-600 font-semibold">₦{item?.price?.toLocaleString() ?? "0.00"}</span>
               <span className="text-sm text-gray-400 line-through">₦399.99</span>
@@ -44,11 +44,11 @@ export function CartItems({ items, onQuantityChange, onRemove }: CartItemsProps)
               size="sm"
               onClick={() => onQuantityChange(item.product_id, item.quantity - 1)}
               disabled={item.quantity <= 1}
-              className="text-gray-600 hover:text-gray-900"
+              className=" hover:text-gray-900 border"
             >
               <Minus className="w-4 h-4" />
             </Button>
-            <span className="w-8 text-center font-semibold text-gray-900">{item.quantity}</span>
+            <span className="w-8 text-center font-semibold">{item.quantity}</span>
             <Button
               variant="ghost"
               size="sm"
@@ -73,7 +73,7 @@ export function CartItems({ items, onQuantityChange, onRemove }: CartItemsProps)
 
           {/* Total Price */}
           <div className="flex-shrink-0 text-right">
-            <p className="font-semibold text-gray-900">₦{item?.totalPrice?.toLocaleString() ?? "0.00"}</p>
+            <p className="font-semibold ">₦{item?.totalPrice?.toLocaleString() ?? "0.00"}</p>
           </div>
           </div>
         </div>

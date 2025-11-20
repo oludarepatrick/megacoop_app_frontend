@@ -8,7 +8,7 @@ interface RecentlyViewedProps {
 export function RecentlyViewedSection({ items }: RecentlyViewedProps) {
   return (
     <div className="px-4 py-6">
-      <h3 className="text-xl font-bold text-gray-900 mb-4">Recently viewed</h3>
+      <h3 className="text-xl font-bold mb-4">Recently viewed</h3>
       <div className="flex gap-4 overflow-x-auto pb-2">
         {items.map((item) => (
           <div key={item.id} className="flex-shrink-0">

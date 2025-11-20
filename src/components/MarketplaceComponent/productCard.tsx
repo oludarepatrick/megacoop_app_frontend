@@ -32,7 +32,7 @@ export function ProductCard({ product, onClick, onAddToCart }: ProductCardProps)
 
       {/* Product Info */}
       <div className="p-4">
-        <h4 className="font-semibold text-gray-900 mb-1 line-clamp-2">{product.product_name}</h4>
+        <h4 className="font-semibold mb-1 text-green-600 line-clamp-2">{product.product_name}</h4>
         <p className="text-sm text-gray-600 mb-3 line-clamp-2">{product.brief_description}</p>
 
         {/* Rating */}
@@ -48,13 +48,13 @@ export function ProductCard({ product, onClick, onAddToCart }: ProductCardProps)
                 />
               ))}
             </div>
-            <span className="text-xs text-gray-600">({product.reviews})</span>
+            <span className="text-xs">({product.reviews})</span>
           </div>
         )}
 
         {/* Price and Button */}
         <div className="flex items-center justify-between">
-          <span className="text-lg font-bold text-gray-900">₦{product?.price?.toLocaleString() ?? "0.00"}</span>
+          <span className="text-lg font-bold">₦{product?.price?.toLocaleString() ?? "0.00"}</span>
           <Button
             size="sm"
             className="bg-green-600 hover:bg-green-700 text-white"

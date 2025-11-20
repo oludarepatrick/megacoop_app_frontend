@@ -55,9 +55,9 @@ export function MarketplaceHeader({
   }
 
   return (
-    <div className="bg-inherit border-b border-gray-200 sticky top-[-25px] z-40">
+    <div className="bg-inherit backdrop-blur-xl border-b border-gray-200 sticky top-[-25px] z-40">
       {/* Top Info Bar */}
-      <div className="bg-blue-50 px-4 py-2 text-sm text-gray-600 flex flex-col md:flex-row justify-between md:items-center gap-2">
+      <div className=" px-4 py-2 text-sm flex flex-col md:flex-row justify-between md:items-center gap-2">
         <span>Welcome to worldwide Megamart!</span>
         <div className="flex flex-col md:flex-row gap-6 text-xs">
           <span><MapPin className="inline w-4 h-4 text-green-500" /> Deliver to 423651</span>
@@ -102,7 +102,7 @@ export function MarketplaceHeader({
           <Input
             type="text"
             placeholder="Search essentials, groceries and more..."
-            className="border-0 bg-transparent focus:outline-none focus:ring-0 text-gray-700 placeholder-gray-500"
+            className="border-0 bg-transparent focus:outline-none focus:ring-0 text-gray-700 placeholder-gray-500 text-xs"
             value={searchQuery}
             onChange={handleSearch}
           />
