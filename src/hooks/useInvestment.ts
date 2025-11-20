@@ -55,3 +55,10 @@ export function useTrendingInvestment() {
   })
 }
 
+// export function useTotalInvested() {
+//   return useQuery({
+//     queryKey: ["total-invested"],
+//     queryFn: investmentService.getTotalInvested,
+//   })
+// }
+

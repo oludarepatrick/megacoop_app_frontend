@@ -6,10 +6,12 @@ import PageLoader from "@/components/PageLoader";
 import { useInvestmentData, 
     useActiveInvestments, 
     useUserInvestment,
-    useTrendingInvestment} from "@/hooks/useInvestment";
+    useTrendingInvestment
+} from "@/hooks/useInvestment";
 
 const Investment = () => {
     const { data: investmentData, isLoading, isError } = useInvestmentData();
+    console.log(investmentData)
     const { data: allInvestment} = useActiveInvestments();
     const { data: userInvestment = [], isLoading: loading} = useUserInvestment()
     const { data: trendingInvestment = [], isLoading: loadingInvestment } = useTrendingInvestment();

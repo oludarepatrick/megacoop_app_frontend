@@ -10,8 +10,7 @@ export type SavingPlan = {
     created_at: string
     updated_at: string
     transactions: SavingsTransactions
-
-}[]
+}
 
 export type SavingsTransactions = {
     id: number

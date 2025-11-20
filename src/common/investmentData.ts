@@ -18,6 +18,7 @@ export const simpleInvestment: SimpleInvestment = {
     basicDescription: "Grow your wealth with diversified pooled investments",
     poolOption: [
         {
+            id: 1,
             name: "Starter Pool",
             range: "100k-499,999",
             roi: "16-18%",
@@ -26,6 +27,7 @@ export const simpleInvestment: SimpleInvestment = {
             icon: Sparkles,
         },
         {
+            id: 2,
             name: "Growth Pool",
             range: "500k-1,999,999",
             roi: "17-19%",
@@ -34,6 +36,7 @@ export const simpleInvestment: SimpleInvestment = {
             icon: TrendingUp,
         },
         {
+            id: 3,
             name: "Premium Pool",
             range: "2m+",
             roi: "18-20%",
@@ -59,7 +62,7 @@ export const simpleInvestment: SimpleInvestment = {
 // Second hardcoded investment - with detailed modal
     
 export const detailedInvestment: DetailedInvestment = {
-    id: 15,
+    id: 4,
     title: "Housing Projects Investments",
     industry: "Real Estate Investment",
     minimum_amount: "500000",

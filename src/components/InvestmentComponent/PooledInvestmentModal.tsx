@@ -104,10 +104,10 @@ const PooledInvestmentModal = ({isOpen, onClose, onApply, modalData}: PooledInve
                             </div>
 
                             <Card className="border-none shadow-none p-0">
-                                {modalData.poolOption.map((pool, index) => {
+                                {modalData.poolOption.map((pool) => {
                                     const Icon = pool.icon
                                     return (
-                                        <CardContent key={index} className="p-2 border-2 border-icon/50 rounded-2xl flex items-center justify-between flex-wrap gap-y-3">
+                                        <CardContent key={pool.id} className="p-2 border-2 border-icon/50 rounded-2xl flex items-center justify-between flex-wrap gap-y-3">
                                             <div className="flex items-center gap-2">
                                                 <Badge className={`h-4 w-3 ${pool.color}`}/>
                                                 <div className="font-semibold">

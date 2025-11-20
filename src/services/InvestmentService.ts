@@ -1,18 +1,13 @@
 import axios from "@/lib/axiosInstance";
-import type { InvestmentData, AvailableInvestment, ApiInvestment, UserInvestment, TopTrendingInvestment, } from "@/types/investmentType";
+import type { InvestmentData, AvailableInvestment, ApiInvestment, UserInvestment, TopTrendingInvestment} from "@/types/investmentType";
 import image1 from "@/assets/money-growth-img.png";
 import type { InvestPaymentFormData } from "@/schemas/investSchema";
 
 
 export const investmentService = {
   getInvestmentData: async () : Promise<InvestmentData> => {
-    // const response = await axios.get("")
-    // console.log(response.data)
-    return {
-      totalInvested: 0.00,
-      myInvestments: 0, 
-      rateOfReturn: 5.8,
-    }
+    const response = await axios.get('/investments/total-invested');
+    return response.data
   },
 
   getActiveInvestment: async (): Promise<AvailableInvestment[]> => {
@@ -51,8 +46,7 @@ export const investmentService = {
   getTrendingInvestment: async (): Promise<TopTrendingInvestment[]> => {
     const response = await axios.get('/investments/top');
     return response.data.data
-  }
-
+  },
 }
 
 

@@ -18,7 +18,7 @@ export default function ConfirmSignIn({ loginEmail, loginPassword }: ConfirmSign
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // Use our clean authentication hook
+  // Use authentication hook
   const verifyOtp = useVerifyLoginOtp(
     () => {
       setStatusMessage("✅ Code verified successfully. Redirecting...");
