@@ -25,3 +25,35 @@ export const useSavingPlans = () => {
         queryFn: savingService.getSavingPlans,
     })
 }
+
+export const useCancelSavingPlan = (onClose: () => void) => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (data: {saving_id:number}) => savingService.cancelSavingPlan(data),
+        onSuccess: () => {
+            console.log("saving plans canceled successfully")
+            queryClient.invalidateQueries({queryKey: ["my-plans"]})
+            queryClient.invalidateQueries({ queryKey: ["get-user-wallet"] });
+            onClose();
+        },
+        onError:(error: AxiosError) => {
+            console.log("error", error)
+        }
+    })
+}
+
+export const usePartialWithdrawSaving = (onClose: () => void) => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (data: {saving_id: number, amount: number}) => savingService.partialWithdraw(data),
+        onSuccess: () => {
+            console.log("saving plans canceled successfully")
+            queryClient.invalidateQueries({queryKey: ["my-plans"]})
+            queryClient.invalidateQueries({ queryKey: ["get-user-wallet"] });
+            onClose();
+        },
+        onError:(error: AxiosError) => {
+            console.log("error", error)
+        }
+    })
+}

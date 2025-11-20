@@ -65,7 +65,7 @@ const SavingPlanModal = () => {
                         backgroundSize: "30px, 40px",
                     }}
             >
-                <DialogHeader className="rounded-lg bg-wallet p-8 sm:px-20 gap-0"
+                <DialogHeader className="rounded-lg p-8 sm:px-20 gap-0"
                     style={{
                         backgroundImage: `linear-gradient(to bottom right, #F7F7F7, #E4FBE1, #D1FFCC), url(${walletBcg})`,
                         backgroundRepeat: "no-repeat",
@@ -206,6 +206,7 @@ const SavingPlanModal = () => {
                         setSuccessModal(false)
                         navigate("/user/dashboard")
                     }}
+                    description="Your Saving goal has been successfully created"
                 />
             )}
         </>

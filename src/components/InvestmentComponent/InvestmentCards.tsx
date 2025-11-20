@@ -13,7 +13,7 @@ export default function InvestmentCards({ data, totalInvestment }: InvestmentCar
   const cards = [
     {
       title: "Total Invested Amount",
-      value: `₦${data?.totalInvested?.toLocaleString() || "0.00"}`,
+      value: `₦${data?.total_invested?.toLocaleString() || "0.00"}`,
       icon: moneyIcon,
       bgColor: "bg-purple-100",
       iconColor: "text-purple-600",
@@ -27,7 +27,7 @@ export default function InvestmentCards({ data, totalInvestment }: InvestmentCar
     },
     {
       title: "Rate of Return",
-      value: `+${data?.rateOfReturn || "5.80"}%`,
+      value: `+${data?.rate_of_return || "0"}%`,
       icon: repeatIcon,
       bgColor: "bg-blue-100",
       iconColor: "text-blue-600",

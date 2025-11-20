@@ -1,9 +1,9 @@
 import type { LucideIcon } from "lucide-react";
 
 export type InvestmentData = {
-  totalInvested: number;
-  myInvestments: number;
-  rateOfReturn: number;
+  total_invested: number
+  total_return: number
+  rate_of_return: number
 };
 
 export type ChartDataPoint = {
@@ -40,6 +40,7 @@ export type DetailedInvestment = InvestmentBase & {
 };
 
 type PoolOption = {
+  id: number
   name: string;
   range: string;
   roi: string;
@@ -103,4 +104,10 @@ export type TopTrendingInvestment = {
   roi: string
   investors_count: number
   status: string;
+}
+
+export type TotalInvested = {
+  total_invested: number
+  total_return: number
+  rate_of_return: number
 }
