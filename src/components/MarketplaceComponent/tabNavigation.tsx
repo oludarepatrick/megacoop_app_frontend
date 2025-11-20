@@ -33,7 +33,7 @@ export function TabNavigation({ onTabChange }: TabNavigationProps) {
         className={`text-lg font-semibold pb-2 border-b-2 rounded-none ${
           activeTab === "buy-on-credit"
             ? "text-green-600 border-green-600"
-            : "text-gray-500 border-transparent hover:text-gray-700"
+            : " border-transparent hover:text-gray-700"
         }`}
         onClick={() => handleTabChange("buy-on-credit")}
       >

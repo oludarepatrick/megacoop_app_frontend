@@ -251,7 +251,7 @@ export default function CartPage() {
   // if (!cart || cart.items.length === 0) {
   if (!cart || cart.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen">
         <MarketplaceHeader cartCount={0} onSearch={() => {}} />
         <div className="max-w-7xl mx-auto px-4 py-12 text-center">
           <p className="text-gray-600 text-lg mb-4">Your cart is empty</p>
@@ -264,7 +264,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       {/* Header */}
       <MarketplaceHeader cartCount={cartCount} onSearch={() => {}} />
 
@@ -274,7 +274,7 @@ export default function CartPage() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
           <div className="flex items-center gap-4">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Local Market</h2>
+              <h2 className="text-2xl font-bold ">Local Market</h2>
               <p className="text-green-600 text-sm">🟢 Shopping in 07114</p>
             </div>
           </div>
@@ -285,14 +285,14 @@ export default function CartPage() {
               {getDisplayDate()}
             </Button>
             <div className="text-right">
-              <p className="text-sm font-semibold text-gray-900">Free delivery + saving $3.00 on this order</p>
+              <p className="text-sm font-semibold">Free delivery + saving $3.00 on this order</p>
               <p className="text-xs text-gray-600">Go to</p>
             </div>
           </div>
         </div>
 
         {/* Main Content */}
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Cart Items</h3>
+        <h3 className="text-lg font-semibold mb-2">Cart Items</h3>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 mb-12">
           {/* Cart Items */}
           <div className="lg:col-span-2">

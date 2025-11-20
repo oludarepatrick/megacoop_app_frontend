@@ -30,14 +30,14 @@ export function RecommendationsCarousel({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-xl font-bold text-gray-900">Recommendations</h3>
+        <h3 className="text-xl font-bold">Recommendations</h3>
         <div className="flex gap-2">
           <Button
             variant="ghost"
             size="icon"
             onClick={goToPrevious}
             disabled={currentIndex === 0}
-            className="text-gray-600 hover:text-gray-900"
+            className="text-green-500 hover:text-gray-900"
           >
             <ChevronLeft className="w-5 h-5" />
           </Button>
@@ -46,7 +46,7 @@ export function RecommendationsCarousel({
             size="icon"
             onClick={goToNext}
             disabled={currentIndex >= products.length - itemsPerView}
-            className="text-gray-600 hover:text-gray-900"
+            className="text-green-500 hover:text-gray-900"
           >
             <ChevronRight className="w-5 h-5" />
           </Button>
@@ -65,11 +65,11 @@ export function RecommendationsCarousel({
             </div>
 
             <div className="p-4">
-              <h4 className="font-semibold text-gray-900 mb-2 line-clamp-2">{product.product_name}</h4>
+              <h4 className="font-semibold text-green-600 mb-2 line-clamp-2">{product.product_name}</h4>
 
               <div className="flex items-baseline gap-2 mb-3">
-                <span className="text-lg font-bold text-gray-900">₦{product.price.toLocaleString()}</span>
-                <span className="text-sm text-gray-400 line-through">₦99.99</span>
+                <span className="text-lg font-bold">₦{product.price.toLocaleString()}</span>
+                <span className="text-sm  line-through">₦99.99</span>
               </div>
 
               <p className="text-sm text-green-600 font-semibold mb-3">{product.stock} Left</p>

@@ -26,7 +26,7 @@ export function ProductGrid({ products, onFilterChange, onAddToCart }: ProductGr
       <div className="px-4 py-6">
         {/* Header with Filter */}
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-bold text-gray-900 underline underline-offset-4 decoration-green-600 decoration-2">
+          <h3 className="text-xl font-bold underline underline-offset-4 decoration-green-600 decoration-2">
             Grab the best deal on <span className="text-green-600">New Items</span>
           </h3>
           {/* <Button variant="ghost" className="text-green-600 hover:text-green-700">
@@ -49,24 +49,6 @@ export function ProductGrid({ products, onFilterChange, onAddToCart }: ProductGr
           </div>
         </div>
 
-        {/* Filter Dropdown */}
-        {/* <div className="flex items-center justify-between mb-6 md:justify-end">
-          <div className="flex items-center gap-2">
-            <Filter className="w-5 h-5 text-gray-600" />
-            <Select value={filterType} onValueChange={handleFilterChange}>
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="Filter by" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">View All</SelectItem>
-                <SelectItem value="newest">Newest</SelectItem>
-                <SelectItem value="oldest">Oldest</SelectItem>
-                <SelectItem value="cheapest">Cheapest</SelectItem>
-                <SelectItem value="most_expensive">Most Expensive</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div> */}
 
         {/* Product Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">

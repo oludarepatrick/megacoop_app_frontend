@@ -42,7 +42,7 @@ const Header = ({onMenuToggle}: menuProps) => {
         },
         "/user/profile": { 
             title: "Profile", 
-            bg: "bg-card-bg text-theme-text",
+            bg: "bg-megaPrimary text-white",
             hasSearch: false
         },
         "/user/settings": { 
