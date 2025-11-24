@@ -1,4 +1,4 @@
-import type { SavingFormData } from "@/schemas/savingsPlanSchema"
+import type { SavingFormData, WithdrawAmountFormData } from "@/schemas/savingsPlanSchema"
 import { savingService } from "@/services/savingsService"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import type { AxiosError } from "axios"
@@ -57,3 +57,38 @@ export const usePartialWithdrawSaving = (onClose: () => void) => {
         }
     })
 }
+
+export const useWithdrawalOtp = (onProceed: (data: WithdrawAmountFormData) => void, setFormError: (msg: string) => void) => {
+    return useMutation({
+        mutationFn : (data: WithdrawAmountFormData) => savingService.withdrawalOtp(data),
+        onSuccess: (response, variables) => {
+            console.log("OTP request successful", response)
+            onProceed(variables)
+        },
+        onError: (error: AxiosError<{message: string}>) => {
+            const message = error.response?.data?.message;
+            setFormError(message || "Something went wrong. Try again!")
+        }
+    })
+}
+
+export const useSendWithdrawalOtp = (onSuccess: () => void, setError: (msg: string) => void) => {
+    return useMutation({
+        mutationFn: (data: {otp: string}) => savingService.submitWithdrawalRequest(data),
+        onSuccess: () => {
+            onSuccess();
+        },
+        onError: (error: AxiosError<{message: string}>) => {
+            console.log("widrawal request failed",error);
+            const message = error.response?.data.message;
+            setError(message || "Invalid OTP, please try again")
+        }
+    })
+}
+
+export const useResendWithdrawalOtp = () => {
+    return useMutation({
+        mutationFn: (data: WithdrawAmountFormData) =>
+            savingService.withdrawalOtp(data),
+    });
+};

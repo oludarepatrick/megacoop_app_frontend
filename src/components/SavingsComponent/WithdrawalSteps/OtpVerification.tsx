@@ -4,13 +4,17 @@ import { Check } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 type OtpVerificationProps = {
-    phone: string
-    onVerify: () => void
+    phone?: string
+    onVerify: (otp: string) => void
     isPending: boolean
+    isResending: boolean
+    error?: string;
+    onClearError: () => void
+    onResend: () => void
 }
-const OtpVerification = ({phone, onVerify, isPending}: OtpVerificationProps) => {
+const OtpVerification = ({phone, onVerify, isPending, isResending, error, onClearError, onResend}: OtpVerificationProps) => {
     const [timer, setTimer] = useState(30);
-    const [otp, setOtp] = useState<string[]>(Array(5).fill(""))
+    const [otp, setOtp] = useState<string[]>(Array(6).fill(""))
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
 
@@ -24,6 +28,14 @@ const OtpVerification = ({phone, onVerify, isPending}: OtpVerificationProps) => 
         return () => clearInterval(interval)
     }, [timer]);
 
+
+    // handle reset timer when resend otp returns
+    useEffect(() => {
+        if(!isResending && timer === 0){
+            setTimer(30)
+        }
+    }, [isResending])
+
     // handle otp input change
     const handleInputChange = (index: number, value:string) => {
         if(!/^\d*$/.test(value)) return;
@@ -32,7 +44,7 @@ const OtpVerification = ({phone, onVerify, isPending}: OtpVerificationProps) => 
         newOtp[index] = value;
         setOtp(newOtp);
 
-        if(value && index < 4){
+        if(value && index < 5){
             inputRefs.current[index + 1]?.focus();
         }
     };
@@ -43,10 +55,11 @@ const OtpVerification = ({phone, onVerify, isPending}: OtpVerificationProps) => 
         };
     }
 
-    const handleResent = () => {
-        setTimer(30);
-        setOtp(Array(5).fill(""))
+    const handleResend = () => {
+        setOtp(Array(6).fill(""));
+        onClearError();
         inputRefs.current[0]?.focus();
+        onResend()
     }
 
 
@@ -62,13 +75,18 @@ const OtpVerification = ({phone, onVerify, isPending}: OtpVerificationProps) => 
                     <Input
                         key={index}
                         ref={(el) => {inputRefs.current[index] = el;
-                            return; }}
+                            return; 
+                        }}
                         type="text"
                         inputMode="numeric"
                         maxLength={1}
                         value={digit}
-                        onChange={(e) => handleInputChange(index, e.target.value)}
+                        onChange={(e) => {
+                            handleInputChange(index, e.target.value)
+                            onClearError();
+                        }}
                         onKeyDown={(e) => handleKeyDown(index, e)}
+                        disabled={isPending}
                         className="w-10 h-10 sm:w-12 sm:h-12 text-center sm:text-lg font-semibold border rounded-md focus:ring-2 focus:ring-green-500"
                     />
                 ))}
@@ -78,18 +96,22 @@ const OtpVerification = ({phone, onVerify, isPending}: OtpVerificationProps) => 
                 {timer > 0 ? (
                     <span className="text-megagreen">Resend in {timer}s</span>
                 ): (
-                    <button className="bg-transparent hover:underline text-megagreen cursor-pointer" onClick={handleResent}>
+                    <button className="bg-transparent hover:underline text-megagreen cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" 
+                        onClick={handleResend}
+                        disabled={isResending}
+                    >
                         Resend OTP
                     </button>
                 )}
             </div>
 
             <Button className="bg-megagreen hover:bg-green-600"
-                onClick={onVerify}
+                onClick={() => onVerify(otp.join(""))}
                 disabled={isPending}
             >
                 <Check/> Withdraw Money
             </Button>
+            {error && <p className="text-red-500 text-sm">{error}</p>}
         </div>
     )
 }

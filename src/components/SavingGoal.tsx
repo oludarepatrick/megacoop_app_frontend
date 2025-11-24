@@ -101,6 +101,7 @@ const SavingGoal= () => {
                                     <div>
                                         <h4 className="font-medium text-main text-sm">{goal.goal_name}</h4>
                                         <p className="text-xs text-muted-foreground">
+                                            {/* {goal.saving_status === "ongoing" && "Ongoing"} */}
                                             {goal.saving_status === "ongoing" ? "Ongoing" : "Completed"}
                                         </p>
                                     </div>

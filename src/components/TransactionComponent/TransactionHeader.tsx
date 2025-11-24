@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 const TransactionsHeader = () => {
     return (
          <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-            <h2 className="text-xl lg:text-2xl font-semibold">Recent Transactions</h2>
+            <h2 className="text-xl lg:text-2xl font-semibold">Transactions</h2>
             
             <div className="flex justify-between gap-3">
                 {/* Search */}

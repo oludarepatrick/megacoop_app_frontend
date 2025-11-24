@@ -1,23 +1,25 @@
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "../ui/tabs";
 import TransactionTable from "./TransactionTable";
-import type { TabType, Transaction } from "@/pages/Transactions";
+import type { TabType, } from "@/pages/Transactions";
 // import LoanModal from "../LoansComponent/ApplyLoanModal";
 import { useState } from "react";
 import TransactionReceipt from "./TransactionReceipt";
+import type { WalletTransaction } from "@/types/transaction";
 
 type TabProps = {
     activeTab: TabType
     setActiveTab: (tab: TabType ) => void;
-    transactions: Transaction[]
+    transactions: WalletTransaction[]
+    isLoading: boolean
 
 }
 
-const TransactionTabs = ({ activeTab, setActiveTab, transactions }: TabProps) => {
+const TransactionTabs = ({ activeTab, setActiveTab, transactions, isLoading }: TabProps) => {
     // const [isLoanModalOpen, setIsLoanModalOpen] = useState(false);
     const [isReceiptModal, setIsReceiptModal]  = useState(false)
-    const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null)
+    const [selectedTransaction, setSelectedTransaction] = useState<WalletTransaction | null>(null)
 
-    const handleClick = (transaction: Transaction) => {
+    const handleClick = (transaction: WalletTransaction) => {
         setSelectedTransaction(transaction)
         setIsReceiptModal(true)
     }
@@ -31,13 +33,13 @@ const TransactionTabs = ({ activeTab, setActiveTab, transactions }: TabProps) =>
                     <TabsTrigger value="expense" className="pb-2 border-0 border-b  data-[state=active]:rounded-none data-[state=active]:border-b-2 data-[state=active]:border-megagreen data-[state=active]:text-megagreen ">Expense</TabsTrigger>
                 </TabsList>
                 <TabsContent value="all">
-                    <TransactionTable transactions={transactions} onClick={handleClick} />
+                    <TransactionTable transactions={transactions} isLoading={isLoading} onClick={handleClick} />
                 </TabsContent>
                 <TabsContent value="income">
-                    <TransactionTable transactions={transactions} onClick={handleClick} />
+                    <TransactionTable transactions={transactions} isLoading={isLoading} onClick={handleClick} />
                 </TabsContent>
                 <TabsContent value="expense">
-                    <TransactionTable transactions={transactions} onClick={handleClick} />
+                    <TransactionTable transactions={transactions} isLoading={isLoading} onClick={handleClick} />
                 </TabsContent>
 
             </Tabs>

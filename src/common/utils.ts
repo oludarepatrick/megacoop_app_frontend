@@ -24,7 +24,7 @@ export const formatDate = (iso?: string) => {
 };
 
 export const getDisplayDate = () => {
-const today = new Date();
+  const today = new Date();
   const formattedDate = today.toLocaleDateString("en-GB", {
     weekday: "short",
     day: "2-digit",
@@ -36,3 +36,19 @@ const today = new Date();
   const displayDate = formattedDate.replace(",", "");
   return displayDate;
 };
+
+
+export function formatDateTime(dateInput: string | Date): string {
+  const date = new Date(dateInput);
+
+  const day = date.getDate();
+  const month = date.toLocaleString("en-US", { month: "short" });
+
+  const time = date.toLocaleString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true
+  });
+
+  return `${day} ${month} , ${time}`;
+}

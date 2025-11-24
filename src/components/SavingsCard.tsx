@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import WithdrawModal from "./SavingsComponent/WithdrawModal";
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
+import WithdrawalSuccessModal from "./SavingsComponent/WithdrawalSteps/WithdrawalSuccessModal";
 
 type StatProps = {
     firstName: string;
@@ -12,12 +13,19 @@ type StatProps = {
 }
 
 const SavingsCard= ({firstName, amount, }:StatProps) => {
-    const [openWithdrawalModal, setOpenWithdrawalModal] = useState(false)
+    const [openWithdrawalModal, setOpenWithdrawalModal] = useState(false);
+    const [openSuccessModal, setOpenSucessModal] = useState(false);
+
     const navigate = useNavigate();
     
     const handleViewLoan = () => {
         navigate('/user/savings-loan?view=loan');
     };
+
+    const handleSuccessModal = () =>{
+        setOpenWithdrawalModal(false)
+        setOpenSucessModal(true);
+    }
     
     return (
         <>
@@ -53,13 +61,20 @@ const SavingsCard= ({firstName, amount, }:StatProps) => {
                 </div>
             </CardContent>
 
-            {
-                <WithdrawModal
-                    isOpen={openWithdrawalModal}
-                    onClose={() => setOpenWithdrawalModal(false)}
-                
-                />
-            }
+            
+            <WithdrawModal
+                isOpen={openWithdrawalModal}
+                onClose={() => setOpenWithdrawalModal(false)}
+                onSuccess={handleSuccessModal}
+            />
+
+            <WithdrawalSuccessModal
+                isOpen={openSuccessModal}
+                onClose={() => setOpenSucessModal(false)}
+            />
+            
+
+
 
         </>
     )
