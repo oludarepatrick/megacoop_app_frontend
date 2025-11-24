@@ -1,5 +1,5 @@
 import axios from '@/lib/axiosInstance';
-import type { SavingFormData } from '@/schemas/savingsPlanSchema';
+import type { SavingFormData, WithdrawAmountFormData } from '@/schemas/savingsPlanSchema';
 import type { SavingPlan } from '@/types/savingType';
 
 export const savingService = {
@@ -22,6 +22,16 @@ export const savingService = {
         const response = await axios.post("/savings/partial-withdrawal", data);
         return response.data
     },
+
+    withdrawalOtp: async (data: WithdrawAmountFormData) => {
+        const response = await axios.post("/user/request-withdrawal-otp", data)
+        return response.data
+    },
+
+    submitWithdrawalRequest: async (data: {otp: string}) => {
+        const response = await axios.post("/user/wallet-withdrawal", data)
+        return response.data
+    }
 
 
 }

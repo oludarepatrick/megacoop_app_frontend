@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useWithdrawalOtp } from "@/hooks/useSaving"
 import { withdrawAmountSchema, type WithdrawAmountFormData } from "@/schemas/savingsPlanSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Check } from "lucide-react"
@@ -9,7 +10,7 @@ import { useForm } from "react-hook-form"
 
 
 type WithdrawFormProps ={
-    onProceed: () => void
+    onProceed: (data: WithdrawAmountFormData) => void
 }
 const WithdrawForm = ({onProceed}: WithdrawFormProps) => {
     const form = useForm<WithdrawAmountFormData>({
@@ -18,11 +19,22 @@ const WithdrawForm = ({onProceed}: WithdrawFormProps) => {
                 amount: "",
             }
     })
+    const {mutate, isPending} = useWithdrawalOtp(
+        (data: WithdrawAmountFormData) => {
+            onProceed(data)
+        },
+        (msg) => {
+            form.setError("amount", {
+                type: "server",
+                message: msg
+            })
+        }
+    )
     
     const onSubmit = (data: WithdrawAmountFormData) => {
         console.log("Form submitted:", data)
-        form.reset()
-        onProceed()
+        mutate(data)
+        // form.reset();
     }
 
     return (
@@ -37,6 +49,7 @@ const WithdrawForm = ({onProceed}: WithdrawFormProps) => {
                                     type="text" 
                                     id="amount"
                                     {...field}
+                                    disabled={isPending}
                                     className="py-5 border-gray-300 rounded-md focus:!outline-none focus:!ring focus:!ring-megagreen focus:!shadow-md" 
                                 />
                             </FormControl>
@@ -44,7 +57,7 @@ const WithdrawForm = ({onProceed}: WithdrawFormProps) => {
                         </FormItem>
                     )}
                 />
-                <Button className="bg-megagreen hover:bg-green-600">
+                <Button className="bg-megagreen hover:bg-green-600" disabled={isPending}>
                     <Check/> Proceed
                 </Button>
             </form>

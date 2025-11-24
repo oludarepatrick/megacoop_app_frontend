@@ -43,6 +43,14 @@ const SavingGoalDetailModal = ({isOpen, onClose, onConfirm, onProceed, savings}:
                         <p className="text-muted-foreground">Total Saved</p>
                         <p className="font-medium text-megagreen">₦{savings.total_saved}</p>
                     </div>
+                    <div>
+                        <p className="text-muted-foreground">Frequency</p>
+                        <p className="font-medium capitalize">{savings.frequency}</p>
+                    </div>
+                    <div>
+                        <p className="text-muted-foreground">Status</p>
+                        <p className="font-medium capitalize">{savings.saving_status}</p>
+                    </div>
                     
                 </div>
                 <div className="flex gap-8 px-8 ">
@@ -50,7 +58,7 @@ const SavingGoalDetailModal = ({isOpen, onClose, onConfirm, onProceed, savings}:
                         className="bg-red-600 hover:bg-red-600/90 px-6" 
                         onClick={onProceed}
                     >
-                        Break Goals
+                        Partial Withdrawal
                     </Button>
                     <Button variant="outline" className="border-red-600 text-red-800 px-6 hover:bg-transparent" 
                         onClick={onConfirm}
