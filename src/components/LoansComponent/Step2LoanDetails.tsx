@@ -73,13 +73,6 @@ export const Step2LoanDetails = ({
                     control={methods.control}
                     name="reason"
                     render={({ field }) => (
-                        // <FormItem>
-                        //   <label className="text-sm font-medium">Loan Type</label>
-                        //   <FormControl>
-                        //     <Input placeholder="Enter reason" {...field} />
-                        //   </FormControl>
-                        //   <FormMessage />
-                        // </FormItem>
                         <FormItem className="flex flex-col items-start pb-2 md:w-[60%] mx-auto">
                             <label className="text-sm font-medium">Loan Type</label>
                             <Select
@@ -148,12 +141,12 @@ export const Step2LoanDetails = ({
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                    <SelectItem value='weekly'>Weekly</SelectItem>
-                                    <SelectItem value="monthly">Monthly</SelectItem>
+                                    <SelectItem value='week'>Weekly</SelectItem>
+                                    <SelectItem value="month">Monthly</SelectItem>
                                     {/* <SelectItem value="quarterly">Quarterly</SelectItem> */}
                                     {/* only show quarterly if user selects duration 3,6,9,12 months */}
                                     {methods.watch('duration') && ['3', '6', '9', '12'].includes(methods.watch('duration')) && (
-                                        <SelectItem value="quarterly">Quarterly</SelectItem>
+                                        <SelectItem value="quarter">Quarterly</SelectItem>
                                     )}
                                 </SelectContent>
                             </Select>

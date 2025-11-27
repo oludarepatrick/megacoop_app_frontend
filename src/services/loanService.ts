@@ -23,9 +23,7 @@ export const verifyGuarantor = async (email: string) => {
 
 // Submit loan application 
 export const submitLoanApplication = async (values: unknown) => {
-  const { data } = await axios.post('/user/loan/apply', {
-    values,
-  }, jsonConfig);
+  const { data } = await axios.post('/user/loan/apply', values, jsonConfig);
   return data;
 };
 
@@ -61,9 +59,9 @@ export const submitLoanDocuments = async (loanApplicationId: string, documents: 
 export const fetchCreditLimit = async (): Promise<CreditLimit> => {
   const  response  = await axios.get('/user/loan/credit-limit');
   console.log(response.data.data.credit_info);
-  // return response.data.data.credit_info; 
+  return response.data.data.credit_info; 
   // Mocked data for now
-  const creditInfoData: CreditLimit = {
+  // const creditInfoData: CreditLimit = {
 
   // return creditInfoData = {
   //   credit_limit: 100000,
@@ -74,13 +72,13 @@ export const fetchCreditLimit = async (): Promise<CreditLimit> => {
 
   // };
   
-    credit_limit: 150000,
-    remaining_limit: 120000,
-    total_borrowed: 30000,
-    total_savings: 25000,
-    utilization_percentage: 20,
-  };
-  return creditInfoData;
+  //   credit_limit: 150000,
+  //   remaining_limit: 120000,
+  //   total_borrowed: 30000,
+  //   total_savings: 25000,
+  //   utilization_percentage: 20,
+  // };
+  // return creditInfoData;
 }
 
 export async function fetchLoans() {

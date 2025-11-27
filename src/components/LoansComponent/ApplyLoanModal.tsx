@@ -39,6 +39,7 @@ import { Step2LoanDetails } from './Step2LoanDetails';
 import { Step4Review } from './Step4Review';
 import { useAuthStore } from "@/store/authStore";
 import { useThemeStore } from "@/store/themeStore";
+// import { useNavigate } from 'react-router-dom';
 // import type { AxiosError } from 'axios';
 
 const LoanModal = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
@@ -51,12 +52,13 @@ const LoanModal = ({ open, onClose }: { open: boolean; onClose: () => void }) =>
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [isVerifying, setIsVerifying] = useState(false);
   const [verificationError, setVerificationError] = useState('');
-  const [guarantorVerifiedData, setGuarantorVerifiedData] = useState<{ name: string; phone: string } | null>(null);
+  const [guarantorVerifiedData, setGuarantorVerifiedData] = useState<{ firstname: string; lastname: string; phone: string } | null>(null);
   const [guarantorMessage, setGuarantorMessage] = useState<string>("");
   const [showGuarantorModal, setShowGuarantorModal] = useState(false);
   const [loanApplicationId, setLoanApplicationId] = useState<string | null>(null);
   const [alert, setAlert] = useState<{ title: string; description: string } | null>(null);
   const [loanCalc, setLoanCalc] = useState<CalculateLoan | null>(null);
+  // const navigate = useNavigate();
 
 
   const calculateLoan = (
@@ -104,8 +106,15 @@ const LoanModal = ({ open, onClose }: { open: boolean; onClose: () => void }) =>
   if (frequency === "weekly") numberOfPayments = months * 4;
   if (frequency === "quarterly") numberOfPayments = months / 3;
 
-  const installment = totalPayable / numberOfPayments;
-
+    // round installment to nearest integer
+    const installment = Math.round(totalPayable / numberOfPayments);
+    console.log('Calculated loan details:', {
+      schedule,
+      totalInterest,
+      totalPayable,
+      installment,
+      numberOfPayments,
+    });
   return {
     schedule,
     totalInterest,
@@ -129,7 +138,9 @@ const LoanModal = ({ open, onClose }: { open: boolean; onClose: () => void }) =>
       city: '',
       guarantorIsMember: '',
       guarantorEmail: '',
-      guarantorName: '',
+      guarantorFirstname: '',
+      guarantorLastname: '',
+      guarantorPhone: '',
       reason: '',
       loanAmount: 0,
       duration: '',
@@ -182,7 +193,9 @@ const LoanModal = ({ open, onClose }: { open: boolean; onClose: () => void }) =>
 console.log('Guarantor data:', guarantorData);
       if (guarantorData) {
         setGuarantorVerifiedData({
-          name: guarantorData.firstname + ' ' + guarantorData.lastname,
+          // name: guarantorData.firstname + ' ' + guarantorData.lastname,
+          firstname: guarantorData.firstname,
+          lastname: guarantorData.lastname,
           phone: guarantorData.phone,
         });
         
@@ -190,7 +203,8 @@ console.log('Guarantor data:', guarantorData);
 
       } else {
         setGuarantorVerifiedData(null);
-        methods.setValue('guarantorName', '');
+        methods.setValue('guarantorFirstname', '');
+        methods.setValue('guarantorLastname', '');
         setVerificationError('Guarantor not found. Please check the email and try again.');
         setGuarantorMessage(guarantorData || 'Guarantor not found. Please check the email and try again.');
       }
@@ -206,7 +220,8 @@ console.log('Guarantor data:', guarantorData);
 
       setGuarantorMessage(apiMessage);
       setGuarantorVerifiedData(null);
-      methods.setValue('guarantorName', '');
+      methods.setValue('guarantorFirstname', '');
+      methods.setValue('guarantorLastname', '');
       setShowGuarantorModal(true); // show modal with error message
     } finally {
       setIsVerifying(false);
@@ -216,7 +231,8 @@ console.log('Guarantor data:', guarantorData);
   const handleGuarantorMemberChange = (value: string) => {
     methods.setValue('guarantorIsMember', value);
     methods.setValue('guarantorEmail', '');
-    methods.setValue('guarantorName', '');
+    methods.setValue('guarantorFirstname', '');
+    methods.setValue('guarantorLastname', '');
     setVerificationError('');
   };
 
@@ -276,22 +292,40 @@ console.log('Guarantor data:', guarantorData);
       const values = methods.getValues();
       // destructure to submit only amount, reason, duration, repaymentFrequency, autoPayment, guarantor email, rest of guarantor details as an object
       const { loanAmount, reason, duration, repaymentFrequency, autoPayment, guarantorEmail } = values;
+      // convert duration to number
+      const durationInMonths = Number(duration);
       const payload = {
         amount: loanAmount,
         term_type: repaymentFrequency,
-        term_value: duration,
+        term_value: durationInMonths,
         auto_payment: autoPayment,
         purpose: reason,
         guarantor_email: guarantorEmail,
-        guarantor: {
-          name: values.guarantorName,
-          // phone: values.guarantorPhone,
-        },
+        // guarantor: {
+        //   firstname: values.guarantorFirstname || '',
+        //   lastname: values.guarantorLastname || '',
+        //   phone: values.guarantorPhone || '',
+        //   email: guarantorEmail || '',
+        //   // firstname: '',
+        //   // lastname: '',
+        //   // phone: '',
+        //   // email: '',
+        // },
+        guarantor:
+    methods.watch('guarantorIsMember') === 'no'
+    ? {
+        firstname: values.guarantorFirstname || '',
+        lastname: values.guarantorLastname || '',
+        phone: values.guarantorPhone || '',
+        email: guarantorEmail || '',
+      }
+    : null
+
       };
       const response = await submitLoanApplication(payload);
       console.log('Loan application submitted successfully:', response);
-      if (response && response.data && response.data.id) {
-        setLoanApplicationId(response.data.id);
+      if (response && response.message) {
+        setLoanApplicationId(response.loan.id);
         setShowSuccessModal(true);
       }
       return response;
@@ -431,7 +465,7 @@ console.log('Guarantor data:', guarantorData);
               {guarantorVerifiedData ? (
                 <>
                   <div className="border rounded-md p-4 bg-emerald-50 mt-3 text-gray-800">
-                    <p><strong>Name:</strong> {guarantorVerifiedData.name}</p>
+                    <p><strong>Name:</strong> {guarantorVerifiedData.firstname} {guarantorVerifiedData.lastname}</p>
                     <p><strong>Phone:</strong> {guarantorVerifiedData.phone}</p>
                   </div>
 
@@ -454,8 +488,9 @@ console.log('Guarantor data:', guarantorData);
                     <Button
                       onClick={() => {
                         if (guarantorVerifiedData) {
-                          methods.setValue('guarantorName', guarantorVerifiedData.name);
-                          // methods.setValue('guarantorPhone', guarantorVerifiedData.phone);
+                          methods.setValue('guarantorFirstname', guarantorVerifiedData.firstname);
+                          methods.setValue('guarantorLastname', guarantorVerifiedData.lastname);
+                          methods.setValue('guarantorPhone', guarantorVerifiedData.phone);
                         }
                         setShowGuarantorModal(false);
                       }}
@@ -523,12 +558,13 @@ console.log('Guarantor data:', guarantorData);
           methods.reset();
           setCompletedSteps([]);
         }}
-        onConfirm={() => {
+        onConfirm={async () => {
           setShowSuccessModal(false);
           onClose();
           setStep(1);
           methods.reset();
           setCompletedSteps([]);
+          // navigate('/savings-loan?view=loan');
         }}
         values={{
           reason: methods.getValues("reason"),
@@ -537,6 +573,7 @@ console.log('Guarantor data:', guarantorData);
           repaymentFrequency: methods.getValues("repaymentFrequency"),
           autoPayment: methods.getValues("autoPayment"),
         }}
+        loanCalc={loanCalc}
       />
     </div>
   );
