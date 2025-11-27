@@ -45,7 +45,7 @@ const LoanModal = ({ open, onClose }: { open: boolean; onClose: () => void }) =>
   const user = useAuthStore(state => state.user);
   const theme = useThemeStore(state => state.theme);
   console.log('User from store:', user);
-  const [step, setStep] = useState(2);
+  const [step, setStep] = useState(1);
   const [showPreview, setShowPreview] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);

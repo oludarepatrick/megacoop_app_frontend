@@ -59,8 +59,8 @@ export const submitLoanDocuments = async (loanApplicationId: string, documents: 
 };
 
 export const fetchCreditLimit = async (): Promise<CreditLimit> => {
-  // const  response  = await axios.get('/user/loan/credit-limit');
-  // console.log(response.data.data.credit_info);
+  const  response  = await axios.get('/user/loan/credit-limit');
+  console.log(response.data.data.credit_info);
   // return response.data.data.credit_info; 
   // Mocked data for now
   const creditInfoData: CreditLimit = {
@@ -87,7 +87,8 @@ export async function fetchLoans() {
   // replace this with real endpoint
   // const { data } = await axiosInstance.get(`${API_BASE_URL}user/loan/dashboard`);
   // console.log(data);
-  const { data } = await axios.get('/user/loans');
+  const { data } = await axios.get('/user/loan/dashboard');
+  console.log(data);
   return data?.loans;
 }
 
