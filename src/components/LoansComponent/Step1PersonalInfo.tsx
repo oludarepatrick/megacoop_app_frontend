@@ -80,7 +80,7 @@ export const Step1PersonalInfo = ({
                             <label className="text-sm font-medium">Phone Number</label>
                             <FormControl>
                                 <div className="flex">
-                                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500">
+                                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-green-50 text-gray-500">
                                         +234
                                     </span>
                                     <Input
@@ -150,7 +150,7 @@ export const Step1PersonalInfo = ({
             <div className="border-t pt-4">
                 <p className="text-lg text-green-500 font-medium ">Add a Guarantor</p>
                 
-                    <div className="mt-4 space-y-4 p-4 bg-gray-50 rounded-lg">
+                    <div className="mt-4 space-y-4 p-4  rounded-lg">
                         <FormField
                             control={methods.control}
                             name="guarantorIsMember"

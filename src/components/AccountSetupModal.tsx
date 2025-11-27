@@ -32,10 +32,13 @@ const AccountSetupModal = ({ open, onClose }: AccountSetupModalProps) => {
 
 
 
-    const onAccountInfoSubmit = (data: AccountInfoFormData) => {
-        console.log("Account Info Submitted:", data);
-        verifyAccountInfoSubmit.mutate(data);
-    };
+  const onAccountInfoSubmit = (data: AccountInfoFormData) => {
+    // destructure and submit only bank_name and account_number
+    // const { bank_name, account_number } = data;
+    // const submitData = { bank_name, account_number };
+    console.log("Account Info Submitted:", data);
+    verifyAccountInfoSubmit.mutate(data);
+  };
 
     const verifyAccountInfoSubmit = (useMutation({
         mutationFn: submitUserAccountInfo,
@@ -54,7 +57,7 @@ const AccountSetupModal = ({ open, onClose }: AccountSetupModalProps) => {
             onClose();
         },
         onError: (err: AxiosError<{ message: string }>) => {
-            const message = err?.response?.data?.message ?? err?.message ?? "Failed to submit account information";
+          const message = err?.response?.data?.message ?? err?.message ?? "Failed to submit account information";
             toast.error(message);
         },
     }));
@@ -69,7 +72,7 @@ const AccountSetupModal = ({ open, onClose }: AccountSetupModalProps) => {
       defaultValues: {
         bank_name: accountData?.bank_name || "",
         account_number: accountData?.account_number || "",
-        account_name: accountData?.account_name || "",
+        account_holder_name: accountData?.account_holder_name || "",
       },
     });
 
@@ -78,7 +81,7 @@ const AccountSetupModal = ({ open, onClose }: AccountSetupModalProps) => {
         form.reset({
           bank_name: accountData.bank_name || "",
           account_number: accountData.account_number || "",
-          account_name: accountData.account_name || "",
+          account_holder_name: accountData.account_holder_name || "",
         });
       }
     }, [accountData, form]);
@@ -129,15 +132,20 @@ const AccountSetupModal = ({ open, onClose }: AccountSetupModalProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input placeholder="Account Number" {...field} />
+                      <Input
+                        placeholder="Account Number"
+                        {...field}
+                        type='number'
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <FormField
+              {/* {accountData?.account_name && ( */}
+                <FormField
                 control={form.control}
-                name="account_name"
+                name="account_holder_name"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -146,7 +154,8 @@ const AccountSetupModal = ({ open, onClose }: AccountSetupModalProps) => {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+                />
+              {/* )} */}
               <DialogFooter>
                 <Button 
                 type="submit" 

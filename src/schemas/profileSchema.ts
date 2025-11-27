@@ -16,7 +16,7 @@ export const personalInfoSchema = z.object({
 export const accountInfoSchema = z.object({
     bank_name: z.string().min(1, "Bank name is required"),
     account_number: z.string().min(1, "Account number is required"),
-    account_name: z.string().optional(),
+    account_holder_name: z.string().optional(),
 });
 
 

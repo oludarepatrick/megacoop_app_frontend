@@ -1,5 +1,7 @@
 import axios from '@/lib/axiosInstance';
 import { formConfig, jsonConfig } from '@/common/utils';
+import type { CreditLimit } from '@/types/loanTypes';
+
 
 
 
@@ -56,10 +58,29 @@ export const submitLoanDocuments = async (loanApplicationId: string, documents: 
   return data;
 };
 
-export async function fetchCreditLimit() {
-  // replace this with real endpoint
-  const { data } = await axios.get('/user/credit-limit');
-  return data?.limit; // adapt to your shape
+export const fetchCreditLimit = async (): Promise<CreditLimit> => {
+  // const  response  = await axios.get('/user/loan/credit-limit');
+  // console.log(response.data.data.credit_info);
+  // return response.data.data.credit_info; 
+  // Mocked data for now
+  const creditInfoData: CreditLimit = {
+
+  // return creditInfoData = {
+  //   credit_limit: 100000,
+  //   remaining_limit: 80000,
+  // total_borrowed: 20000,
+  // total_savings: 15000,
+  // utilization_percentage: 20,
+
+  // };
+  
+    credit_limit: 150000,
+    remaining_limit: 120000,
+    total_borrowed: 30000,
+    total_savings: 25000,
+    utilization_percentage: 20,
+  };
+  return creditInfoData;
 }
 
 export async function fetchLoans() {

@@ -11,6 +11,7 @@ import { formatCurrency, formatDate } from "@/common/utils";
 import LoanModal from "@/components/LoansComponent/ApplyLoanModal";
 import PageLoader from "@/components/PageLoader";
 import type { Loan } from "@/types/loanTypes";
+import type { CreditLimit } from "@/types/loanTypes";
 
 
 export default function LoanDashboard() {
@@ -30,10 +31,17 @@ export default function LoanDashboard() {
     queryFn: async () => {
       try {
         const v = await fetchCreditLimit();
+        console.log("Fetched credit limit:", v);
         return v;
       } catch {
-        // fallback dummy value
-        return 65000; // dummy
+        // fallback dummy data
+        return {
+          credit_limit: 100000,
+          remaining_limit: 60000,
+          total_borrowed: 40000,
+          total_savings: 15000,
+          utilization_percentage: 40,
+        } as CreditLimit;
       }
     },
   });
@@ -68,19 +76,22 @@ export default function LoanDashboard() {
       setLoans(loansData);
     }
     if (creditLimitData) {
-      setMaxLimit(creditLimitData);
+      setMaxLimit(creditLimitData.credit_limit);
     }
 
   }, [loansData, creditLimitData]);
 
-  const usedLimit = useMemo(() => {
-    const total = loans
-      .filter((l) => ["active", "overdue", "disbursed", "pending", "paid"].includes(l.status))
-      .reduce((sum, l) => sum + l.amount, 0)
-    return Math.min(total, maxLimit)
-  }, [loans, maxLimit])
+  // for dummy calculation of used limit
+  // const usedLimit = useMemo(() => {
+  //   const total = loans
+  //     .filter((l) => ["active", "overdue", "disbursed", "pending", "paid"].includes(l.status))
+  //     .reduce((sum, l) => sum + l.amount, 0)
+  //   return Math.min(total, maxLimit)
+  // }, [loans, maxLimit])
 
-  const remainingLimit = Math.max(maxLimit - usedLimit, 0)
+  console.log("Used limit:", maxLimit);
+
+  // const remainingLimit = Math.max(maxLimit - usedLimit, 0)
 
   const filteredLoans = useMemo(() => {
     if (activeFilter === "all") return loans
@@ -119,19 +130,37 @@ export default function LoanDashboard() {
             </Card>
 
             {/* Remaining Limit */}
+            {creditLimitData && creditLimitData.remaining_limit <= 1000 ? (
             <Card className="bg-red-50 border-red-100 flex-1">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-red-700 flex items-center gap-2">
-                  <AlertCircle className="text-red-500" size={18} />
-                  Remaining Limit
-                </CardTitle>
+                  <CardTitle className="text-sm font-medium text-red-700 flex items-center gap-2">
+                    <AlertCircle className="text-red-500" size={18} />
+                    Remaining Limit
+                  </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-2xl font-bold text-red-700">
-                  {formatCurrency(remainingLimit)}
+                  {/* {formatCurrency(remainingLimit)} */}
+                  {creditLoading ? "Loading..." : formatCurrency(creditLimitData?.remaining_limit ?? 2000)}
                 </p>
               </CardContent>
             </Card>
+            ) : (
+            <Card className="bg-blue-50 border-blue-100 flex-1">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium text-blue-700 flex items-center gap-2">
+                    <DollarSign className="text-blue-500" size={18} />
+                    Remaining Limit
+                  </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-bold text-blue-800">
+                  {/* {formatCurrency(remainingLimit)} */}
+                  {creditLoading ? "Loading..." : formatCurrency(creditLimitData?.remaining_limit ?? 2000)}
+                </p>
+              </CardContent>
+            </Card>
+                )}
           </div>
 
           {/* SECOND ROW (Used Limit + Apply Button) */}
@@ -145,15 +174,16 @@ export default function LoanDashboard() {
                       Used Limit Info
                     </p>
                     <p className="text-2xl font-semibold">
-                      {formatCurrency(usedLimit)}
+                      {/* {formatCurrency(usedLimit)} */}
+                      {creditLoading ? "Loading..." : formatCurrency((creditLimitData?.credit_limit ?? 0) - (creditLimitData?.remaining_limit ?? 0))}
                     </p>
                   </div>
                 </div>
                 <Button
                   // disabled={remainingLimit <= 0}
                   className={cn(
-                    "bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-6 text-lg font-semibold w-full sm:w-auto",
-                    remainingLimit <= 0 && "opacity-50 cursor-not-allowed"
+                    "bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-6 text-lg font-semibold w-full sm:w-auto cursor-pointer",
+                    (creditLimitData?.remaining_limit ?? 0) <= 0 && "opacity-50 cursor-not-allowed"
                   )}
                   onClick={() => setIsLoanModalOpen(true)}
                 >
