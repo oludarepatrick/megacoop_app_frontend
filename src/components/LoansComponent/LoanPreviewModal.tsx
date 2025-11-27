@@ -6,6 +6,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import type { CalculateLoan } from "@/types/loanTypes";
+
 
 type LoanPreviewModalProps = {
   open: boolean;
@@ -18,6 +20,7 @@ type LoanPreviewModalProps = {
     repaymentFrequency: string;
     autoPayment: boolean;
   };
+  loanCalc: CalculateLoan | null;
 };
 
 const LoanPreviewModal = ({
@@ -25,6 +28,7 @@ const LoanPreviewModal = ({
   onClose,
   onConfirm,
   values,
+  loanCalc,
 }: LoanPreviewModalProps) => {
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -53,7 +57,7 @@ const LoanPreviewModal = ({
               <div className="flex justify-between">
                 <span>Amount</span>
                 <span className="font-semibold">
-                  ₦{values.loanAmount?.toLocaleString() || "50,000"}
+                  ₦{values.loanAmount?.toLocaleString() ?? "0"}
                 </span>
               </div>
               <div className="flex justify-between">
@@ -62,20 +66,45 @@ const LoanPreviewModal = ({
               </div>
               <div className="flex justify-between">
                 <span>Interest Rate</span>
-                <span className="font-semibold">10%</span>
+                <span className="font-semibold">10.5%</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Total Interest</span>
+                <span className="font-semibold">{loanCalc?.totalInterest.toLocaleString() ?? "0"}</span>
               </div>
               <div className="flex justify-between">
                 <span>Tax</span>
                 <span className="font-semibold">₦5,000</span>
               </div>
-              <div className="flex justify-between">
-                <span>Monthly Payment</span>
-                <span className="font-semibold">₦4,500</span>
-              </div>
+              {values.repaymentFrequency === "monthly" && (
+                <div className="flex justify-between">
+                  <span>Monthly Repayment({loanCalc?.numberOfPayments})</span>
+                  <span className="font-semibold">
+                    ₦{loanCalc?.installment.toLocaleString() ?? "0"}
+                  </span>
+                </div>
+              )}
+              {values.repaymentFrequency === "weekly" && (
+                <div className="flex justify-between">
+                  <span>Weekly Repayment({loanCalc?.numberOfPayments})</span>
+                  <span className="font-semibold">
+                    ₦{loanCalc?.installment.toLocaleString() ?? "0"}
+                  </span>
+                </div>
+              )}
+
+              {values.repaymentFrequency === "quarterly" && (
+                <div className="flex justify-between">
+                  <span>Quarterly Repayment({loanCalc?.numberOfPayments})</span>
+                  <span className="font-semibold">
+                    ₦{loanCalc?.installment.toLocaleString() ?? "0"}
+                  </span>
+                </div>
+              )}
               <div className="border-t border-dashed border-white/60 my-3"></div>
               <div className="flex justify-between text-base">
                 <span>Total Payback Amount</span>
-                <span className="font-bold">₦58,000</span>
+                <span className="font-bold">₦{loanCalc?.totalPayable.toLocaleString() ?? "0"}</span>
               </div>
             </div>
           </div>

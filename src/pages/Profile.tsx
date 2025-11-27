@@ -33,7 +33,7 @@ export default function Profile() {
             age_range: "",
             bank_name: "",
             account_number: "",
-            account_name: "",
+            account_holder_name: "",
         },
     });
 
@@ -64,7 +64,7 @@ export default function Profile() {
     }, []);
 
 return (
-        <div className="space-y-8">
+        <div className="space-y-8 min-h-screen">
 
             <Form {...profileDetailsForm}>
                 <div className="space-y-7 w-full rounded-lg">
@@ -245,7 +245,7 @@ return (
                         <FormField
                             // control={accountInfoForm.control}
                             control={profileDetailsForm.control}
-                            name="account_name"
+                            name="account_holder_name"
                             render={({ field }) => (
                                 <FormItem className="w-full ">
                                     <Label htmlFor="account_name" className="">Account Name</Label>
