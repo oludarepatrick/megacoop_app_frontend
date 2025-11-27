@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import LoanSuccessConfetti from "../../assets/LoanSuccessConfetti.png";
 import LoanSuccessIcon from "../../assets/LoanSucessHeader.png";
 import { X } from "lucide-react";
+import type { CalculateLoan } from "@/types/loanTypes";
 
 type LoanSuccessModalProps = {
   open: boolean;
@@ -22,6 +23,7 @@ type LoanSuccessModalProps = {
     repaymentFrequency: string;
     autoPayment: boolean;
   };
+  loanCalc: CalculateLoan | null;
 };
 
 const LoanSuccessModal = ({
@@ -29,8 +31,9 @@ const LoanSuccessModal = ({
   onClose,
   onConfirm,
   values,
+  loanCalc,
 }: LoanSuccessModalProps) => {
-
+console.log("loanCalc in success modal:", loanCalc);
 //     function handleReceiptDownload2(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
 //         event.preventDefault();
 //         // Simulate receipt content
@@ -87,8 +90,8 @@ const LoanSuccessModal = ({
 
   const generateReceiptContent = () => {
     const currentDate = new Date().toLocaleDateString();
-    const totalAmount = calculateTotalPayback(values.loanAmount);
-    const monthlyPayment = calculateMonthlyPayment(values.loanAmount, parseInt(values.duration));
+    // const totalAmount = calculateTotalPayback(values.loanAmount);
+    // const monthlyPayment = calculateMonthlyPayment(values.loanAmount, parseInt(values.duration));
     
     return `
 MEGACOOP LOAN RECEIPT
@@ -109,12 +112,12 @@ Auto Payment: ${values.autoPayment ? "Enabled" : "Disabled"}
 BREAKDOWN:
 ----------
 Principal: ₦${values.loanAmount?.toLocaleString()}
-Interest (10%): ₦${calculateInterest(values.loanAmount).toLocaleString()}
+Interest (10.5%): ₦${loanCalc?.totalInterest.toLocaleString() || "0"}
 Tax: ₦5,000
 Processing Fee: ₦1,500
 
-MONTHLY PAYMENT: ₦${monthlyPayment.toLocaleString()}
-TOTAL PAYBACK: ₦${totalAmount.toLocaleString()}
+MONTHLY PAYMENT: ₦${loanCalc?.installment.toLocaleString() || "0"}
+TOTAL PAYBACK: ₦${loanCalc?.totalPayable.toLocaleString() || "0"}
 
 TERMS & CONDITIONS:
 -------------------
@@ -129,21 +132,21 @@ Phone: +234-800-MEGACOOP
     `.trim();
   };
 
-  const calculateInterest = (amount: number) => {
-    return amount * 0.10; // 10% interest
-  };
+  // const calculateInterest = (amount: number) => {
+  //   return amount * 0.105; // 10.5% interest
+  // };
 
-  const calculateTotalPayback = (amount: number) => {
-    const interest = calculateInterest(amount);
-    const tax = 5000;
-    const processingFee = 1500;
-    return amount + interest + tax + processingFee;
-  };
+  // const calculateTotalPayback = (amount: number) => {
+  //   const interest = calculateInterest(amount);
+  //   const tax = 5000;
+  //   const processingFee = 1500;
+  //   return amount + interest + tax + processingFee;
+  // };
 
-  const calculateMonthlyPayment = (amount: number, duration: number) => {
-    const total = calculateTotalPayback(amount);
-    return Math.round(total / duration);
-  };
+  // const calculateMonthlyPayment = (amount: number, duration: number) => {
+  //   const total = calculateTotalPayback(amount);
+  //   return Math.round(total / duration);
+  // };
 
 
   return (
@@ -201,7 +204,7 @@ Phone: +234-800-MEGACOOP
               </div>
               <div className="flex justify-between">
                 <span>Interest Rate</span>
-                <span className="font-semibold">10%</span>
+                <span className="font-semibold">10.5%</span>
               </div>
               <div className="flex justify-between">
                 <span>Tax</span>
@@ -209,12 +212,12 @@ Phone: +234-800-MEGACOOP
               </div>
               <div className="flex justify-between">
                 <span>Monthly Payment</span>
-                <span className="font-semibold">₦4,500</span>
+                <span className="font-semibold">₦{loanCalc?.installment.toLocaleString() || "0"}</span>
               </div>
               <div className="border-t border-dashed border-white/60 my-3"></div>
               <div className="flex justify-between text-base">
                 <span>Total Payback Amount</span>
-                <span className="font-bold">₦58,000</span>
+                <span className="font-bold">₦{loanCalc?.totalPayable.toLocaleString() || "0"}</span>
               </div>
             </div>
           </div>
@@ -225,7 +228,7 @@ Phone: +234-800-MEGACOOP
 
         {/* Footer */}
         <DialogFooter className="px-6 pb-6">
-  <div className="flex  sm:flex-row gap-3 w-full">
+  <div className="flex sm:flex-row gap-3 w-full">
     <Button
       onClick={handleReceiptDownload}
       className="bg-green-700 hover:bg-green-800 text-white font-semibold py-5 rounded-md text-sm flex-1"
@@ -234,8 +237,8 @@ Phone: +234-800-MEGACOOP
     </Button>
     <Button
       onClick={onConfirm}
-      className="  font-semibold py-5 rounded-md text-sm flex-1"
-      variant={"outline"}
+      className="font-semibold py-5 rounded-md text-sm flex-1"
+      // variant="outline"
     >
       View Loans
     </Button>

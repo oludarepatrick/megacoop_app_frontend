@@ -13,8 +13,9 @@ export const step1Schema = z.object({
 //   hasGuarantor: z.boolean().refine((val) => val === true, 'You must add a guarantor to proceed'),
   guarantorIsMember: z.string().min(1, 'Select an option'),
   guarantorEmail: z.string().email('Invalid email address').min(1, 'Guarantor email is required'),
-  guarantorName: z.string().min(1, 'Guarantor name is required'),
-  // guarantorPhone: z.string().min(1, 'Guarantor phone number is required'),
+  guarantorFirstname: z.string().min(1, 'Guarantor name is required'),
+  guarantorLastname: z.string().min(1, 'Guarantor last name is required'),
+  guarantorPhone: z.string().min(1, 'Guarantor phone number is required'),
 });
 
 export const step2Schema = z.object({
