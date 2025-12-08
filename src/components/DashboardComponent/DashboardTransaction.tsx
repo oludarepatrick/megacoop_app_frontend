@@ -17,39 +17,7 @@ import { Link } from "react-router-dom";
 import { useWalletTransaction } from "@/hooks/useWalletTransaction";
 import { formatDateTime } from "@/common/utils";
 
-// const transactions = [
-//   {
-//     transaction: "Adobe After Effect",
-//     paymentStatus: "Completed",
-//     totalAmount: "N800.09",
-//     date: "Sat, 20 Apr 2020",
-//   },
-//   {
-//     invoice: "Mcdonald's",
-//     paymentStatus: "Completed",
-//     totalAmount: "N800.09",
-//     date: "Sat, 20 Apr 2020",
-//   },
-//   {
-//     invoice: "Adobe After Effect",
-//     paymentStatus: "Completed",
-//     totalAmount: "N800.09",
-//     date: "Sat, 20 Apr 2020",
-//   },
-//   {
-//     invoice: "Mcdonald's",
-//     paymentStatus: "Completed",
-//     totalAmount: "N800.09",
-//     date: "Sat, 20 Apr 2020",
-//   },
-//   {
-//     invoice: "Mcdonald's",
-//     paymentStatus: "Completed",
-//     totalAmount: "N800.09",
-//     date: "Sat, 20 Apr 2020",
-//   },
-  
-// ]
+
 
 const DashboardTransation= () => {
     const {data:transactions =[], isLoading} = useWalletTransaction();
@@ -115,7 +83,17 @@ const DashboardTransation= () => {
                                 </TableCell>
                                 <TableCell>{formatDateTime(transaction.created_at)}</TableCell>
                                 <TableCell className="">{transaction.amount}</TableCell>
-                                <TableCell className=" w-[120px] "><span className="bg-[#CFF0E0] text-megagreen py-1 px-3 rounded-2xl">{transaction.status}</span></TableCell>
+                                <TableCell className=" w-[120px] ">
+                                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                                        transaction.status === "approved" 
+                                            ? "bg-green-100 text-green-700" 
+                                            : transaction.status === "pending" 
+                                            ? "bg-orange-100 text-megaorange"
+                                            : "bg-red-100 text-red-700"
+                                    }`}>
+                                        {transaction.status}
+                                    </span>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

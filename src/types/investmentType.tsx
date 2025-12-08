@@ -93,7 +93,7 @@ export type UserInvestment = {
   consent: number;
   created_at: string;
   updated_at: string;
-  investment: { id: number; title: string; company_name: string };
+  investment: { id: number; title: string; company_name: string; roi: string};
 };
 
 export type TopTrendingInvestment = {
@@ -102,6 +102,7 @@ export type TopTrendingInvestment = {
   company_name: string
   industry: string
   roi: string
+  minimum_amount: string 
   investors_count: number
   status: string;
 }

@@ -1,9 +1,17 @@
-import { Calendar, Search } from "lucide-react";
+import { 
+    // Calendar, 
+    Search } from "lucide-react";
 import { Input } from "../ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 
-const TransactionsHeader = () => {
+type TransactionsHeaderProps = {
+    searchValue: string;
+    setSearchValue: (value: string) => void;
+}
+
+const TransactionsHeader = ({searchValue, setSearchValue}: TransactionsHeaderProps) => {
+
     return (
          <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
             <h2 className="text-xl lg:text-2xl font-semibold">Transactions</h2>
@@ -14,13 +22,15 @@ const TransactionsHeader = () => {
                     <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-ring w-4 h-4" />
                     <Input
                         type="text"
+                        value={searchValue}
+                        onChange={(e) => setSearchValue(e.target.value)}
                         placeholder="Search for anything..."
                         className="rounded-full text-xs pr-10 w-full sm:w-70 shadow-none placeholder:text-megaPrimary text-megaPrimary"
                     />
                 </div>
                 
                 {/* Date Filter */}
-                <div className="relative">
+                {/* <div className="relative">
                     <Select>
                         <SelectTrigger className="pl-10">
                             <SelectValue placeholder="Filter" />
@@ -32,7 +42,7 @@ const TransactionsHeader = () => {
                         </SelectContent>
                     </Select>
                     <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-icon w-4 h-4" />
-                </div>
+                </div> */}
             </div>
         </div>
     )

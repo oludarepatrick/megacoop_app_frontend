@@ -61,7 +61,7 @@ export default function InvestmentPortfolio({
                       }`}
                     >
                       {5 >= 0 ? "+" : ""}
-                      {5}%
+                      {investment.investment.roi}%
                     </p>
                     <p className="text-xs lg:text-sm text-green-600">
                       Return Value

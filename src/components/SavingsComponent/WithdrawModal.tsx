@@ -45,8 +45,12 @@ const WithdrawModal = ({isOpen, onClose, onSuccess}: WithdrawModalProps) => {
             onSuccess: () => {
                 setOtpError("");
             },
-            onError: (error: any) => {
-                setOtpError(error.response.data.message || "Failed to resend OTP. Please try again");
+            // onError: (error: any) => {
+            //     setOtpError(error.response.data.message || "Failed to resend OTP. Please try again");
+            // }
+            onError: (error: unknown) => {
+                const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
+                setOtpError(errorMessage || "Failed to resend OTP. Please try again");
             }
         })
     }

@@ -1,6 +1,6 @@
 import { ChevronRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import { Cell, Pie, PieChart } from "recharts";
 import { useCancelSavingPlan, usePartialWithdrawSaving, useSavingPlans } from "@/hooks/useSaving";
 import PageLoader from "./PageLoader";
@@ -62,7 +62,7 @@ const SavingGoal= () => {
         <Card className="px-4 py-4 ">
             <CardHeader className="flex justify-between items px-2">
                 <CardTitle className="text-xl font-semibold">Saving Goals</CardTitle>
-                <Link to="" className="text-footertext text-sm ">See All</Link>
+                {/* <Link to="" className="text-footertext text-sm ">See All</Link> */}
             </CardHeader>
             { isLoading ? <PageLoader/> : (
 

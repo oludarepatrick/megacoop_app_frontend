@@ -13,6 +13,7 @@ const ITEMS_PER_PAGE = 10;
 const Transactions = () => {
   const [activeTab, setActiveTab] = useState<TabType>("all");
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchValue, setSearchValue] = useState("");
 
   const {data:allTransactions = [], isLoading} = useWalletTransaction();
   console.log(allTransactions)
@@ -34,7 +35,17 @@ const Transactions = () => {
       default:
         return true;
     }
+  })
+  .filter(tr => {
+    // search filter 
+    const query = searchValue.toLowerCase();
+    return (
+      tr.reference.toLowerCase().includes(query) ||  
+      tr.amount.toString().includes(query) ||
+      tr.type.toLowerCase().includes(query)
+    )
   });
+  
 
   // pagination
   const totalPages = Math.ceil(filteredTransactions.length / ITEMS_PER_PAGE);
@@ -44,12 +55,17 @@ const Transactions = () => {
     startIndex,
     endIndex
   );
+
+
   return (
     <div className="font-poppins">
       <DashboardOverview />
       <section className="grid grid-cols-1 gap-6 pt-8">
         {/* <div className="flex flex-col md:flex-row gap-12 pt-2 bg-green-400"> */}
-        <TransactionsHeader />
+        <TransactionsHeader
+          searchValue={searchValue}
+          setSearchValue={setSearchValue}
+        />
         <TransactionTabs
           activeTab={activeTab}
           setActiveTab={handleTabChange}

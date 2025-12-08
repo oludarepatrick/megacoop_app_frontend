@@ -47,7 +47,7 @@ const TrendingInvestment = ({trendingInvestment, isLoading}: TrendingInvestmentP
                                             {String(index + 1).padStart(2, "0")}.
                                         </TableCell>
                                         <TableCell className="py-2 lg:py-3 text-xs lg:text-sm font-medium truncate max-w-40">{investment.company_name}</TableCell>
-                                        <TableCell className="py-2 lg:py-3 text-xs lg:text-sm">₦{investment.investors_count}</TableCell>
+                                        <TableCell className="py-2 lg:py-3 text-xs lg:text-sm">₦{Number(investment.minimum_amount).toLocaleString()}</TableCell>
                                         <TableCell
                                             className={`py-2 lg:py-3 text-xs lg:text-sm font-medium ${
                                                 Number(investment.roi) >= 0 ? "text-green-600" : "text-red-500"
