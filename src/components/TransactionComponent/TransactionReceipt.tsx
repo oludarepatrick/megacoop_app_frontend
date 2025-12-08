@@ -3,7 +3,7 @@ import Logo from "/Logo.svg";
 import coffetiImg from "@/assets/coffetti-img.png"
 import receiptBg from "@/assets/receipt-bcg.png"
 import { Button } from "../ui/button";
-import { Download, File, Image, Share2 } from "lucide-react";
+import { Download, File, Image } from "lucide-react";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "../ui/dropdown-menu";
 import { useDownloadReceipt } from "@/hooks/useTransactionReceipt";
 import { useRef } from "react";
@@ -100,7 +100,7 @@ const TransactionReceipt = ({isOpen, onClose, transactions}: TransactionReceiptP
                         </DropdownMenuContent>
                     </DropdownMenu>
                 
-                    <Button variant="outline" className="border-megagreen text-megagreen flex-1"><Share2 />Share receipt</Button>
+                    {/* <Button variant="outline" className="border-megagreen text-megagreen flex-1"><Share2 />Share receipt</Button> */}
 
                 </div>
 
