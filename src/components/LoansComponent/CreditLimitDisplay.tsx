@@ -1,6 +1,8 @@
+import type { CreditLimit } from "@/types/loanTypes";
+
 interface CreditLimitDisplayProps {
   isLoading: boolean;
-  creditLimit?: number;
+  creditLimit?: CreditLimit
 }
 
 export const CreditLimitDisplay = ({ isLoading, creditLimit }: CreditLimitDisplayProps) => {
@@ -13,7 +15,7 @@ export const CreditLimitDisplay = ({ isLoading, creditLimit }: CreditLimitDispla
           <>
             Your credit limit:{' '}
             <span className="font-semibold text-gray-700">
-              ₦{creditLimit?.toLocaleString() || '100,000'}
+              ₦{creditLimit?.credit_limit?.toLocaleString() || '100,000'}
             </span>
           </>
         )}

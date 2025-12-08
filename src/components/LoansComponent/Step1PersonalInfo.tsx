@@ -80,7 +80,7 @@ export const Step1PersonalInfo = ({
                             <label className="text-sm font-medium">Phone Number</label>
                             <FormControl>
                                 <div className="flex">
-                                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500">
+                                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-green-50 text-gray-500">
                                         +234
                                     </span>
                                     <Input
@@ -150,7 +150,7 @@ export const Step1PersonalInfo = ({
             <div className="border-t pt-4">
                 <p className="text-lg text-green-500 font-medium ">Add a Guarantor</p>
                 
-                    <div className="mt-4 space-y-4 p-4 bg-gray-50 rounded-lg">
+                    <div className="mt-4 space-y-4 p-4  rounded-lg">
                         <FormField
                             control={methods.control}
                             name="guarantorIsMember"
@@ -199,6 +199,8 @@ export const Step1PersonalInfo = ({
                                             </FormItem>
                                         )}
                                     />
+                                    
+                                    
                                     <Button
                                         type="button"
                                         onClick={onVerifyGuarantor}
@@ -215,13 +217,13 @@ export const Step1PersonalInfo = ({
 
                                 <FormField
                                     control={methods.control}
-                                    name="guarantorName"
+                                    name="guarantorFirstname"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <label className="text-sm font-medium">Guarantor Name</label>
+                                            <label className="text-sm font-medium">Guarantor First Name</label>
                                             <FormControl>
                                                 <Input
-                                                    placeholder="Guarantor name"
+                                                    placeholder="Guarantor first name"
                                                     {...field}
                                                     readOnly
                                                     className="bg-green-50 h-11"
@@ -231,30 +233,25 @@ export const Step1PersonalInfo = ({
                                         </FormItem>
                                     )}
                                 />
-
-                                {/* <FormField
+                                
+                              <FormField
                                     control={methods.control}
-                                    name="guarantorPhone"
+                                    name="guarantorLastname"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <label className="text-sm font-medium">Phone Number</label>
+                                            <label className="text-sm font-medium">Guarantor Last Name</label>
                                             <FormControl>
-                                                <div className="flex">
-                                                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500">
-                                                        +234
-                                                    </span>
-                                                    <Input
-                                                        className="rounded-l-none bg-green-50 h-11"
-                                                        placeholder="Phone number"
-                                                        {...field}
-                                                        readOnly
-                                                    />
-                                                </div>
+                                                <Input
+                                                    placeholder="Guarantor last name"
+                                                    {...field}
+                                                    readOnly
+                                                    className="bg-green-50 h-11"
+                                                />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )}
-                                /> */}
+                                />                             
                             </>
                         )}
 
@@ -262,12 +259,26 @@ export const Step1PersonalInfo = ({
                             <>
                                 <FormField
                                     control={methods.control}
-                                    name="guarantorName"
+                                    name="guarantorFirstname"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <label className="text-sm font-medium">Guarantor Full Name</label>
+                                            <label className="text-sm font-medium">Guarantor First Name</label>
                                             <FormControl>
-                                                <Input placeholder="Enter guarantor full name" {...field} className="bg-green-50 h-11" />
+                                                <Input placeholder="Enter guarantor first name" {...field} className="bg-green-50 h-11" />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                
+                            <FormField
+                                    control={methods.control}
+                                    name="guarantorLastname"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <label className="text-sm font-medium">Guarantor Last Name</label>
+                                            <FormControl>
+                                                <Input placeholder="Enter guarantor last name" {...field} className="bg-green-50 h-11" />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>

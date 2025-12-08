@@ -13,8 +13,9 @@ export const step1Schema = z.object({
 //   hasGuarantor: z.boolean().refine((val) => val === true, 'You must add a guarantor to proceed'),
   guarantorIsMember: z.string().min(1, 'Select an option'),
   guarantorEmail: z.string().email('Invalid email address').min(1, 'Guarantor email is required'),
-  guarantorName: z.string().min(1, 'Guarantor name is required'),
-  // guarantorPhone: z.string().min(1, 'Guarantor phone number is required'),
+  guarantorFirstname: z.string().min(1, 'Guarantor name is required'),
+  guarantorLastname: z.string().min(1, 'Guarantor last name is required'),
+  guarantorPhone: z.string().min(1, 'Guarantor phone number is required'),
 });
 
 export const step2Schema = z.object({
@@ -23,7 +24,7 @@ export const step2Schema = z.object({
   duration: z.string().min(1, 'Select duration'),
   repaymentFrequency: z.string().min(1, 'Select repayment frequency'),
   autoPayment: z.boolean(),
-  agree: z.boolean().refine((val) => val === true, 'You must agree before submitting'),
+  // agree: z.boolean().refine((val) => val === true, 'You must agree before submitting'),
 });
 
 
@@ -43,7 +44,7 @@ export type LoanFormValues = z.infer<typeof formSchema>;
 
 export type StepProps = {
   methods: any;
-  creditLimit?: number;
+  creditLimit?: CreditLimit;
   isLoading?: boolean;
   isVerifying?: boolean;
   verificationError?: string;
@@ -64,4 +65,26 @@ export type Loan = {
   // progress 0..100 percent (how much of loan already repaid)
   progress?: number;
   // any other fields the loan details page will need
+};
+
+export type CreditLimit = {
+  credit_limit: number;
+  remaining_limit: number;
+  total_borrowed: number;
+  total_savings: number;
+  utilization_percentage: number;
+};
+
+export type CalculateLoan = {
+  schedule: {
+    month: number;
+    principalPaid: number;
+    interest: number;
+    total: number;
+    balance: number;
+  }[];
+  totalInterest: number;
+  totalPayable: number;
+  installment: number;
+  numberOfPayments: number;
 };
