@@ -16,12 +16,8 @@ import RunningShoes from "@/assets/marketplace/running-shoes.jpg";
 
 import type { CarouselItem, FilterType, Product, RecentlyViewed } from "@/types/marketplaceTypes";
 
-// API Base URL - Todo - Replace with actual API when ready
-// const API_BASE_URL = process.env.VITE_API_BASE_URL ?? 'https://api.schooldrive.com.ng/api/v1/';
-// const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://api.schooldrive.com.ng/api/v1/';
 
 export interface PaginatedProductsResponse {
-  // filter(arg0: (p: any) => boolean): import("../types/cartTypes").RecommendationProduct[];
   status: boolean;
   message: string;
   data: {
@@ -37,8 +33,6 @@ export interface PaginatedProductsResponse {
 }
 
 
-
-// Dummy Data
 export const dummyProducts: Product[] = [
   {
     product_id: "1",
@@ -225,7 +219,7 @@ export const getAllProducts = async (page = 1): Promise<PaginatedProductsRespons
   try {
     // TODO: Replace with actual API call when ready
     const response = await axios.get(`/markets/products?page=${page}`)
-    console.log("All Products Response:", response.data)
+    // console.log("All Products Response:", response.data)
     const apiData = response.data
     // return response
 

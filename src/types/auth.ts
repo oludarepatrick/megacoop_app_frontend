@@ -1,12 +1,15 @@
 export type User = {
   id: string;
+  member_id: string
   email: string;
   last_name: string;
   first_name: string;
   middle_name: string;
+  dob: string
   avatar?: string;
   role?: string;
   kyc_status?: number | null;
+  passport: string | null
   createdAt: string;
   updatedAt: string;
   phone?: string;

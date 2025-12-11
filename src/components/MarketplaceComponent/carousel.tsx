@@ -41,7 +41,6 @@ export function Carousel({ items }: CarouselProps) {
   if (items.length === 0) return null
 
   const current = items[currentIndex]
-  console.log("current.image", current.image)
 
   return (
     <div className="relative w-full h-full md:h-80 lg:h-96 rounded-lg  shadow-md">

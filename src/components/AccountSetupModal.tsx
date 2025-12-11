@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Dialog,
@@ -13,12 +13,14 @@ import {
 import { Button } from '@/components/ui/button';
 import { toast } from "sonner"
 import { accountInfoSchema, type AccountInfoFormData  } from '@/schemas/profileSchema';
-import { submitUserAccountInfo, fetchAccountInfo } from '@/services/profileService';
+import { submitUserAccountInfo } from '@/services/profileService';
 import { Input } from '@/components/ui/input';
 import { Form, FormField, FormItem, FormControl, FormMessage } from '@/components/ui/form';
 import PageLoader from './PageLoader';
 import { useNavigate } from 'react-router';
 import type { AxiosError } from 'axios';
+import { Landmark } from 'lucide-react';
+import { useAccountInfo } from '@/hooks/useProfile';
 
 
 type AccountSetupModalProps = {
@@ -29,8 +31,6 @@ type AccountSetupModalProps = {
 const AccountSetupModal = ({ open, onClose }: AccountSetupModalProps) => {
     //   const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
-
-
 
   const onAccountInfoSubmit = (data: AccountInfoFormData) => {
     // destructure and submit only bank_name and account_number
@@ -62,26 +62,23 @@ const AccountSetupModal = ({ open, onClose }: AccountSetupModalProps) => {
         },
     }));
     
-    const { data: accountData, isLoading } = useQuery({
-        queryKey: ['profileAccountInfo'],
-        queryFn: fetchAccountInfo,
-      });
-    
+    const { data: accountData, isLoading } = useAccountInfo();
+
     const form = useForm<AccountInfoFormData>({
       resolver: zodResolver(accountInfoSchema),
       defaultValues: {
-        bank_name: accountData?.bank_name || "",
-        account_number: accountData?.account_number || "",
-        account_holder_name: accountData?.account_holder_name || "",
+        bank_name: accountData?.[0]?.bank_name || "",
+        account_number: accountData?.[0]?.account_number || "",
+        account_holder_name: accountData?.[0]?.account_holder_name || "",
       },
     });
 
     useEffect(() => {
       if (accountData) {
         form.reset({
-          bank_name: accountData.bank_name || "",
-          account_number: accountData.account_number || "",
-          account_holder_name: accountData.account_holder_name || "",
+          bank_name: accountData[0].bank_name || "",
+          account_number: accountData[0].account_number || "",
+          account_holder_name: accountData[0].account_holder_name || "",
         });
       }
     }, [accountData, form]);
@@ -106,21 +103,24 @@ const AccountSetupModal = ({ open, onClose }: AccountSetupModalProps) => {
     return (
       <Dialog open={open} onOpenChange={onClose}>
         <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Set Up Your Bank Account</DialogTitle>
-            <DialogDescription>
+          <DialogHeader className="items-center">
+            <DialogTitle className='text-megagreen flex flex-col items-center gap-3'>
+              <Landmark/>
+              Add your Bank Details
+              </DialogTitle>
+            <DialogDescription className="text-megagreen" >
               Please provide your bank account details to proceed.
             </DialogDescription>
           </DialogHeader>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onAccountInfoSubmit)} className="space-y-4">
+            <form onSubmit={form.handleSubmit(onAccountInfoSubmit)} className="space-y-4 max-w-sm mx-auto w-full">
               <FormField
                 control={form.control}
                 name="bank_name"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input placeholder="Bank Name" {...field} />
+                      <Input placeholder="Bank Name" {...field} className='focus:!outline-none focus:!ring-1 focus:!ring-megagreen focus:!shadow-lg'/>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -136,6 +136,7 @@ const AccountSetupModal = ({ open, onClose }: AccountSetupModalProps) => {
                         placeholder="Account Number"
                         {...field}
                         type='number'
+                        className='focus:!outline-none focus:!ring-1 focus:!ring-megagreen focus:!shadow-lg'
                       />
                     </FormControl>
                     <FormMessage />
@@ -149,7 +150,7 @@ const AccountSetupModal = ({ open, onClose }: AccountSetupModalProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input placeholder="Account Name (Optional)" {...field} />
+                      <Input placeholder="Account Name (Optional)" {...field} className='focus:!outline-none focus:!ring-1 focus:!ring-megagreen focus:!shadow-lg'/>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -160,6 +161,7 @@ const AccountSetupModal = ({ open, onClose }: AccountSetupModalProps) => {
                 <Button 
                 type="submit" 
                 disabled={verifyAccountInfoSubmit.isPending}
+                className='bg-megagreen hover:bg-megagreen/80'
                 >
                   {verifyAccountInfoSubmit.isPending ? 'Submitting...' : 'Submit'}
                 </Button>

@@ -210,11 +210,15 @@
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: scale(0.95);
+    /* transform: scale(0.95); */
+     transform: translateX(20px)
+     /* transform: translateX(20px) scale(0.95); */
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    /* transform: scale(1); */
+     transform: translateX(0)
+     /* transform: translateX(0) scale(1); */
   }
 }
 

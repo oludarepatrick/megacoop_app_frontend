@@ -15,7 +15,9 @@ export const personalInfoSchema = z.object({
 
 export const accountInfoSchema = z.object({
     bank_name: z.string().min(1, "Bank name is required"),
-    account_number: z.string().min(1, "Account number is required"),
+    account_number: z.string().min(1, "Account number is required" )
+    .regex(/^\d+$/, "Account number must contain digits only")
+    .length(10, "Account number must be exactly 10 digits"),
     account_holder_name: z.string().optional(),
 });
 

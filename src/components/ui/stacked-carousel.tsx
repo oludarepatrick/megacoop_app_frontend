@@ -95,7 +95,7 @@ function StackedCarousel({
         {/* Next Card (Behind) - Peeking from right */}
         <StackedCarouselCard
           className={cn(
-            "top-0 left-7 z-10 opacity-80 scale-95",
+            "top-0 left-7 z-1 opacity-80 scale-95",
             cardClassName
           )}
         >
@@ -106,7 +106,7 @@ function StackedCarousel({
         <StackedCarouselCard
           key={`current-${currentIndex}`}
           className={cn(
-            "top-0 left-0 z-200",
+            "top-0 left-0 z-3",
             isAnimating && direction === 'next' && "animate-fadeIn",
             isAnimating && direction === 'prev' && "animate-slideOutRight",
             cardClassName
@@ -169,7 +169,7 @@ function StackedCarouselPrevious({ onClick, disabled }: NavigationButtonProps) {
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "absolute left-2 top-1/2 -translate-y-1/2 z-30",
+        "absolute left-2 top-1/2 -translate-y-1/2 z-2",
         "w-10 h-10 rounded-full bg-white/90 shadow-lg",
         "flex items-center justify-center",
         "hover:bg-white hover:scale-110 transition-all",

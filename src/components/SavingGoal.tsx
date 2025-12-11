@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 // import { Link } from "react-router-dom";
 import { Cell, Pie, PieChart } from "recharts";
 import { useCancelSavingPlan, usePartialWithdrawSaving, useSavingPlans } from "@/hooks/useSaving";
-import PageLoader from "./PageLoader";
 import SavingGoalDetailModal from "./SavingsComponent/SavingGoalDetailModal";
 import { useState } from "react";
 import type { SavingPlan } from "@/types/savingType";
@@ -64,7 +63,11 @@ const SavingGoal= () => {
                 <CardTitle className="text-xl font-semibold">Saving Goals</CardTitle>
                 {/* <Link to="" className="text-footertext text-sm ">See All</Link> */}
             </CardHeader>
-            { isLoading ? <PageLoader/> : (
+            { isLoading ? (
+                <div className="h-40 flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-megagreen"></div>
+                </div>
+            ) : (
 
                 <CardContent className="p-0 flex flex-col gap-4">
                     {goals.map((goal, index) => {
