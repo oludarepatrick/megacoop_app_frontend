@@ -50,7 +50,7 @@ const MarketView = () => {
                     
                     
                 />
-                <div className="mt-4 flex justify-center -order-2">
+                <div className="mt-4 flex justify-center">
                     <Button
                         onClick={handleBuyNow}
                         className="bg-[#D4AF37] hover:bg-[#C5A028] text-black rounded-full px-10 py-6 text-lg font-bold shadow-lg transition-all transform hover:scale-105"
@@ -64,66 +64,3 @@ const MarketView = () => {
 };
 
 export default MarketView;
-
-
-// import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-// import oraimo from "../../assets/oraimo-product.svg"
-// import { Carousel, CarouselContent, CarouselDots, CarouselItem } from "../ui/carousel";
-// import Autoplay from "embla-carousel-autoplay"
-// import { Button } from "../ui/button";
-// import { StackedCarousel } from "../ui/stacked-carousel";
-
-
-
-// const products = [
-//   { id: 1, img: oraimo},
-//   { id: 2, img: oraimo},
-//   { id: 3, img: oraimo},  
-  
-// ]
-
-// const MarketView= () => {
-    
-//     return (
-//         // <section className="">
-//         <Card className="px-4 py-4 ">
-//             <CardHeader className="flex justify-between px-2">
-//                 <CardTitle className="text-xl font-semibold">Trending Product</CardTitle>
-//             </CardHeader>
-//             {/* <CardContent>
-//                 <Carousel plugins={[Autoplay({delay: 2000}),]}>
-//                     <CarouselContent>
-//                         {products.map(product => (
-//                             <CarouselItem key={product.id} className="flex items-center flex-col justify-center gap-4">
-//                                 <img src={product.img} alt="trending-products" />
-//                                 <Button className="bg-megagold rounded-2xl">Buy now</Button>
-//                             </CarouselItem>
-//                         ))}
-//                     </CarouselContent>
-//                     <CarouselDots/>
-//                 </Carousel>
-                
-//             </CardContent> */}
-
-//             <StackedCarousel
-//                 items={
-//                     products.map(product => (
-//                             <CarouselItem key={product.id} className="flex items-center flex-col justify-center gap-4">
-//                                 <img src={product.img} alt="trending-products" />
-//                                 <Button className="bg-megagold rounded-2xl">Buy now</Button>
-//                             </CarouselItem>
-//                         ))
-//                 }
-//                 autoPlay
-//                 autoPlayInterval={3000}
-//                 showControls
-//                 showIndicators
-//                 onSlideChange={(index) => console.log("Slide changed to:", index)}
-
-//             />
-//         </Card>
-//         // </section>
-//     )
-// }
-
-// export default MarketView;

@@ -8,7 +8,8 @@ export const submitUserAccountInfo = async (data: AccountInfoFormData) => {
     return response.data;
 };
 
-export const fetchAccountInfo = async (): Promise<AccountInfoFormData> => {
+export const fetchAccountInfo = async (): Promise<AccountInfoFormData[]> => {
         const response = await axios.get('/user/get-user-bank-account', jsonConfig);
-        return response.data;   
+        console.log(response.data.data)
+        return response.data.data;   
 };

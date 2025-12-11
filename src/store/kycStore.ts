@@ -38,9 +38,18 @@ export const useKYCStore = create<KYCStore>()(
       ...initialState,
       
       checkKYCStatus: async () => {
-        const {user} = useAuthStore.getState()
+        const {user} = useAuthStore.getState();
+
+        if(user?.kyc_status === 1) {
+          set({
+            modalType: 'none',
+            isLoading: false,
+            hasCheckedStatus: true,
+          });
+          return;
+        }
         
-        if (get().modalType === 'none' && get().isKYCComplete() || user?.kyc_status === 1) {
+        if (get().modalType === 'none' && get().isKYCComplete()) {
           return; 
         }
         set({ isLoading: true });
@@ -59,30 +68,32 @@ export const useKYCStore = create<KYCStore>()(
             return;
           }
 
-          // if (typeof response.data === 'string') {
-          //   set({
-          //     status: null,
-          //     currentStep: 1,
-          //     modalType: 'required',
-          //     isLoading: false,
-          //     hasCheckedStatus: true,
-          //   });
-          //   return;
-          // }
+          if (typeof response.data === 'string') {
+            set({
+              status: null,
+              currentStep: 1,
+              modalType: 'required',
+              isLoading: false,
+              hasCheckedStatus: true,
+            });
+            return;
+          }
 
           const kycData = response.data as KYCStatusData;
-          
           set({ status: kycData });
           
           const nextStep = get().getNextIncompleteStep();
           const isComplete = get().isKYCComplete();
+          const isPendingApproval = get().isKYCPendingApproval();
           
           let modalType: KYCModalType = 'none';
-          const isPendingApproval = get().isKYCPendingApproval();
           
           if (isPendingApproval) {
             modalType = 'pending'; 
-          } else if (!isComplete) {
+          } else if(isComplete){
+            modalType = 'none'
+          }
+          else{
             modalType = nextStep === 1 ? 'required' : 'continue';
           }
 
@@ -121,16 +132,17 @@ export const useKYCStore = create<KYCStore>()(
           }
         }
         
-        // All 5 steps are verified, no more steps needed
-        // We should not return 6 as there is no step 6
-        return 5; // Stay on step 5 if admin hasn't approved yet
+        // All 5 steps are verified
+
+        return 5; // Stay on step 5 (last step)
       },
 
       isKYCComplete: () => {
         const { status } = get();
         if (!status) return false;
 
-        const requiredSteps = KYC_STEPS.slice(0, 5); 
+        const requiredSteps = KYC_STEPS.slice(0, 5);
+
         const allStepsVerified = requiredSteps.every(step => status[step.name] === 'verified');
         const adminApproved = status.admin_approval_status === 'approved';
         
@@ -141,7 +153,7 @@ export const useKYCStore = create<KYCStore>()(
         const { status } = get();
         if (!status) return false;
 
-        const requiredSteps = KYC_STEPS.slice(0, 5); 
+        const requiredSteps = KYC_STEPS.slice(0, 5);
         const allStepsVerified = requiredSteps.every(step => status[step.name] === 'verified');
         const adminPending = status.admin_approval_status === 'pending';
         
@@ -150,7 +162,12 @@ export const useKYCStore = create<KYCStore>()(
 
       shouldShowModal: () => {
         const { status, hasCheckedStatus } = get();
-        
+        const { user } = useAuthStore.getState();
+
+        if(user?.kyc_status === 1) {
+          return 'none';
+        }
+
         if (!hasCheckedStatus) {
           return 'none'; 
         }
@@ -159,10 +176,9 @@ export const useKYCStore = create<KYCStore>()(
           return 'required'; 
         }
 
-        const nextStep = get().getNextIncompleteStep();
         const isComplete = get().isKYCComplete();
         const isPendingApproval = get().isKYCPendingApproval();
-
+        
         if (isPendingApproval) {
           return 'pending'; 
         }
@@ -170,7 +186,8 @@ export const useKYCStore = create<KYCStore>()(
         if (isComplete) {
           return 'none'; 
         }
-
+        
+        const nextStep = get().getNextIncompleteStep();
         return nextStep === 1 ? 'required' : 'continue';
       },
     }),
@@ -215,3 +232,222 @@ export const updateStepStatusAfterSuccess = (
     return { completed: true, isPending: true };
   }
 };
+
+
+// import { create } from 'zustand';
+// import { persist } from 'zustand/middleware';
+// import type { KYCStatusData, KYCModalType, KYCState, KYCStep, KYCStatus, AdminApprovalStatus } from '@/types/kycType';
+// import { kycService } from '@/services/kycService';
+// import { useAuthStore } from './authStore';
+
+// type KYCStore = KYCState & {
+//   checkKYCStatus: () => Promise<void>;
+//   setModalType: (modalType: KYCModalType) => void;
+//   setCurrentStep: (step: number) => void;
+//   resetKYCState: () => void;
+//   getNextIncompleteStep: () => number;
+//   isKYCComplete: () => boolean;
+//   isKYCPendingApproval: () => boolean;
+//   shouldShowModal: () => KYCModalType;
+// }
+
+// const initialState: KYCState = {
+//   status: null,
+//   currentStep: 1,
+//   modalType: 'none',
+//   isLoading: false,
+//   hasCheckedStatus: false,
+// };
+
+
+// const KYC_STEPS: KYCStep[] = [
+//   { step: 1, name: 'nin', label: 'NIN', completed: false, verificationType: 'immediate' },
+//   { step: 2, name: 'bvn', label: 'BVN', completed: false, verificationType: 'immediate' },
+//   { step: 3, name: 'valid_id_card', label: 'Valid ID Card', completed: false, verificationType: 'admin-approval' },
+//   { step: 4, name: 'proof_of_address', label: 'Address', completed: false, verificationType: 'admin-approval' },
+//   { step: 5, name: 'live_face_verification', label: 'Face Recognition', completed: false, verificationType: 'immediate' },
+// ];
+
+// export const useKYCStore = create<KYCStore>()(
+//   persist(
+//     (set, get) => ({
+//       ...initialState,
+      
+//       checkKYCStatus: async () => {
+//         const {user} = useAuthStore.getState()
+        
+//         if (get().modalType === 'none' && get().isKYCComplete() || user?.kyc_status === 1) {
+//           return; 
+//         }
+//         set({ isLoading: true });
+        
+//         try {
+//           const response = await kycService.getKYCStatus();
+          
+//           if (!response.success) {
+//             set({
+//               status: null,
+//               currentStep: 1,
+//               modalType: 'required',
+//               isLoading: false,
+//               hasCheckedStatus: true,
+//             });
+//             return;
+//           }
+
+//           // if (typeof response.data === 'string') {
+//           //   set({
+//           //     status: null,
+//           //     currentStep: 1,
+//           //     modalType: 'required',
+//           //     isLoading: false,
+//           //     hasCheckedStatus: true,
+//           //   });
+//           //   return;
+//           // }
+
+//           const kycData = response.data as KYCStatusData;
+          
+//           set({ status: kycData });
+          
+//           const nextStep = get().getNextIncompleteStep();
+//           const isComplete = get().isKYCComplete();
+          
+//           let modalType: KYCModalType = 'none';
+//           const isPendingApproval = get().isKYCPendingApproval();
+          
+//           if (isPendingApproval) {
+//             modalType = 'pending'; 
+//           } else if (!isComplete) {
+//             modalType = nextStep === 1 ? 'required' : 'continue';
+//           }
+
+//           set({
+//             currentStep: nextStep,
+//             modalType,
+//             isLoading: false,
+//             hasCheckedStatus: true,
+//           });
+
+//         } catch (error) {
+//           console.error('Error checking KYC status:', error);
+//           set({
+//             status: null,
+//             currentStep: 1,
+//             modalType: 'required',
+//             isLoading: false,
+//             hasCheckedStatus: true,
+//           });
+//         }
+//       },
+
+//       setModalType: (modalType) => set({ modalType }),
+
+//       setCurrentStep: (step) => set({ currentStep: step }),
+
+//       resetKYCState: () => set(initialState),
+
+//       getNextIncompleteStep: () => {
+//         const { status } = get();
+//         if (!status) return 1;
+
+//         for (const step of KYC_STEPS) {
+//           if (status[step.name] !== 'verified') {
+//             return step.step;
+//           }
+//         }
+        
+//         // All 5 steps are verified, no more steps needed
+//         // We should not return 6 as there is no step 6
+//         return 5; // Stay on step 5 if admin hasn't approved yet
+//       },
+
+//       isKYCComplete: () => {
+//         const { status } = get();
+//         if (!status) return false;
+
+//         const requiredSteps = KYC_STEPS.slice(0, 5); 
+//         const allStepsVerified = requiredSteps.every(step => status[step.name] === 'verified');
+//         const adminApproved = status.admin_approval_status === 'approved';
+        
+//         return allStepsVerified && adminApproved;
+//       },
+
+//       isKYCPendingApproval: () => {
+//         const { status } = get();
+//         if (!status) return false;
+
+//         const requiredSteps = KYC_STEPS.slice(0, 5); 
+//         const allStepsVerified = requiredSteps.every(step => status[step.name] === 'verified');
+//         const adminPending = status.admin_approval_status === 'pending';
+        
+//         return allStepsVerified && adminPending;
+//       },
+
+//       shouldShowModal: () => {
+//         const { status, hasCheckedStatus } = get();
+        
+//         if (!hasCheckedStatus) {
+//           return 'none'; 
+//         }
+
+//         if (!status) {
+//           return 'required'; 
+//         }
+
+//         const nextStep = get().getNextIncompleteStep();
+//         const isComplete = get().isKYCComplete();
+//         const isPendingApproval = get().isKYCPendingApproval();
+
+//         if (isPendingApproval) {
+//           return 'pending'; 
+//         }
+        
+//         if (isComplete) {
+//           return 'none'; 
+//         }
+
+//         return nextStep === 1 ? 'required' : 'continue';
+//       },
+//     }),
+//     {
+//       name: 'megacoop-kyc',
+//       partialize: (state) => ({
+//         status: state.status,
+//         currentStep: state.currentStep,
+//       }),
+//     }
+//   )
+// );
+
+// export const getKYCStepInfo = (stepNumber: number): KYCStep | undefined => {
+//   return KYC_STEPS.find(step => step.step === stepNumber);
+// };
+
+// export const getKYCStepsWithStatus = (status: KYCStatusData | null): KYCStep[] => {
+//   return KYC_STEPS.map(step => {
+//     const stepStatus = status ? (status[step.name] as KYCStatus | AdminApprovalStatus) : 'not verified';
+//     const isVerified = stepStatus === 'verified';
+    
+//     const shouldShowPending = step.verificationType === 'admin-approval' && isVerified;
+    
+//     return {
+//       ...step,
+//       completed: isVerified,
+//       isPending: shouldShowPending,
+//       status: stepStatus as KYCStatus,
+//     };
+//   });
+// };
+
+// export const updateStepStatusAfterSuccess = (
+//   verificationType: 'immediate' | 'admin-approval'
+// ) => {
+  
+//   if (verificationType === 'immediate') {
+//     // For immediate steps, the step is truly verified
+//     return { completed: true, isPending: false };
+//   } else {
+//     return { completed: true, isPending: true };
+//   }
+// };

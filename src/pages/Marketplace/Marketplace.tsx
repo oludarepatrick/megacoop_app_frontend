@@ -23,7 +23,6 @@ import { useThemeStore } from "@/store/themeStore"
 
 export default function MarketplacePage() {
   const { theme } = useThemeStore()
-  console.log("theme in marketplace page:", theme)
   const navigate = useNavigate()
   
   const [cartCount, setCartCount] = useState(0)
