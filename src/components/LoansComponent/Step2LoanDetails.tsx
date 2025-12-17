@@ -7,6 +7,7 @@ import { Switch } from "../ui/switch";
 import LoanImage1 from "../../assets/loan-request-image1.png";
 import LoanImage2 from "../../assets/loan-request-image2.png";
 import type { StepProps } from '../../types/loanTypes';
+
 export const Step2LoanDetails = ({
     methods,
     creditLimit,
@@ -25,7 +26,7 @@ export const Step2LoanDetails = ({
                             <Input
                                 type="number"
                                 min={1000}
-                                max={creditLimit?.credit_limit ?? undefined}
+                                max={creditLimit?.credit_limit}
                                 step={1000}
                                 placeholder="Enter loan amount"
                                 {...field}
@@ -33,7 +34,7 @@ export const Step2LoanDetails = ({
                                 onChange={(e) => field.onChange(Number(e.target.value))}
                                 className="h-11 text-center w-full font-bold rounded-none text-3xl border-0 border-b border-gray-300 shadow-none"
                                 style={{ fontSize: '1rem' }}
-                                readOnly
+                                // readOnly
                             />
                         </FormControl>
                         <FormMessage />

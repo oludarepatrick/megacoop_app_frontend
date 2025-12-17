@@ -10,6 +10,7 @@ export type User = {
   role?: string;
   kyc_status?: number | null;
   passport: string | null
+  live_face_verification: string | null
   createdAt: string;
   updatedAt: string;
   phone?: string;
