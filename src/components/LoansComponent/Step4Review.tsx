@@ -4,11 +4,31 @@ import type { StepProps } from '../../types/loanTypes';
 import { Link } from 'react-router-dom';
 import { Checkbox } from '@/components/ui/checkbox';
 
+type Step4ReviewProps = StepProps & {
+  value: {
+    amount: number
+    duration: string
+    reason: string
+  }
+}
 
-
-export const Step4Review = ({ methods, verificationError }: StepProps) => {
+export const Step4Review = ({ methods, verificationError, value }: Step4ReviewProps) => {
   return (
-    <div className="mb-4">
+    <div className="mb-4 space-y-4">
+      <div className='text-sm space-y-1'>
+        <div className="flex justify-center gap-6">
+            <span>Loan Amount:</span>
+            <span className="font-medium text-megagreen">₦{value.amount?.toLocaleString() ?? "0"}</span>
+        </div>
+        <div className="flex justify-center gap-6">
+            <span>Loan Duration:</span>
+            <span className="font-medium text-megagreen">{value.duration} Months</span>
+        </div>
+        <div className="flex justify-center gap-6">
+            <span>Loan Purpose:</span>
+            <span className="font-medium text-megagreen">{value.reason}</span>
+        </div>
+      </div>
       <FormField
         control={methods.control}
         name="agree"

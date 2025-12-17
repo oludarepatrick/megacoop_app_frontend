@@ -450,7 +450,14 @@ console.log('Guarantor data:', guarantorData);
             {step === 2 && <Step2LoanDetails {...stepProps} />}
             {/* {step === 3 && <Step3DocumentUpload {...stepProps} />} */}
             
-            {step === 3 && <Step4Review {...stepProps} />}
+            {step === 3 && <Step4Review {...stepProps}
+              value={{
+                amount: methods.getValues("loanAmount"),
+                duration: methods.getValues("duration"),
+                reason: methods.getValues("reason")
+                // repaymentFrequency: methods.getValues("repaymentFrequency"),
+              }} 
+            />}
             {/* {step === 4 && <Step3DocumentUpload {...stepProps} />} */}
           </Form>
 

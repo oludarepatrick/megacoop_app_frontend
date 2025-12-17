@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { Settings, X, ShieldCheck, ChevronDown, CircleDollarSign, LogOut } from "lucide-react";
+import { Settings, X, ChevronDown, CircleDollarSign, LogOut } from "lucide-react";
 import { Button } from "../ui/button";
 import { NavLink } from "react-router-dom";
 import { LayoutGrid } from "lucide-react";
@@ -73,9 +73,9 @@ const Sidebar = ({onClick}:menuProps) => {
                 </NavLink>
 
                 <hr/>
-                <div className="flex gap-3 cursor-pointer">
+                {/* <div className="flex gap-3 cursor-pointer">
                     <ShieldCheck /> Security
-                </div>
+                </div> */}
 
                 <div className="flex gap-3 cursor-pointer">
                     <img src={helpIcon} alt="" aria-hidden="true" />
