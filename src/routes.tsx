@@ -22,6 +22,7 @@ const KYCVerification = lazy(() => import("./pages/KYCPage"));
 const Marketplace = lazy(() => import("./pages/Marketplace/Marketplace"));
 const MarketplaceCart = lazy(() => import("./pages/Marketplace/Cart"));
 const Profile = lazy(() => import("./pages/Profile"));
+const Help = lazy(() => import("./pages/Help"));
 
 
 
@@ -142,6 +143,14 @@ export const routes = createBrowserRouter([
                         element: (
                             <Suspense fallback={<PageLoader/>}>
                                 <Profile/>
+                            </Suspense>
+                        )
+                    },
+                    {
+                        path: "help",
+                        element: (
+                            <Suspense fallback={<PageLoader/>}>
+                                <Help/>
                             </Suspense>
                         )
                     }
