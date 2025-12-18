@@ -45,6 +45,11 @@ const Header = ({onMenuToggle}: menuProps) => {
             bg: "bg-megaPrimary text-white",
             hasSearch: false
         },
+        "/user/help": { 
+            title: "Help", 
+            bg: "bg-card-bg text-theme-text",
+            hasSearch: false
+        },
         "/user/settings": { 
             title: "Settings", 
             bg: "bg-card-bg text-theme-text",

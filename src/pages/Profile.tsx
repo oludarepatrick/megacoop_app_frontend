@@ -21,8 +21,8 @@ export default function Profile() {
     return (
         <div className="font-poppins rounded-xl shadow-sm space-y-6 pb-4 px-4 sm:px-0" >
             <div className="flex gap-6 items-center p-4 border-b-2 border-b-megagreen/60 shadow-lg">
-                <div>
-                    <img src={user?.live_face_verification || profileAvatar} alt="user profile image" />
+                <div className="">
+                    <img src={user?.live_face_verification || profileAvatar} alt="user profile image" className="w-20 h-20 rounded-full object-cover" />
                 </div>
                 <div>
                     <h2 className="font-semibold text-lg">{[user?.first_name, user?.middle_name, user?.last_name].join(" ")}</h2>

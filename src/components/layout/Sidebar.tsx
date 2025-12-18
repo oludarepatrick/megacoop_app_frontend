@@ -75,12 +75,12 @@ const Sidebar = ({onClick}:menuProps) => {
                 <hr/>
                 {/* <div className="flex gap-3 cursor-pointer">
                     <ShieldCheck /> Security
-                </div> */}
+                    </div> */}
 
-                <div className="flex gap-3 cursor-pointer">
+                <NavLink to="help" className={activeClass}>
                     <img src={helpIcon} alt="" aria-hidden="true" />
                     Help
-                </div>
+                </NavLink>
                 <div className="flex items-center justify-between gap-3 cursor-pointer">
                     <div className="flex items-center gap-3">
                         <img src={moonIcon} alt="" aria-hidden="true" />
