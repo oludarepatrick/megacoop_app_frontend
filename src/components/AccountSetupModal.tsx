@@ -63,6 +63,7 @@ const AccountSetupModal = ({ open, onClose }: AccountSetupModalProps) => {
     }));
     
     const { data: accountData, isLoading } = useAccountInfo();
+    console.log(accountData)
 
     const form = useForm<AccountInfoFormData>({
       resolver: zodResolver(accountInfoSchema),
@@ -73,15 +74,36 @@ const AccountSetupModal = ({ open, onClose }: AccountSetupModalProps) => {
       },
     });
 
+    // const form = useForm<AccountInfoFormData>({
+    //   resolver: zodResolver(accountInfoSchema),
+    //   defaultValues: {
+    //     bank_name: "",
+    //     account_number: "",
+    //     account_holder_name: "",
+    //   },
+    // });
+
+
     useEffect(() => {
-      if (accountData) {
+      if (accountData && accountData.length > 0) {
         form.reset({
-          bank_name: accountData[0].bank_name || "",
-          account_number: accountData[0].account_number || "",
-          account_holder_name: accountData[0].account_holder_name || "",
+          bank_name: accountData[0]?.bank_name ?? "",
+          account_number: accountData[0]?.account_number ?? "",
+          account_holder_name: accountData[0]?.account_holder_name ?? "",
         });
       }
-    }, [accountData, form]);
+    }, [accountData]);
+
+
+    // useEffect(() => {
+    //   if (accountData) {
+    //     form.reset({
+    //       bank_name: accountData[0].bank_name || "",
+    //       account_number: accountData[0].account_number || "",
+    //       account_holder_name: accountData[0].account_holder_name || "",
+    //     });
+    //   }
+    // }, [accountData, form]);
 
     // const onSubmit = async (data: AccountInfoFormData) => {
     //   setIsSubmitting(true);
@@ -135,7 +157,9 @@ const AccountSetupModal = ({ open, onClose }: AccountSetupModalProps) => {
                       <Input
                         placeholder="Account Number"
                         {...field}
-                        type='number'
+                        type='text'
+                        inputMode='numeric'
+                        pattern="[0-9]*"
                         className='focus:!outline-none focus:!ring-1 focus:!ring-megagreen focus:!shadow-lg'
                       />
                     </FormControl>
