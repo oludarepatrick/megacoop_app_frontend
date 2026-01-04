@@ -1,6 +1,7 @@
 import { Plus, Minus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { CartItem } from "@/types/cartTypes"
+import { formatCurrency } from "@/common/utils"
 
 
 interface CartItemsProps {
@@ -32,8 +33,8 @@ export function CartItems({ items, onQuantityChange, onRemove }: CartItemsProps)
           <div className="flex-1">
             <h4 className="font-semibold mb-1">{item.product_name}</h4>
             <div className="flex gap-2 mb-2">
-              <span className="text-sm text-green-600 font-semibold">₦{item?.price?.toLocaleString() ?? "0.00"}</span>
-              <span className="text-sm text-gray-400 line-through">₦399.99</span>
+              <span className="text-sm text-green-600 font-semibold">{formatCurrency(item?.price) ?? "0.00"}</span>
+              {/* <span className="text-sm text-gray-400 line-through">₦399.99</span> */}
             </div>
           </div>
 
@@ -73,7 +74,7 @@ export function CartItems({ items, onQuantityChange, onRemove }: CartItemsProps)
 
           {/* Total Price */}
           <div className="flex-shrink-0 text-right">
-            <p className="font-semibold ">₦{item?.totalPrice?.toLocaleString() ?? "0.00"}</p>
+            <p className="font-semibold ">{formatCurrency(item?.totalPrice)?? "0.00"}</p>
           </div>
           </div>
         </div>

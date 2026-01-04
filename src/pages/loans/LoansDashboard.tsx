@@ -36,11 +36,11 @@ export default function LoanDashboard() {
       } catch {
         // fallback dummy data
         return {
-          credit_limit: 100000,
-          remaining_limit: 60000,
-          total_borrowed: 40000,
-          total_savings: 15000,
-          utilization_percentage: 40,
+          credit_limit: 0,
+          remaining_limit: 0,
+          total_borrowed: 0,
+          total_savings: 0,
+          utilization_percentage: 0,
         } as CreditLimit;
       }
     },
@@ -53,19 +53,7 @@ export default function LoanDashboard() {
         const v = await fetchLoans();
         return v;
       } catch {
-        // fallback dummy data
-        return [
-          { id: "l1", name: "Jesicca", amount: 13000, repaymentDate: "2024-09-12", status: "overdue" },
-          { id: "l2", name: "Ola", amount: 25000, repaymentDate: "2024-12-01", status: "active" },
-          { id: "l3", name: "Tunde", amount: 50000, repaymentDate: "2025-03-10", status: "disbursed" },
-          { id: "l4", name: "Mari", amount: 8000, repaymentDate: "2024-08-02", status: "paid" },
-          { id: "l5", name: "Chidi", amount: 12000, repaymentDate: "2024-11-20", status: "pending" },
-          { id: "l6", name: "Grace", amount: 20000, repaymentDate: "2024-10-05", status: "overdue" },
-          { id: 1, name: "Jessica", amount: 13000, status: "paid", repaymentDate: "2024-09-12" },
-          { id: 2, name: "Jessica", amount: 13000, status: "overdue", repaymentDate: "2024-09-12" },
-          { id: 3, name: "Jessica", amount: 13000, status: "pending", repaymentDate: "2024-09-12" },
-          { id: 4, name: "Jessica", amount: 13000, status: "paid", repaymentDate: "2024-09-12" },
-        ] as Loan[];
+        return [] ;
       }
     },
   });
@@ -284,7 +272,7 @@ export default function LoanDashboard() {
                     <TableCell>{loan.name}</TableCell>
                     <TableCell>₦{loan.amount.toLocaleString()}</TableCell>
                     {/* <TableCell>{loan.repaymentDate}</TableCell> */}
-                    <TableCell>{formatDate(loan.repaymentDate)}</TableCell>
+                    <TableCell>{formatDate(loan.next_repayment_date)}</TableCell>
                     <TableCell>
                       <span
                         className={cn(

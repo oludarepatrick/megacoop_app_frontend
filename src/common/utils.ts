@@ -52,3 +52,7 @@ export function formatDateTime(dateInput: string | Date): string {
 
   return `${day} ${month} , ${time}`;
 }
+
+export function ceilTo2DP(value: number) : number {
+  return Math.ceil(value * 100) / 100;
+}

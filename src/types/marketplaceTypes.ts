@@ -3,12 +3,15 @@ export interface Product {
   product_id: string
   product_name: string
   brief_description: string
+  full_description: string
   price: number
   images: string[]
   product_category: string
   rating?: number
   reviews?: number
   available_stock?: number
+  delivery_fee?: number
+  status: string
 }
 
 export interface CarouselItem {

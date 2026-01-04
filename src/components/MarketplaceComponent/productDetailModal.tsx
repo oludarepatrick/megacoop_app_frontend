@@ -5,6 +5,7 @@ import { ShoppingCart, Star, X } from "lucide-react"
 import type { Product } from "@/types/marketplaceTypes"
 import { ImageCarouselModal } from "./imageCarouselModal"
 import fallbackImage from "@/assets/marketplace/wireless-headphones.png"
+import { formatCurrency } from "@/common/utils"
 interface ProductDetailModalProps {
   product: Product
   onClose: () => void
@@ -18,7 +19,7 @@ export function ProductDetailModal({ product, onClose, onAddToCart }: ProductDet
   return (
     <>
       <Dialog open={true} onOpenChange={onClose}>
-        <DialogContent className="max-w-8xl max-h-screen overflow-y-auto">
+        <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{product.product_name}</DialogTitle>
             <DialogClose asChild>
@@ -71,7 +72,7 @@ export function ProductDetailModal({ product, onClose, onAddToCart }: ProductDet
             <div className="space-y-4">
               <div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">{product.product_name}</h3>
-                <p className="text-gray-600">{product.brief_description}</p>
+                <p className="text-gray-600">{product.full_description}</p>
               </div>
 
               {/* Rating */}
@@ -102,7 +103,7 @@ export function ProductDetailModal({ product, onClose, onAddToCart }: ProductDet
               {/* Price */}
               <div className="border-t border-b border-gray-200 py-4">
                 <p className="text-sm text-gray-600 mb-2">Price</p>
-                <p className="text-3xl font-bold text-gray-900">₦{product?.price?.toLocaleString() ?? "0.00"}</p>
+                <p className="text-3xl font-bold text-gray-900">{formatCurrency(product?.price) ?? "0.00"}</p>
               </div>
 
               {/* Add to Cart Button */}

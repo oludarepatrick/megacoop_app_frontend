@@ -4,6 +4,7 @@ import { ShoppingCart, Star } from "lucide-react"
 import type { Product } from "@/types/marketplaceTypes"
 import placeholderImage from "@/assets/marketplace/wireless-headphones.png"
 import { useState } from "react"
+import { formatCurrency } from "@/common/utils"
 
 interface ProductCardProps {
   product: Product
@@ -26,14 +27,14 @@ export function ProductCard({ product, onClick, onAddToCart }: ProductCardProps)
           src={imageUrl}
           onError={() => setImageError(true)}
           alt={product.product_name}
-          className="w-full h-full object-cover hover:scale-105 transition-transform"
+          className="w-full h-full object-fit hover:scale-105 transition-transform"
         />
       </div>
 
       {/* Product Info */}
       <div className="p-4">
         <h4 className="font-semibold mb-1 text-green-600 line-clamp-2">{product.product_name}</h4>
-        <p className="text-sm text-gray-600 mb-3 line-clamp-2">{product.brief_description}</p>
+        <p className="text-sm text-gray-600 mb-3 line-clamp-2">{product.full_description}</p>
 
         {/* Rating */}
         {product.rating && (
@@ -54,7 +55,8 @@ export function ProductCard({ product, onClick, onAddToCart }: ProductCardProps)
 
         {/* Price and Button */}
         <div className="flex items-center justify-between">
-          <span className="text-lg font-bold">₦{product?.price?.toLocaleString() ?? "0.00"}</span>
+          {/* <span className="text-lg font-bold">₦{product?.price?.toLocaleString() ?? "0.00"}</span> */}
+          <span className="text-lg font-bold">{formatCurrency(product?.price) ?? "0.00"}</span>
           <Button
             size="sm"
             className="bg-green-600 hover:bg-green-700 text-white"

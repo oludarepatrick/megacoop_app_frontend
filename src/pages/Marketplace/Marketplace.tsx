@@ -5,15 +5,15 @@ import {
   getProducts,
   getAllProducts,
   getCarouselItems,
-  getRecentlyViewed,
+  // getRecentlyViewed,
   searchProducts,
   filterProducts,
 } from "@/services/marketplaceService"
 // import { addToCart } from "@/services/cartService"
 import { MarketplaceHeader } from "@/components/MarketplaceComponent/marketplaceHeader"
 import { Carousel } from "@/components/MarketplaceComponent/carousel"
-import { TabNavigation } from "@/components/MarketplaceComponent/tabNavigation"
-import { RecentlyViewedSection } from "@/components/MarketplaceComponent/recentlyViewed"
+// import { TabNavigation } from "@/components/MarketplaceComponent/tabNavigation"
+// import { RecentlyViewedSection } from "@/components/MarketplaceComponent/recentlyViewed"
 import { ProductGrid } from "@/components/MarketplaceComponent/productGrid"
 
 import type { FilterType, Product } from "@/types/marketplaceTypes"
@@ -28,7 +28,7 @@ export default function MarketplacePage() {
   const [cartCount, setCartCount] = useState(0)
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [searchQuery, setSearchQuery] = useState("")
-  const [activeTab, setActiveTab] = useState<"marketplace" | "buy-on-credit">("marketplace")
+  // const [activeTab, setActiveTab] = useState<"marketplace" | "buy-on-credit">("marketplace")
   const [filterType, setFilterType] = useState<FilterType>("all")
   const [page, setPage] = useState(1)
   const [allFetchedProducts, setAllFetchedProducts] = useState<Product[]>([])
@@ -49,11 +49,11 @@ export default function MarketplacePage() {
   })
 
   // Fetch recently viewed
-  const { data: recentlyViewed = [] } = useQuery({
-    queryKey: ["recently-viewed"],
-    queryFn: getRecentlyViewed,
-    refetchInterval: 300000,
-  })
+  // const { data: recentlyViewed = [] } = useQuery({
+  //   queryKey: ["recently-viewed"],
+  //   queryFn: getRecentlyViewed,
+  //   refetchInterval: 300000,
+  // })
 
 // Fetch products based on search and categories
 const { data: pagedProducts = { products: [], totalPages: 1 }, isFetching } = useQuery<{ products: Product[]; totalPages: number }>({
@@ -204,13 +204,13 @@ refetchInterval: 300000,
         </div>
 
         {/* Tab Navigation */}
-        <TabNavigation onTabChange={setActiveTab} />
+        {/* <TabNavigation onTabChange={setActiveTab} /> */}
 
         {/* Tab Content */}
-        {activeTab === "marketplace" && (
+        {/* {activeTab === "marketplace" && ( */}
           <>
             {/* Recently Viewed */}
-            <RecentlyViewedSection items={recentlyViewed} />
+            {/* <RecentlyViewedSection items={recentlyViewed} /> */}
 
             {/* Product Grid */}
             <ProductGrid products={displayProducts} onFilterChange={setFilterType} onAddToCart={handleAddToCart} />
@@ -225,13 +225,13 @@ refetchInterval: 300000,
           </button>
         </div>
           </>
-        )}
+        {/* )} */}
 
-        {activeTab === "buy-on-credit" && (
+        {/* {activeTab === "buy-on-credit" && (
           <div className="px-4 py-12 text-center">
             <p className="text-gray-600 text-lg">Buy on Credit feature coming soon...</p>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   )
