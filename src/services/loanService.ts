@@ -85,9 +85,9 @@ export async function fetchLoans() {
   // replace this with real endpoint
   // const { data } = await axiosInstance.get(`${API_BASE_URL}user/loan/dashboard`);
   // console.log(data);
-  const { data } = await axios.get('/user/loan/dashboard');
-  console.log(data);
-  return data?.loans;
+  const { data } = await axios.get('/user/loan/all');
+  console.log("data here", data);
+  return data?.data;
 }
 
 // Fetch loan details by ID /api/v1/user/loan/{id}/details

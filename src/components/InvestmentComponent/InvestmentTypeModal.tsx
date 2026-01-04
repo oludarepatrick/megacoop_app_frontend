@@ -28,7 +28,7 @@ const InvestmentTypeModal = ({isOpen, onClose, investmentType, modalData, onProc
             investment_id: modalData.id,
             inv_name: modalData.title,
             sub_type: undefined,
-            amount: Number(modalData.minimum_amount),     
+            amount: Number(modalData.minimum_amount),   
         },
     })
     

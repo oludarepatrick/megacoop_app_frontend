@@ -15,12 +15,12 @@ export const CreditLimitDisplay = ({ isLoading, creditLimit }: CreditLimitDispla
           <>
             Your credit limit:{' '}
             <span className="font-semibold text-gray-700">
-              ₦{creditLimit?.credit_limit?.toLocaleString() || '100,000'}
+              ₦{creditLimit?.remaining_limit?.toLocaleString() || '100,000'}
             </span>
           </>
         )}
       </p>
-      <div className="text-xs text-center text-white w-4 h-4 bg-green-500 rounded-full">?</div>
+      {/* <div className="text-xs text-center text-white w-4 h-4 bg-green-500 rounded-full">?</div> */}
     </div>
   );
 };

@@ -1,5 +1,7 @@
 import React from "react"
-import { ShoppingCart, Search, Menu, MapPin, TruckElectric, BadgeIndianRupee } from "lucide-react"
+import { ShoppingCart, Search, Menu, 
+  // MapPin, TruckElectric, BadgeIndianRupee 
+} from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -59,11 +61,11 @@ export function MarketplaceHeader({
       {/* Top Info Bar */}
       <div className=" px-4 py-2 text-sm flex flex-col md:flex-row justify-between md:items-center gap-2">
         <span>Welcome to worldwide Megamart!</span>
-        <div className="flex flex-col md:flex-row gap-6 text-xs">
+        {/* <div className="flex flex-col md:flex-row gap-6 text-xs">
           <span><MapPin className="inline w-4 h-4 text-green-500" /> Deliver to 423651</span>
           <span><TruckElectric className="inline w-4 h-4 text-green-500" /> Track your order</span>
           <span><BadgeIndianRupee className="inline w-4 h-4 text-green-500" /> Vouchers</span>
-        </div>
+        </div> */}
       </div>
 
       {/* Main Header */}

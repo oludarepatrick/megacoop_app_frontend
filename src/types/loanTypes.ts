@@ -60,7 +60,7 @@ export type Loan = {
   id: string;
   name: string;
   amount: number;
-  repaymentDate: string; // ISO date
+  next_repayment_date: string; // ISO date
   status: "disbursed" | "active" | "overdue" | "paid" | "pending";
   // progress 0..100 percent (how much of loan already repaid)
   progress?: number;
