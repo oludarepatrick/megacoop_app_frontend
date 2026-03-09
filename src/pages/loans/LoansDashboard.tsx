@@ -1,17 +1,17 @@
 import { useEffect, useMemo, useState } from "react"
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { DollarSign, AlertCircle, BarChart3, ChevronDown } from "lucide-react"
+import { AlertCircle, BarChart3, ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { fetchCreditLimit, fetchLoans } from "@/services/loanService";
+import { fetchCreditLimit, fetchLoanDetails, fetchLoans } from "@/services/loanService";
 import { formatCurrency, formatDate } from "@/common/utils";
 import LoanModal from "@/components/LoansComponent/ApplyLoanModal";
 import PageLoader from "@/components/PageLoader";
 import type { Loan } from "@/types/loanTypes";
 import type { CreditLimit } from "@/types/loanTypes";
+import LoanDetailModal from "@/components/LoansComponent/LoanDetailModal";
 
 
 export default function LoanDashboard() {
@@ -20,10 +20,10 @@ export default function LoanDashboard() {
   const [activeFilter, setActiveFilter] = useState<string>("all")
   const [openDropdown, setOpenDropdown] = useState<boolean>(false)
   const [isLoanModalOpen, setIsLoanModalOpen] = useState(false)
+  const [selectedLoanId, setSelectedLoanId] = useState<string | null>(null)
   const [page, setPage] = useState(1)
   const itemsPerPage = 5
 
-  const navigate = useNavigate();
 
   // --- Queries with dummy fallback using || so you can remove the fallback when API is ready
   const { data: creditLimitData, isLoading: creditLoading } = useQuery({
@@ -58,6 +58,12 @@ export default function LoanDashboard() {
     },
   });
 
+  const { data: loanDetails, isLoading: loanDetailsLoading } = useQuery({
+    queryKey: ["loan-details", selectedLoanId],
+    queryFn: () => fetchLoanDetails(selectedLoanId!),
+    enabled: !!selectedLoanId, // fetch detail when loan is selected
+  })
+
   // 👇 whenever loansData or creditLimitData changes, sync it to local state
   useEffect(() => {
     if (loansData) {
@@ -76,8 +82,6 @@ export default function LoanDashboard() {
   //     .reduce((sum, l) => sum + l.amount, 0)
   //   return Math.min(total, maxLimit)
   // }, [loans, maxLimit])
-
-  console.log("Used limit:", maxLimit);
 
   // const remainingLimit = Math.max(maxLimit - usedLimit, 0)
 
@@ -106,7 +110,6 @@ export default function LoanDashboard() {
             <Card className="bg-emerald-50 border-emerald-100 flex-1">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-emerald-700 flex items-center gap-2">
-                  <DollarSign className="text-emerald-500" size={18} />
                   Maximum Amount
                 </CardTitle>
               </CardHeader>
@@ -137,7 +140,6 @@ export default function LoanDashboard() {
             <Card className="bg-blue-50 border-blue-100 flex-1">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium text-blue-700 flex items-center gap-2">
-                    <DollarSign className="text-blue-500" size={18} />
                     Remaining Limit
                   </CardTitle>
               </CardHeader>
@@ -241,7 +243,7 @@ export default function LoanDashboard() {
             <TableHeader>
               <TableRow>
                 <TableHead></TableHead>
-                <TableHead>Name</TableHead>
+                <TableHead>Loan Purpose</TableHead>
                 <TableHead>Amount</TableHead>
                 <TableHead>Repayment Date</TableHead>
                 <TableHead>Status</TableHead>
@@ -269,7 +271,7 @@ export default function LoanDashboard() {
                     <TableCell>
                       <input type="checkbox" className="h-4 w-4" />
                     </TableCell>
-                    <TableCell>{loan.name}</TableCell>
+                    <TableCell>{loan.purpose}</TableCell>
                     <TableCell>₦{loan.amount.toLocaleString()}</TableCell>
                     {/* <TableCell>{loan.repaymentDate}</TableCell> */}
                     <TableCell>{formatDate(loan.next_repayment_date)}</TableCell>
@@ -317,7 +319,11 @@ export default function LoanDashboard() {
                     </TableCell>
 
                     <TableCell className="text-center" >
-                      <Button variant="link" className="text-emerald-600" onClick={() => navigate(`/loans/${loan.id}`)}>
+                      <Button variant="link" className="text-emerald-600" 
+                        onClick={() => {
+                          setSelectedLoanId(loan.id);
+                        }}
+                      >
                         More details
                       </Button>
                     </TableCell>
@@ -353,6 +359,15 @@ export default function LoanDashboard() {
       </div>
       {/* Apply Loan Modal */}
       <LoanModal open={isLoanModalOpen} onClose={() => setIsLoanModalOpen(false)} />
+      
+      { selectedLoanId && (
+        <LoanDetailModal
+          isOpen={!!selectedLoanId}
+          onClose={() => {setSelectedLoanId(null)}}
+          loan={loanDetails}
+          isLoading={loanDetailsLoading}
+        /> 
+      )}
     </div>
   )
 }

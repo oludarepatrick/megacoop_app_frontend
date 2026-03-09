@@ -54,7 +54,7 @@ const SignUpLoginPage = () => {
 
     return (
         <div
-            className="flex flex-row justify-between h-165 lg:h-auto lg:items-center bg-transparent px-4 overflow-hidden relative"
+            className="flex flex-row justify-between h-165 lg:h-auto lg:items-center bg-transparent px-4 overflow-hidden relative "
         >
             <motion.div
                 animate={{ scale: [1, 1.1, 1] }}

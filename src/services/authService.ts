@@ -5,11 +5,17 @@ import type {
     FinalSubmitData,
     CombinedAccessCodeData,
     ForgotPasswordEmailFormData,
-    SendPasswordFormData
+    SendPasswordFormData,
+    PreRegisterFormData
 } from '@/schemas/authSchemas';
 import type { UserWallet } from '@/types/auth';
 
 export const authService = {
+    preRegister: async (data: PreRegisterFormData) => {
+        const response = await axios.post('/preregister/submit', data);
+        return response.data;
+    },
+
     verifyAccessCode: async (accessCode: AccessCodeFormData) => {
         const response = await axios.post('/user/validate-code', accessCode);
         return response.data;

@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import wallet from "../../assets/expense-icon.svg";
 import { Progress } from "../ui/progress";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
@@ -31,7 +31,7 @@ const MonthlySavingGoal = ()=> {
         <Card className="flex-1 min-w-[280px] max-w-full">
             <CardHeader className="flex justify-between gap-4 items-center">
                 <CardTitle className="text-xl font-medium truncate">This Month</CardTitle>
-                <CardDescription className="uppercase text-megagreen text-xs whitespace-nowrap">View More</CardDescription>
+                {/* <CardDescription className="uppercase text-megagreen text-xs whitespace-nowrap">View More</CardDescription> */}
             </CardHeader>
             <CardContent>
                 <div className="flex gap-4 min-w-0">
