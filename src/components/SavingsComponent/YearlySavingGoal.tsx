@@ -1,8 +1,10 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import wallet from "../../assets/expense-icon.svg";
 import { Progress } from "../ui/progress";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "../ui/chart";
+import { useSavingPlans } from "@/hooks/useSaving";
+import { formatCurrency } from "@/common/utils";
 
 const savingData = [
     { month: "Jan", value: 2000000 },
@@ -28,11 +30,24 @@ const chartConfig = {
 } satisfies ChartConfig
 
 const YearlySavingGoal = ()=> {
+    const {data: goals = []} = useSavingPlans();
+
+    // get amount saved and total targeton all goals
+    const totalSaved = goals.reduce((acc, goal) => acc + Number(goal.total_saved), 0);
+    const totalTarget = goals.reduce((acc, goal) => acc + Number(goal.target_amount), 0);
+
+    // calculate average saving amount and percentage of target achieved
+    const averageSavingAmount = goals.length > 0 ? totalSaved / goals.length : 0;
+
+    const percentageOfTarget = totalTarget > 0 
+    ? Math.min((totalSaved / totalTarget) * 100, 100) 
+    : 0;
+
     return (
         <Card className="flex-1 min-w-[280px] max-w-full">
             <CardHeader className="flex justify-between gap-4 items-center">
                 <CardTitle className="text-xl font-medium truncate">Saving Goals</CardTitle>
-                <CardDescription className="uppercase text-megagreen text-xs whitespace-nowrap">View More</CardDescription>
+                {/* <CardDescription className="uppercase text-megagreen text-xs whitespace-nowrap">View More</CardDescription> */}
             </CardHeader>
             <CardContent>
                 <div className="flex gap-4 min-w-0">
@@ -42,10 +57,16 @@ const YearlySavingGoal = ()=> {
                     <div className="flex-1 space-y-4 min-w-0">
                         <div className="flex justify-between text-sm gap-2">
                             <span className="truncate">Average</span>
-                            <span className="font-medium whitespace-nowrap">₦500,000.00</span>
+                            <span className="font-medium whitespace-nowrap">
+                                {formatCurrency(averageSavingAmount)}
+                            </span>
                         </div>
-                        <Progress value={30} className="h-2" />
-                        <p className="text-xs text-muted-foreground break-words">Looking good so far👌</p>
+                        <Progress value={percentageOfTarget} className="h-2" />
+                        <p className="text-xs text-muted-foreground break-words">
+                            { percentageOfTarget > 0 ? 
+                                "Looking good so far👌" : 
+                                "Start saving to see your progress here!"}
+                        </p>
                     </div>
                 </div>
                 <div className="overflow-x-auto green-scrollbar pt-8">

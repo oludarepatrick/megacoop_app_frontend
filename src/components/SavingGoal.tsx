@@ -9,9 +9,11 @@ import type { SavingPlan } from "@/types/savingType";
 import ConfirmModal from "./ConfirmModal";
 import PartialWithdrawModal from "./SavingsComponent/PartialWithdrawModal";
 import { SavingPlanSuccessModal } from "./SavingsComponent/SavingPlanSuccessModal";
+import { useNavigate } from "react-router-dom";
 
 
 const colors = ["#037BCB", "#03CBB3", "#FB18BB", "#F59E0B", "#10B981"];
+
 
 
 const SavingGoal= () => {
@@ -24,6 +26,8 @@ const SavingGoal= () => {
     }>({isOpen: false, description: ""})
 
     const {data: goals = [], isLoading} = useSavingPlans();
+
+    const navigate = useNavigate();
 
     const {mutate, isPending} = useCancelSavingPlan(()=>{
         setIsConfirmModalOpen(false)
@@ -38,7 +42,7 @@ const SavingGoal= () => {
         // setSelectedGoal(null)
         setSuccessModal({
             isOpen: true,
-            description: "Transaction successfull, check your wallet balance"
+            description: "Transaction successful, check your wallet balance"
         })
     })
 
@@ -151,7 +155,12 @@ const SavingGoal= () => {
                     setAmountModal(false)
                     setSelectedGoal(null)
                 }}
-                onClose={()=> setSuccessModal({isOpen:false, description: ""})}
+                onClose={()=> {
+                    setSuccessModal({isOpen:false, description: ""})
+                    setAmountModal(false)
+                    setSelectedGoal(null)
+                    navigate('/user/dashboard')
+                }}
                 description={successModal.description}
             />
 

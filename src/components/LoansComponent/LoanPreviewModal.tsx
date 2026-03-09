@@ -66,7 +66,7 @@ const LoanPreviewModal = ({
               </div>
               <div className="flex justify-between">
                 <span>Interest Rate</span>
-                <span className="font-semibold">10.5%</span>
+                <span className="font-semibold">15%</span>
               </div>
               <div className="flex justify-between">
                 <span>Total Interest</span>

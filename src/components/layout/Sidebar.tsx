@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { Settings, X, ChevronDown, CircleDollarSign, LogOut } from "lucide-react";
+import { X, ChevronDown, CircleDollarSign, LogOut, Banknote } from "lucide-react";
 import { Button } from "../ui/button";
 import { NavLink } from "react-router-dom";
 import { LayoutGrid } from "lucide-react";
@@ -58,6 +58,10 @@ const Sidebar = ({onClick}:menuProps) => {
                     <CircleDollarSign /> Invest
                 </NavLink>
 
+                <NavLink to="transactions" className={activeClass}>
+                    <Banknote /> Transactions
+                </NavLink>
+
                 <NavLink to="market-place" className={activeClass}>
                     <img src={walletIcon} alt="" aria-hidden="true" />
                     Market place
@@ -68,9 +72,10 @@ const Sidebar = ({onClick}:menuProps) => {
                     Profile
                 </NavLink>
 
-                <NavLink to="settings" className={activeClass}>
+
+                {/* <NavLink to="settings" className={activeClass}>
                     <Settings /> Settings
-                </NavLink>
+                </NavLink> */}
 
                 <hr/>
                 {/* <div className="flex gap-3 cursor-pointer">

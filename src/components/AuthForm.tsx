@@ -41,6 +41,7 @@ import ConfirmSignIn from '../pages/auth/ConfirmLogin';
 import ProgressSteps from './AuthProgressSteps';
 import VerificationStep from './AuthVerificationStep';
 import { Checkbox } from './ui/checkbox';
+import NewUserRegister from './NewUserRegister';
 
 const AuthForm = ({
     activeTab,
@@ -69,6 +70,8 @@ const AuthForm = ({
         'userCredentials',
         null
     );
+
+    const [isOpen, setIsOpen] = useState(false);
 
     const loginForm = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
@@ -417,6 +420,17 @@ const sendPhoneVerification = useSendPhoneVerification(onError);
                                 </Button>
                             </form>
                         </Form>
+                        <div className="text-sm">
+                            Don't have an access code?{" "} 
+                            <Button variant="link" 
+                                className="p-0 font-normal text-megagreen"
+                                onClick={() => setIsOpen(true)} 
+                            >
+                                register here
+                            </Button>
+                        </div>
+
+                        <NewUserRegister isOpen={isOpen} onClose={() => setIsOpen(false)} />
                     </div>
                 );
 
@@ -859,7 +873,7 @@ const sendPhoneVerification = useSendPhoneVerification(onError);
                 <CardHeader className="text-center mb-[-20px] pt-0">
                     <img src={megacoop_logo} alt="MegaCoop Logo" className="mx-auto w-32 h-auto object-contain" />
                 </CardHeader>
-                <CardContent className="w-full relative">
+                <CardContent className="w-full relative font-manrope">
                     <Tabs value={activeTab} onValueChange={onTabChange} className="w-full flex flex-col">
                         {signUpStep === 1 && activeTab === "signup" && (
                             <div className="text-center mb-6">

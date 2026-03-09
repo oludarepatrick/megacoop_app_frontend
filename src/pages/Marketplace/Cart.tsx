@@ -249,6 +249,7 @@ export default function CartPage() {
           price: item.price,
           quantity: item.quantity,
         })),
+      initial_payment: walletBalance,
       repayment_months: data.duration,
       // user_id: user.uuid,
       // payment_type: "credit",

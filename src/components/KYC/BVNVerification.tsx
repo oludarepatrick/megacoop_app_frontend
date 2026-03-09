@@ -17,6 +17,7 @@ export const KYCBVN = ({onSuccess}: {onSuccess: () => void}) => {
     const {register, handleSubmit, reset, formState: {errors}} = useForm<BvnFormData>({
         resolver: zodResolver(bvnSchema)
     })
+    
 
     const bvnVerificationMutation = useMutation({
         mutationFn: (data:BvnFormData) => kycService.BVNVerification(data),

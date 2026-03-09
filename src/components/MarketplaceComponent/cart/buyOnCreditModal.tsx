@@ -30,7 +30,7 @@ export function BuyOnCreditModal({ isOpen, onClose, onProceed }: ProductDetailMo
             </div>
 
             <p className="text-center font-medium sm:w-[90%]">
-                Interest rate of 10% is attach to buying this product on credit 
+                Interest rate of 7.5% is attach to buying this product on credit 
                 and repayment cannot exceed 6 months, Click on <span className="text-green-800">proceed to 
                 continue if you agree with our terms</span>
             </p>

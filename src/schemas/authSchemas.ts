@@ -1,9 +1,16 @@
 import { z } from 'zod';
 
 // Zod schemas - extracted exactly from AuthForm component
+export const preRegisterSchema = z.object({
+    fullname: z.string().min(1, "First name is required"),
+    email: z.string().email("Invalid email address"),
+    phone: z.string().min(10, "Phone number must be at least 10 digits"),
+});
+
 export const accessCodeSchema = z.object({
     code: z.string().nonempty("Access code is required").length(8, "Put in your 8 digit access code"),
 });
+
 
 export const personalInfoSchema = z.object({
     first_name: z.string().min(1, "First name is required"),
@@ -16,7 +23,6 @@ export const personalInfoSchema = z.object({
     age_range: z.string().min(1, "Age range is required"),
     code: z.string().optional(),
 });
-
 export const accountInfoSchema = z.object({
     address: z.string().min(1, "Home address is required"),
     whatshapp_no: z.string().optional(),
@@ -54,6 +60,7 @@ export const sendPasswordSchema = z.object({
 
 
 // Types - extracted exactly from AuthForm component
+export type PreRegisterFormData = z.infer<typeof preRegisterSchema>;
 export type AccessCodeFormData = z.infer<typeof accessCodeSchema>;
 export type PersonalInfoFormData = z.infer<typeof personalInfoSchema>;
 export type AccountInfoFormData = z.infer<typeof accountInfoSchema>;

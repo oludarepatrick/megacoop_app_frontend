@@ -59,12 +59,26 @@ export type StepProps = {
 export type Loan = {
   id: string;
   name: string;
+  purpose: string;
   amount: number;
   next_repayment_date: string; // ISO date
   status: "disbursed" | "active" | "overdue" | "paid" | "pending";
   // progress 0..100 percent (how much of loan already repaid)
   progress?: number;
   // any other fields the loan details page will need
+};
+
+export type LoanDetail = {
+  id: Loan["id"];
+  loan_type: string;
+  loan_amount: string;
+  purpose: string;
+  tax: string;
+  monthly_repayment: string; // ISO date
+  next_repayment_date: string; // ISO date
+  total_payback: string;
+  status?: "approved" | "pending" | "denied";
+
 };
 
 export type CreditLimit = {

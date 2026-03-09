@@ -1,8 +1,9 @@
 import { useLocation } from "react-router-dom";
-import { Search, Bell, User } from "lucide-react";
+import { Search} from "lucide-react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { AlignJustify } from "lucide-react";
+import AskMegaBot from "../AIChatBot";
 
 type menuProps={
     onMenuToggle: () => void
@@ -22,7 +23,7 @@ const Header = ({onMenuToggle}: menuProps) => {
         "/user/dashboard": { 
             title: "Dashboard", 
             bg: "bg-card-bg text-theme-text",
-            hasSearch: true,
+            hasSearch: false,
             searchPlaceholder: "Search for transaction, item, etc"
         },
         "/user/savings-loan": { 
@@ -59,7 +60,7 @@ const Header = ({onMenuToggle}: menuProps) => {
             title: "Transactions", 
             bg: "bg-megaPrimary text-white",
             input: "text-icon",
-            hasSearch: true,
+            hasSearch: false,
             searchPlaceholder: "Search for something..."
         },
         "/user/cart": { 
@@ -105,16 +106,23 @@ const Header = ({onMenuToggle}: menuProps) => {
                             />
                         </div>
                     )}
-                    {/* Right side - User actions */}
-                    <div className="flex items-center gap-3">
-                        <Button variant="ghost" size="icon" className="hover:bg-white/10 hidden sm:flex">
-                            <Bell className="w-5 h-5" />
+                    {/* Right side - Chat Button */}
+                    <AskMegaBot/>
+                    {/* <div className="flex items-center gap-3">
+                        <Button 
+                            variant="outline" 
+                            onClick={onClick}
+                            className={`hover:bg-white/10 border-megaPrimary rounded-full`}
+                        >
+                            <span className="flex items-center gap-2">
+                                <img src="/megacoop-green-icon.svg" alt="" className="w-5" />
+                                Ask
+                                <span className="hidden md:inline -ml-1">
+                                    Jane
+                                </span>
+                            </span>
                         </Button>
-                        
-                        <Button variant="ghost" size="icon" className="hover:bg-white/10 lg:hidden">
-                            <User className="w-5 h-5" />
-                        </Button>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </header>
