@@ -57,10 +57,7 @@ const LoanDetailModal = ({isOpen, onClose, loan, isLoading}: LoanDetailModalProp
                             <p className="text-muted-foreground">Next Repayment Date</p>
                             <p className="font-medium">{loan.next_repayment_date}</p>
                         </div>
-                        {/* <div>
-                            <p className="text-muted-foreground">Transaction Date</p>
-                            <p className="font-medium">{formatDate(loan.created_at)}</p>
-                        </div> */}
+                        
                         
                         <div className="space-y-2">
                             <p className="text-muted-foreground">Status</p>

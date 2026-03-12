@@ -74,7 +74,7 @@ const LoanPreviewModal = ({
               </div>
               <div className="flex justify-between">
                 <span>Tax</span>
-                <span className="font-semibold">₦5,000</span>
+                <span className="font-semibold">₦{loanCalc?.taxAmount?.toLocaleString() ?? "0"}</span>
               </div>
               {values.repaymentFrequency === "monthly" && (
                 <div className="flex justify-between">

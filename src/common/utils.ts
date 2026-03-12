@@ -14,8 +14,17 @@ export const formConfig = {
   },
 };
 
-export const formatCurrency = (n?: number) =>
-  n == null ? "₦0.00" : `₦${Number(n).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+// export const formatCurrency = (n?: number) =>
+//   n == null ? "₦0.00" : `₦${Number(n).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+
+export const formatCurrency = (value: number) =>
+    new Intl.NumberFormat("en-NG", {
+        style: "currency",
+        currency: "NGN",
+        minimumFractionDigits: 2,   // ← always show kobo
+        maximumFractionDigits: 2,   // ← never show more than 2 decimal places
+    }).format(value)
 
 export const formatDate = (iso?: string) => {
   if (!iso) return "-";

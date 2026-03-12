@@ -117,7 +117,7 @@ const SavingPayment = ({ isOpen, onClose, onSuccess, savingData, isPending }: Sa
                                     </div>
                                     <div className="text-[11px] space-y-1">
                                         <h3 className="font-medium">Account Name</h3>
-                                        <p className="text-megagreen">Williams</p>
+                                        <p className="text-megagreen">{data?.full_name}</p>
                                     </div>
                                 </CardContent>
                                 {paymentMethod === "bank" && <img src={checkIcon} alt="" aria-hidden="true" className="absolute -right-1 -top-2" />}

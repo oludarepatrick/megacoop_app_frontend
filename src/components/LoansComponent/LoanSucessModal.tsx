@@ -1,16 +1,14 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-  DialogClose,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import LoanSuccessConfetti from "../../assets/LoanSuccessConfetti.png";
-import LoanSuccessIcon from "../../assets/LoanSucessHeader.png";
-import { X } from "lucide-react";
+import { Download, File, Image } from "lucide-react";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { useDownloadReceipt } from "@/hooks/useTransactionReceipt";
+import { useRef } from "react";
+import Logo from "/Logo.svg";
+import coffetiImg from "@/assets/coffetti-img.png";
+import receiptBg from "@/assets/receipt-bcg.png";
 import type { CalculateLoan } from "@/types/loanTypes";
+import { formatCurrency } from "@/common/utils";
 
 type LoanSuccessModalProps = {
   open: boolean;
@@ -26,6 +24,15 @@ type LoanSuccessModalProps = {
   loanCalc: CalculateLoan | null;
 };
 
+const frequencyLabel = (freq: string) => {
+  switch (freq) {
+    case "week": return "Weekly";
+    case "month": return "Monthly";
+    case "quarter": return "Quarterly";
+    default: return freq;
+  }
+};
+
 const LoanSuccessModal = ({
   open,
   onClose,
@@ -33,219 +40,204 @@ const LoanSuccessModal = ({
   values,
   loanCalc,
 }: LoanSuccessModalProps) => {
-console.log("loanCalc in success modal:", loanCalc);
-//     function handleReceiptDownload2(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
-//         event.preventDefault();
-//         // Simulate receipt content
-//         const receiptContent = `
-// Loan Receipt
+  const receiptRef = useRef<HTMLDivElement>(null!) as React.RefObject<HTMLDivElement>;
+  const { downloadAsPDF, downloadAsImage } = useDownloadReceipt(receiptRef, `loan-receipt-${Date.now()}`);
 
-// Loan Type: Simple Loan
-// Amount: ₦${values.loanAmount?.toLocaleString() || "50,000"}
-// Loan Duration: ${values.duration} Months
-// Interest Rate: 10%
-// Tax: ₦5,000
-// Monthly Payment: ₦4,500
-// Total Payback Amount: ₦58,000
 
-// Congratulations on your successful loan application!
-//         `.trim();
+  const ReceiptContent = (
+    <div className="pb-4">
+      <DialogHeader className="text-center px-4 py-4 rounded-lg bg-gradient-to-b from-[#E6FFE3] to-white">
+        <div
+          className="flex justify-center relative pb-4"
+          style={{
+            backgroundImage: `url(${coffetiImg})`,
+            backgroundPosition: "bottom center",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+          }}
+        >
+          <img src={Logo} alt="megacoop-logo" className="w-40 relative z-10" crossOrigin="anonymous" />
+        </div>
+      </DialogHeader>
 
-//         const blob = new Blob([receiptContent], { type: "text/plain" });
-//         const url = URL.createObjectURL(blob);
+      <p className="text-green-800 text-center font-semibold text-base py-3">
+        Congrats! Your loan application was successful.
+      </p>
 
-//         const link = document.createElement("a");
-//         link.href = url;
-//         link.download = "loan-receipt.txt";
-//         document.body.appendChild(link);
-//         link.click();
-//         document.body.removeChild(link);
-//         URL.revokeObjectURL(url);
-//     }
-
-    const handleReceiptDownload = () => {
-    // Create receipt content
-    const receiptContent = generateReceiptContent();
-    
-    // Create a blob with the receipt content
-    const blob = new Blob([receiptContent], { type: 'text/plain' });
-    
-    // Create a download link
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    
-    // Generate filename with timestamp
-    const timestamp = new Date().toISOString().split('T')[0];
-    link.download = `loan-receipt-${timestamp}.txt`;
-    
-    // Trigger download
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    // Clean up
-    URL.revokeObjectURL(url);
-  };
-
-  const generateReceiptContent = () => {
-    const currentDate = new Date().toLocaleDateString();
-    // const totalAmount = calculateTotalPayback(values.loanAmount);
-    // const monthlyPayment = calculateMonthlyPayment(values.loanAmount, parseInt(values.duration));
-    
-    return `
-MEGACOOP LOAN RECEIPT
-=====================
-
-Date: ${currentDate}
-Transaction ID: MC${Date.now()}
-
-LOAN DETAILS:
--------------
-Loan Type: ${values.reason || "Simple Loan"}
-Loan Amount: ₦${values.loanAmount?.toLocaleString() || "50,000"}
-Loan Duration: ${values.duration} Months
-Interest Rate: 10%
-Repayment Frequency: ${values.repaymentFrequency}
-Auto Payment: ${values.autoPayment ? "Enabled" : "Disabled"}
-
-BREAKDOWN:
-----------
-Principal: ₦${values.loanAmount?.toLocaleString()}
-Interest (10.5%): ₦${loanCalc?.totalInterest.toLocaleString() || "0"}
-Tax: ₦5,000
-Processing Fee: ₦1,500
-
-MONTHLY PAYMENT: ₦${loanCalc?.installment.toLocaleString() || "0"}
-TOTAL PAYBACK: ₦${loanCalc?.totalPayable.toLocaleString() || "0"}
-
-TERMS & CONDITIONS:
--------------------
-• Loan must be repaid within ${values.duration} months
-• Late payments attract additional 2% monthly penalty
-• Early repayment is allowed without penalties
-
-Thank you for choosing MegaCoop!
-
-Contact: support@megacoop.com
-Phone: +234-800-MEGACOOP
-    `.trim();
-  };
-
-  // const calculateInterest = (amount: number) => {
-  //   return amount * 0.105; // 10.5% interest
-  // };
-
-  // const calculateTotalPayback = (amount: number) => {
-  //   const interest = calculateInterest(amount);
-  //   const tax = 5000;
-  //   const processingFee = 1500;
-  //   return amount + interest + tax + processingFee;
-  // };
-
-  // const calculateMonthlyPayment = (amount: number, duration: number) => {
-  //   const total = calculateTotalPayback(amount);
-  //   return Math.round(total / duration);
-  // };
-
+      <div
+        className="relative sm:mx-8"
+        style={{
+          backgroundImage: `url(${receiptBg})`,
+          backgroundPosition: "top",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+        }}
+      >
+        <div className="text-white p-6">
+          <h3 className="font-semibold text-center text-sm pb-3 border-b-2 border-dashed loose-dash">
+            Loan Receipt
+          </h3>
+          <div className="py-4 max-w-[307px] mx-auto [&_div]:grid [&_div]:grid-cols-2 space-y-3 text-xs">
+            <h3 className="text-xl font-semibold text-center">
+              {formatCurrency(values?.loanAmount ?? 0)}
+            </h3>
+            <div><h4>Loan Type:</h4><span className="font-medium">{values.reason || "Simple Loan"}</span></div>
+            <div><h4>Duration:</h4><span className="font-medium">{values.duration} Months</span></div>
+            <div><h4>Interest Rate:</h4><span className="font-medium">15%</span></div>
+            <div><h4>Total Interest:</h4><span className="font-medium">{formatCurrency(loanCalc?.totalInterest ?? 0)}</span></div>
+            <div><h4>Tax:</h4><span className="font-medium">{formatCurrency(loanCalc?.taxAmount ?? 0)}</span></div>
+            <div>
+              <h4>Repayment:</h4>
+              <span className="font-medium">{frequencyLabel(values.repaymentFrequency)} ({loanCalc?.numberOfPayments ?? 0}x)</span>
+            </div>
+            <div><h4>Installment:</h4><span className="font-medium">{formatCurrency(loanCalc?.installment ?? 0)}</span></div>
+            <div><h4>Auto Payment:</h4><span className="font-medium">{values.autoPayment ? "Enabled" : "Disabled"}</span></div>
+            <hr className="loose-dash my-8" />
+            <div><h4>Total Payback:</h4><span className="font-medium">{formatCurrency(loanCalc?.totalPayable ?? 0)}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 
   return (
+    <>
+      {open && (
+        <div
+          ref={receiptRef}
+          className="font-poppins bg-white"
+          style={{
+            position: "fixed",
+            top: "-9999px",   // off-screen but still in the DOM and painted
+            left: "-9999px",
+            width: "448px",   // match sm:max-w-md
+            zIndex: -1,
+          }}
+        >
+          {ReceiptContent}
+          <p>Thank you for choosing MegaCoop!</p>
+        </div>
+      )}
+    
     <Dialog open={open} onOpenChange={onClose}>
-          <DialogContent className="max-w-md  bg-green-100 rounded-2xl p-0   shadow-lg">
-              
-              {/* Custom Close Button */}
-        <DialogClose asChild>
-          <Button
-            variant="ghost"
-            className="absolute right-3 top-4 z-50 h-8 w-8 p-0 rounded-full bg-green-600 hover:bg-white text-gray-600 hover:text-gray-800 border border-gray-300 shadow-sm"
-            onClick={onClose}
+      <DialogContent className="font-poppins sm:max-w-md p-0 pb-10 overflow-y-auto max-h-[90vh] scrollbar-hide">
+        {ReceiptContent}
+        {/* <div ref={receiptRef} className="pb-4">
+          <DialogHeader className="text-center px-4 py-4 rounded-lg bg-gradient-to-b from-[#E6FFE3] to-white">
+            <div
+              className="flex justify-center relative pb-4"
+              style={{
+                backgroundImage: `url(${coffetiImg})`,
+                backgroundPosition: "bottom center",
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
+              }}
+            >
+              <img
+                src={Logo}
+                alt="megacoop-logo"
+                className="w-40 relative z-10"
+                crossOrigin="anonymous"
+              />
+            </div>
+          </DialogHeader>
+
+          <p className="text-green-800 text-center font-semibold text-base py-3">
+            Congrats! Your loan application was successful.
+          </p>
+
+          <div
+            className="relative sm:mx-8"
+            style={{
+              backgroundImage: `url(${receiptBg})`,
+              backgroundPosition: "top",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "cover",
+            }}
           >
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </Button>
-        </DialogClose>
+            <div className="text-white p-6">
+              <h3 className="font-semibold text-center text-sm pb-3 border-b-2 border-dashed loose-dash">
+                Loan Receipt
+              </h3>
 
-        {/* Header */}
-              <DialogHeader
-                  className="relative h-18 px-6 py-4  bg-cover bg-center"
-                  style={{ backgroundImage: `url('${LoanSuccessConfetti}')` }}
-              >
-          <DialogTitle  className="absolute inset-x-0 top-[-40px] text-lg font-bold text-gray-800 mx-auto w-fit flex items-center">
-            {/* LOAN DETAILS */}
-            <img src={LoanSuccessIcon} alt="Success" className="w-22 h-22 mr-2" />
-          </DialogTitle>
-        </DialogHeader>
-        <p className="text-green-800 text-center font-semibold text-lg">
-          Congrats! Your loan application was successful.
-        </p>
-        {/* Green Loan Details Card */}
-        <div className="relative bg-green-700 text-white mx-6 shadow-inner">
-          {/* Scallop edge (top and bottom) */}
-            <div className="absolute inset-x-0 top-[-4px] h-2.5 bg-[radial-gradient(circle,#E6FFE3_4px,transparent_3px)] [background-size:10px_10px]"></div>
+              <div className="py-4 max-w-[307px] mx-auto [&_div]:grid [&_div]:grid-cols-2 space-y-3 text-xs">
+                <h3 className="text-xl font-semibold text-center">
+                  ₦{values.loanAmount?.toLocaleString() ?? "0"}
+                </h3>
+                <div>
+                  <h4>Loan Type:</h4>
+                  <span className="font-medium">{values.reason || "Simple Loan"}</span>
+                </div>
+                <div>
+                  <h4>Duration:</h4>
+                  <span className="font-medium">{values.duration} Months</span>
+                </div>
+                <div>
+                  <h4>Interest Rate:</h4>
+                  <span className="font-medium">15%</span>
+                </div>
+                <div>
+                  <h4>Total Interest:</h4>
+                  <span className="font-medium">₦{loanCalc?.totalInterest?.toLocaleString() ?? "0"}</span>
+                </div>
+                <div>
+                  <h4>Tax:</h4>
+                  <span className="font-medium">₦{loanCalc?.taxAmount?.toLocaleString() ?? "0"}</span>
+                </div>
+                <div>
+                  <h4>Repayment:</h4>
+                  <span className="font-medium">
+                    {frequencyLabel(values.repaymentFrequency)} ({loanCalc?.numberOfPayments ?? 0}x)
+                  </span>
+                </div>
+                <div>
+                  <h4>Installment:</h4>
+                  <span className="font-medium">₦{loanCalc?.installment?.toLocaleString() ?? "0"}</span>
+                </div>
+                <div>
+                  <h4>Auto Payment:</h4>
+                  <span className="font-medium">{values.autoPayment ? "Enabled" : "Disabled"}</span>
+                </div>
 
-          <div className="px-6 py-3">
-            <h3 className="font-semibold text-lg mb-2">Loan Details</h3>
-            <div className="border-t border-dashed border-white/60 mb-4"></div>
+                <hr className="loose-dash my-8" />
 
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between">
-                <span>Loan Type</span>
-                <span className="font-semibold">Simple Loan</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Amount</span>
-                <span className="font-semibold">
-                  ₦{values.loanAmount?.toLocaleString() || "50,000"}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span>Loan Duration</span>
-                <span className="font-semibold">{values.duration} Months</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Interest Rate</span>
-                <span className="font-semibold">10.5%</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Tax</span>
-                <span className="font-semibold">₦5,000</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Monthly Payment</span>
-                <span className="font-semibold">₦{loanCalc?.installment.toLocaleString() || "0"}</span>
-              </div>
-              <div className="border-t border-dashed border-white/60 my-3"></div>
-              <div className="flex justify-between text-base">
-                <span>Total Payback Amount</span>
-                <span className="font-bold">₦{loanCalc?.totalPayable.toLocaleString() || "0"}</span>
+                <div>
+                  <h4>Total Payback:</h4>
+                  <span className="font-medium">₦{loanCalc?.totalPayable?.toLocaleString() ?? "0"}</span>
+                </div>
               </div>
             </div>
           </div>
+        </div> */}
 
-          {/* <div className="h-3 bg-[radial-gradient(circle,white_2px,transparent_3px)] [background-size:10px_10px]"></div> */}
-          <div className="absolute inset-x-0 bottom-[-4px] h-2.5 bg-[radial-gradient(circle,#E6FFE3_4px,transparent_3px)] [background-size:10px_10px]"></div>
+        <div className="flex items-center justify-center flex-wrap gap-4 mx-10">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button className="bg-megagreen flex-1 font-normal">
+                <Download /> Download
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="max-w-[180px]">
+              <DropdownMenuItem onClick={downloadAsPDF}>
+                <File className="text-megagreen" /> Download as PDF
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => downloadAsImage("png")}>
+                <Image className="text-megagreen" /> Download as Image
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <Button
+            onClick={onConfirm}
+            variant="outline"
+            className="border-megagreen text-megagreen flex-1"
+          >
+            View Loans
+          </Button>
         </div>
-
-        {/* Footer */}
-        <DialogFooter className="px-6 pb-6">
-  <div className="flex sm:flex-row gap-3 w-full">
-    <Button
-      onClick={handleReceiptDownload}
-      className="bg-green-700 hover:bg-green-800 text-white font-semibold py-5 rounded-md text-sm flex-1"
-    >
-      Download Receipt
-    </Button>
-    <Button
-      onClick={onConfirm}
-      className="font-semibold py-5 rounded-md text-sm flex-1"
-      // variant="outline"
-    >
-      View Loans
-    </Button>
-  </div>
-</DialogFooter>
       </DialogContent>
     </Dialog>
+  </>
   );
 };
 

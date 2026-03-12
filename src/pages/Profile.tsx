@@ -90,6 +90,7 @@ export default function Profile() {
                             <span className="inline-block text-lg text-blue-600 bg-blue-600/20 p-2 font-semibold rounded-sm max-w-[150px] w-full text-center">
                                 {bankDetails?.account_no || "N/A"}
                             </span>
+                            <p className="block w-full text-xs text-red-700">A bank charge of 1.5% applies to all transfers, capped at ₦2,000</p>
                         </div>
                         <p className="text-xs text-muted-foreground italic px-4">
                             ⚠️ This account is exclusively for funding your MegaCoop wallet. Deposits are automatically credited.

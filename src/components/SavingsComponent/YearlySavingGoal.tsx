@@ -3,27 +3,13 @@ import wallet from "../../assets/expense-icon.svg";
 import { Progress } from "../ui/progress";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "../ui/chart";
-import { useSavingPlans } from "@/hooks/useSaving";
+import { useSavingPlans, useYearlySavingCharts } from "@/hooks/useSaving";
 import { formatCurrency } from "@/common/utils";
 
-const savingData = [
-    { month: "Jan", value: 2000000 },
-    { month: "Feb", value: 10000000 },
-    { month: "Mar", value: 5000000 },
-    { month: "Apr", value: 20000000 },
-    { month: "May", value: 12000000 },
-    { month: "Jun", value: 15000000 },
-    { month: "Jul", value: 13000000 },
-    { month: "Aug", value: 14000000 },
-    { month: "Sep", value: 20000000 },
-    { month: "Oct", value: 12000000 },
-    { month: "Nov", value: 15000000 },
-    { month: "Dec", value: 15000000 },
-]
 
 const chartConfig = {
     month:{
-        label: savingData.map(month => month.month),
+        label: "month",
         color: "#14AB55"
     },
 
@@ -31,6 +17,12 @@ const chartConfig = {
 
 const YearlySavingGoal = ()=> {
     const {data: goals = []} = useSavingPlans();
+    const {data: yearlySavings} = useYearlySavingCharts();
+
+    const chartData = yearlySavings?.data.map(item => ({
+        month: item.month,
+        value: item.credit
+    })) ?? []
 
     // get amount saved and total targeton all goals
     const totalSaved = goals.reduce((acc, goal) => acc + Number(goal.total_saved), 0);
@@ -71,7 +63,7 @@ const YearlySavingGoal = ()=> {
                 </div>
                 <div className="overflow-x-auto green-scrollbar pt-8">
                     <ChartContainer config={chartConfig} className="h-auto md:min-h-[200px] 2xl:min-h-[200px]  min-w-full mb-4"  >
-                        <LineChart accessibilityLayer data={savingData} margin={{ top: 12, right: 12, left: 20, bottom: 20 }}>
+                        <LineChart accessibilityLayer data={chartData} margin={{ top: 12, right: 12, left: 20, bottom: 20 }}>
                             <CartesianGrid vertical={false} stroke="#25282c7f" opacity={0.3} />
                             <XAxis
                                 dataKey="month"

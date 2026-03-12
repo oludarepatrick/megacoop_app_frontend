@@ -90,6 +90,7 @@ const SavingPlanModal = () => {
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
+                                            <SelectItem value="NHF Savings">NHF Savings</SelectItem>
                                             <SelectItem value="Property Purchase">Property Purchase</SelectItem>
                                             <SelectItem value="House Rent">House Rent</SelectItem>
                                             <SelectItem value="Personal Project">Personal Project</SelectItem>

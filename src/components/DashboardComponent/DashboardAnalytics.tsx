@@ -9,21 +9,22 @@ import {
     type ChartConfig 
 } from "../ui/chart";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { useDashboardCharts } from "@/hooks/useWalletTransaction";
 
-const userAnalytics= [
-    { month: "Jan", income: 40000, outcome: 30000 },
-    { month: "Feb", income: 32000, outcome: 35000 },
-    { month: "Mar", income: 35000, outcome: 28000 },
-    { month: "Apr", income: 30000, outcome: 48000 },
-    { month: "May", income: 45000, outcome: 37000 },
-    { month: "Jun", income: 31000, outcome: 22000 },
-    { month: "Jul", income: 50000, outcome: 34000 },
-    { month: "Aug", income: 30000, outcome: 32000 },
-    { month: "Sept", income: 31000, outcome: 22000 },
-    { month: "Oct", income: 50000, outcome: 34000 },
-    { month: "Nov", income: 30000, outcome: 32000 },
-    { month: "Dec", income: 30000, outcome: 32000 },
-]
+// const userAnalytics= [
+//     { month: "Jan", income: 40000, outcome: 30000 },
+//     { month: "Feb", income: 32000, outcome: 35000 },
+//     { month: "Mar", income: 35000, outcome: 28000 },
+//     { month: "Apr", income: 30000, outcome: 48000 },
+//     { month: "May", income: 45000, outcome: 37000 },
+//     { month: "Jun", income: 31000, outcome: 22000 },
+//     { month: "Jul", income: 50000, outcome: 34000 },
+//     { month: "Aug", income: 30000, outcome: 32000 },
+//     { month: "Sept", income: 31000, outcome: 22000 },
+//     { month: "Oct", income: 50000, outcome: 34000 },
+//     { month: "Nov", income: 30000, outcome: 32000 },
+//     { month: "Dec", income: 30000, outcome: 32000 },
+// ]
 
 const chartConfig = {
     income:{
@@ -44,6 +45,9 @@ type LegendProps ={
 
 
 const DashboardAnalytics = () => {
+    const {data: dashboardCharts} = useDashboardCharts();
+    const userAnalytics = dashboardCharts?.data
+
     const CustomLegend = ({config, className}:LegendProps) => {
         return (
             <div className={`flex items-center gap-4 ${className}`}>
@@ -68,13 +72,12 @@ const DashboardAnalytics = () => {
                     <CustomLegend config={chartConfig} className="hidden md:flex"/>
                     <Select>
                         <SelectTrigger>
-                            <SelectValue placeholder="2025" />
+                            <SelectValue placeholder={new Date().getFullYear()} />
                         </SelectTrigger>
                         <SelectContent>
+                            <SelectItem value="2026">2026</SelectItem>
                             <SelectItem value="2025">2025</SelectItem>
-                            <SelectItem value="2024">2024</SelectItem>
-                            <SelectItem value="2023">2023</SelectItem>
-                            <SelectItem value="2021">2021</SelectItem>
+                
                         </SelectContent>
                     </Select>
                 </div>
@@ -88,7 +91,7 @@ const DashboardAnalytics = () => {
                             tickLine={false}
                             tickMargin={10}
                             axisLine={false}
-                            // tickFormatter={(value) => value.slice(0, 3)}
+                            tickFormatter={(value) => value.slice(0, 3)}
                         />
                         <YAxis
                             tickLine={false}
@@ -96,8 +99,8 @@ const DashboardAnalytics = () => {
                         />
                         <ChartTooltip content={<ChartTooltipContent/>} />
                         <ChartLegend content={<ChartLegendContent />} className="md:hidden justify-start" />
-                        <Bar dataKey={"outcome"} fill="var(--color-outcome)" />
-                        <Bar dataKey={"income"} fill="var(--color-income)" />
+                        <Bar dataKey={"debit"} fill="var(--color-outcome)" />
+                        <Bar dataKey={"credit"} fill="var(--color-income)" />
                     </BarChart>
 
                 </ChartContainer>

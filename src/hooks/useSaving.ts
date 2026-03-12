@@ -92,3 +92,17 @@ export const useResendWithdrawalOtp = () => {
             savingService.withdrawalOtp(data),
     });
 };
+
+export const useYearlySavingCharts = () => {
+    return useQuery({
+        queryKey: ["monthly-stats"],
+        queryFn: savingService.getYearlySavingStats,
+    })
+}
+
+export const useMonthlySavingStats = () => {
+    return useQuery({
+        queryKey: ["daily-stats"],
+        queryFn: savingService.getMonthlySavingStats,
+    })
+}

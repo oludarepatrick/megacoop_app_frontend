@@ -1,3 +1,4 @@
+import { formatCurrency } from "@/common/utils";
 import { CardContent, CardHeader } from "./ui/card";
 import { EllipsisVertical} from "lucide-react";
 
@@ -6,12 +7,12 @@ type StatProps = {
     title: string;
     amount: number | undefined;
     icon: string;
-    interest: string;
+    // interest: string;
     iconbg: string;
-    interestBg: string;
+    // interestBg: string;
 }
 
-const StatCard= ({title, amount, icon, interest, iconbg, interestBg}:StatProps) => {
+const StatCard= ({title, amount, icon, iconbg, }:StatProps) => {
     return (
         <>
             <CardHeader className="p-0 grid-cols-[2fr_auto]">
@@ -24,19 +25,20 @@ const StatCard= ({title, amount, icon, interest, iconbg, interestBg}:StatProps) 
                 <h3 className="text-text-muted font-medium text-[13px]">{title}</h3>
                 <div className="flex justify-between gap-2">
                     {/* <p className="text-[22px] font-bold">₦{amount.toLocaleString()}<span className="text-base">.00</span></p> */}
-                    {amount === undefined? <span className=" block animate-spin rounded-full h-4 w-4 border-b-2 border-megagreen my-2"></span> : (
-                        <p className="text-[22px] font-bold">
-                            ₦{(amount).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-                            <span className="text-base">
-                                .{String(Number(amount).toFixed(2)).split(".")[1] || "00"}
-                            </span>
-                        </p>
-                    )}
-
-                    <span className={`flex items-center justify-center text-xs font-medium px-2 rounded text-dark ${interestBg} rounded-2xl`}>
-                        {interest}
-                    </span>
-
+                    {amount === undefined ? (
+                        <span className="block animate-spin rounded-full h-4 w-4 border-b-2 border-megagreen my-2" />
+                    ) : (() => {
+                        const [naira, kobo] = formatCurrency(amount).split(".")
+                        return (
+                            <p className="text-[22px] font-bold">
+                                {naira}.
+                                <span className="text-base">
+                                    {kobo}
+                                </span>
+                            </p>
+                        )
+                    })()}
+            
                 </div>
             </CardContent>
 
