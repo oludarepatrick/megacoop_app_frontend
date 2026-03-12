@@ -45,6 +45,7 @@ export type LoanFormValues = z.infer<typeof formSchema>;
 export type StepProps = {
   methods: any;
   creditLimit?: CreditLimit;
+  // remainingLimit?: CreditLimit
   isLoading?: boolean;
   isVerifying?: boolean;
   verificationError?: string;
@@ -74,8 +75,8 @@ export type LoanDetail = {
   loan_amount: string;
   purpose: string;
   tax: string;
-  monthly_repayment: string; // ISO date
-  next_repayment_date: string; // ISO date
+  monthly_repayment: string; 
+  next_repayment_date: string; 
   total_payback: string;
   status?: "approved" | "pending" | "denied";
 
@@ -98,7 +99,11 @@ export type CalculateLoan = {
     balance: number;
   }[];
   totalInterest: number;
+  taxAmount: number;
   totalPayable: number;
   installment: number;
   numberOfPayments: number;
+  monthlyRate: number;
+  effectiveRate: number;
 };
+

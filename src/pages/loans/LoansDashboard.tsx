@@ -16,7 +16,6 @@ import LoanDetailModal from "@/components/LoansComponent/LoanDetailModal";
 
 export default function LoanDashboard() {
   const [loans, setLoans] = useState<Loan[]>([])
-  const [maxLimit, setMaxLimit] = useState<number>(0)
   const [activeFilter, setActiveFilter] = useState<string>("all")
   const [openDropdown, setOpenDropdown] = useState<boolean>(false)
   const [isLoanModalOpen, setIsLoanModalOpen] = useState(false)
@@ -69,11 +68,14 @@ export default function LoanDashboard() {
     if (loansData) {
       setLoans(loansData);
     }
-    if (creditLimitData) {
-      setMaxLimit(creditLimitData.credit_limit);
-    }
+    // if (creditLimitData) {
+    //   setMaxLimit(creditLimitData.credit_limit);
+    // }
 
   }, [loansData, creditLimitData]);
+
+  // TEMPORARY-----
+  const nextDuePayment = 50000
 
   // for dummy calculation of used limit
   // const usedLimit = useMemo(() => {
@@ -106,20 +108,6 @@ export default function LoanDashboard() {
         {/* LEFT SIDE - CARDS SECTION (2/3 on desktop) */}
         <div className="flex-1 md:w-2/3">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Max Limit */}
-            <Card className="bg-emerald-50 border-emerald-100 flex-1">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-emerald-700 flex items-center gap-2">
-                  Maximum Amount
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-bold text-emerald-800">
-                  {creditLoading ? "Loading..." : formatCurrency(maxLimit)}
-                </p>
-              </CardContent>
-            </Card>
-
             {/* Remaining Limit */}
             {creditLimitData && creditLimitData.remaining_limit <= 1000 ? (
             <Card className="bg-red-50 border-red-100 flex-1">
@@ -150,7 +138,54 @@ export default function LoanDashboard() {
                 </p>
               </CardContent>
             </Card>
-                )}
+            )
+          }
+          {nextDuePayment <= 2000 ? (
+            <Card className="bg-red-50 border-red-100 flex-1">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium text-red-700 flex items-center gap-2">
+                    <AlertCircle className="text-red-500" size={18} />
+                    Next Due Payment
+                  </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-bold text-red-700">
+                  {/* next due date*/}
+                   {formatCurrency(5000)}
+                   <span className="block text-sm font-normal leading-2 ">{new Date().toDateString()}</span>
+                </p>
+              </CardContent>
+            </Card>
+            ) : (
+            <Card className="bg-emerald-50 border-emerald-100 flex-1">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium text-emerald-700 flex items-center gap-2">
+                    Next Due Payment
+                  </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-bold text-emerald-800">
+                  {/* {next due date} */}
+                  {formatCurrency(nextDuePayment)}
+                  <span className="block text-sm font-normal leading-2 ">{new Date().toDateString()}</span>
+                </p>
+              </CardContent>
+            </Card>
+            )
+          }
+          {/* Max Limit */}
+            {/* <Card className="bg-emerald-50 border-emerald-100 flex-1">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-emerald-700 flex items-center gap-2">
+                  Next Due Payment
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-bold text-emerald-800">
+                  {creditLoading ? "Loading..." : formatCurrency(creditLimitData?.total_borrowed ?? 0)}
+                </p>
+              </CardContent>
+            </Card> */}
           </div>
 
           {/* SECOND ROW (Used Limit + Apply Button) */}

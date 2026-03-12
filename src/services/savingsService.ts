@@ -1,8 +1,26 @@
 import axios from '@/lib/axiosInstance';
 import type { SavingFormData, WithdrawAmountFormData } from '@/schemas/savingsPlanSchema';
-import type { SavingPlan } from '@/types/savingType';
+import type { DashboardCharts } from '@/types/dashboard';
+import type { SavingMonthlyCharts, SavingPlan } from '@/types/savingType';
 
 export const savingService = {
+    getYearlySavingStats: async () : Promise<DashboardCharts> => {
+        const response = await axios.get('savings/monthly-transactions', {
+            params: { year: new Date().getFullYear() }
+        })
+        return response.data
+    },
+
+    getMonthlySavingStats: async () : Promise<SavingMonthlyCharts> => {
+        const response = await axios.get('savings/monthly-savings', {
+            params: { 
+                year: new Date().getFullYear(),
+                month: new Date().getMonth() + 1,
+             }
+        })
+        return response.data
+    },
+
     createSavingPlan: async (data : SavingFormData) => {
         const response = await axios.post('savings/create-saving-plan', data)
         return response.data

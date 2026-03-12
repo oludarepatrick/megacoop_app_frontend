@@ -13,9 +13,27 @@ export const Step2LoanDetails = ({
     creditLimit,
     // isLoading
 }: StepProps) => {
+    const maxAmount = creditLimit?.remaining_limit ?? 0;
+
+    const validateAmount = (value: number) => {
+        if (value < 1000) {
+            methods.setError('loanAmount', {
+                type: 'manual',
+                message: 'Minimum loan amount is ₦1,000',
+            });
+        } else if (value > maxAmount) {
+            methods.setError('loanAmount', {
+                type: 'manual',
+                message: `Amount cannot exceed your credit limit of ₦${maxAmount.toLocaleString()}`,
+            });
+        } else {
+            methods.clearErrors('loanAmount');
+        }
+    };
+
     return (
         <>
-            {(creditLimit?.credit_limit ?? 0) > 1000 ? (
+            {(creditLimit?.remaining_limit ?? 0) > 1000 ? (
             <>
                 <FormField
                 control={methods.control}
@@ -26,12 +44,16 @@ export const Step2LoanDetails = ({
                             <Input
                                 type="number"
                                 min={1000}
-                                max={creditLimit?.credit_limit}
+                                max={creditLimit?.remaining_limit}
                                 step={1000}
                                 placeholder="Enter loan amount"
                                 {...field}
                                 value={field.value ?? 1000}
-                                onChange={(e) => field.onChange(Number(e.target.value))}
+                                onChange={(e) => {
+                                    const val = Number(e.target.value);
+                                    field.onChange(val);
+                                    validateAmount(val);
+                                }}
                                 className="h-11 text-center w-full font-bold rounded-none text-3xl border-0 border-b border-gray-300 shadow-none"
                                 style={{ fontSize: '1rem' }}
                                 // readOnly
@@ -52,14 +74,18 @@ export const Step2LoanDetails = ({
                 <Input
                     type="range"
                     min={1000}
-                    max={creditLimit?.credit_limit ?? 100000}
+                    max={creditLimit?.remaining_limit ?? 100000}
                     step={1000}
                     className="w-full accent-green-500"
                     value={methods.watch('loanAmount') || 1000}
-                    onChange={(e) => methods.setValue('loanAmount', Number(e.target.value))}
+                    onChange={(e) => {
+                        const val = Number(e.target.value);
+                        methods.setValue('loanAmount', val);
+                        validateAmount(val);
+                    }}
                 />
                 <p className="flex flex-col items-center mb-4">
-                    <span className="font-medium text-sm">₦{creditLimit?.credit_limit?.toLocaleString() || '100,000'}</span>
+                    <span className="font-medium text-sm">₦{creditLimit?.remaining_limit?.toLocaleString() || '100,000'}</span>
                     <span className="text-xs text-gray-500">Maximum</span>
                 </p>
             </div>

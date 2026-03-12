@@ -7,3 +7,10 @@ export const useWalletTransaction = () => {
         queryFn: transactionService.getWalletTransaction,
     })
 }
+
+export const useDashboardCharts = () => {
+    return useQuery({
+        queryKey: ["dashboard-charts"],
+        queryFn: transactionService.getDashboardStats,
+    })
+}

@@ -7,6 +7,7 @@ import { useUserWallet } from "@/hooks/useAuth";
 import { useTrendingProducts } from "@/hooks/useProducts";
 import { Skeleton } from "../ui/skeleton";
 import { useNavigate } from "react-router-dom";
+import { formatCurrency } from "@/common/utils";
 
 const SavingsOverview = () => {
     const user = useAuthStore(state => state.user);
@@ -44,7 +45,7 @@ const SavingsOverview = () => {
     return (
         <section className="grid grid-cols-1 md:grid-cols-12 gap-4">
             <Card className="md:col-span-8 bg-gradient-to-br from-[#06152A] to-[#0E5D36] p-0 px-6 py-4 text-white md:justify-center">
-                <SavingsCard amount={data?.total_savings.toLocaleString() || 0} firstName={user?.first_name || "dear"} />
+                <SavingsCard amount={formatCurrency(Number(data?.total_savings)) || 0} firstName={user?.first_name || "dear"} />
             </Card>
             
             <Card className="md:col-span-4 bg-[#06152A] border-none text-white">

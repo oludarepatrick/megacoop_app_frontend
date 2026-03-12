@@ -27,3 +27,15 @@ export type SavingsTransactions = {
     created_at: string
     updated_at: string
 }[]
+
+
+export type SavingMonthlyCharts = {
+    year: number;
+    data: MonthlyStats[];
+}
+
+export type MonthlyStats = {
+  day: number;
+  credit: number
+  debit: number;
+}

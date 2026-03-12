@@ -33,7 +33,7 @@ const SavingsCard= ({firstName, amount, }:StatProps) => {
                 <CardHeader className="p-0 grid-cols-[2fr_auto]">
                     <div className="space-y-2">
                         <p className="text-xs font-normal"> Hi {firstName}, here is your Savings balance:</p>
-                        <CardTitle className="text-2xl">₦{amount}</CardTitle>
+                        <CardTitle className="text-2xl">{amount}</CardTitle>
                     </div>
                     <Button 
                         onClick={handleViewLoan}
